@@ -1,0 +1,49 @@
+:root {
+  --color-primary: #c0392b;
+  --color-primary-dark: #96281b;
+  --color-cream: #fdf6e3;
+  --color-panel: #ffffff;
+  --color-text: #2c2c2c;
+  --color-muted: #7f8c8d;
+  --font-ui: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1a1a1a;
+  font-family: var(--font-ui);
+  color: var(--color-text);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#game-root {
+  width: 100%;
+  height: 100%;
+}
+
+#game-root canvas {
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+  touch-action: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#c0392b" />
+  <meta name="description" content="Demokrasi Adventure — game petualangan edukasi literasi demokrasi & pemilu." />
+  <title>Demokrasi Adventure</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="src/styles/main.css" />
+  <link rel="icon" href="assets/ui/favicon.png" />
+</head>
+<body>
+  <div id="game-root"></div>
+  <noscript>
+    <p style="padding: 1rem; font-family: sans-serif;">
+      Demokrasi Adventure membutuhkan JavaScript yang aktif untuk dimainkan.
+    </p>
+  </noscript>
+  <script>
+    window.__DEMOKRASI_BASE__ = "";
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.80.1/phaser.min.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
