@@ -21,6 +21,23 @@ const VALID_STATES = [
   "GAME_OVER",
 ];
 
+export const GAME_STATES = Object.freeze({
+  BOOT: "BOOT",
+  PRELOAD: "PRELOAD",
+  MAIN_MENU: "MAIN_MENU",
+  PLAYING: "PLAYING",
+  DIALOGUE: "DIALOGUE",
+  QUEST: "QUEST",
+  CUTSCENE: "CUTSCENE",
+  PAUSE: "PAUSE",
+  JOURNAL: "JOURNAL",
+  INVENTORY: "INVENTORY",
+  MAP: "MAP",
+  SETTINGS: "SETTINGS",
+  TPS_SIMULATION: "TPS_SIMULATION",
+  GAME_OVER: "GAME_OVER",
+});
+
 class GameStateClass {
   constructor() {
     this._current = "BOOT";
@@ -48,6 +65,10 @@ class GameStateClass {
     return this._current === "PLAYING";
   }
 
+  get isPaused() {
+    return this._current === "PAUSE";
+  }
+
   set(state) {
     if (!VALID_STATES.includes(state)) {
       console.warn(`[GameState] Invalid state: "${state}"`);
@@ -56,7 +77,7 @@ class GameStateClass {
     if (state === this._current) return;
     this._prev = this._current;
     this._current = state;
-    EventBus.emit("PLAYER_STATE_CHANGED", { prev: this._prev, current: this._current });
+    EventBus.emit("GAME_STATE_CHANGED", { prev: this._prev, current: this._current });
   }
 
   push(state) {

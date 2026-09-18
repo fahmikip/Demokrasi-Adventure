@@ -1,5 +1,6 @@
 import { Game } from "./core/Game.js";
 import { Config } from "./core/Config.js";
+import { runSmoke } from "./tests/smoke.js";
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
@@ -14,6 +15,9 @@ function registerServiceWorker() {
 
 window.addEventListener("DOMContentLoaded", () => {
   window.__DEMOKRASI = { config: Config };
-  window.__DEMOKRASI.game = new Game("game-root");
+  const game = new Game("game-root");
+  if (Config.DEBUG && new URLSearchParams(window.location.search).has("selftest")) {
+    runSmoke(game.phaser);
+  }
   registerServiceWorker();
 });

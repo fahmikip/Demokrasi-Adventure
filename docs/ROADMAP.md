@@ -2,7 +2,7 @@
 
 Setiap fase harus memenuhi **Definition of Done** (lihat bawah) sebelum lanjut. Kerjakan satu fase pada satu waktu. Laporkan hasil tiap fase lalu tunggu instruksi `LANJUT PHASE <n>`.
 
-## PHASE 0 — Project Audit & Game Foundation Plan ✅ (sedang berjalan)
+## PHASE 0 — Project Audit & Game Foundation Plan ✅
 - [x] Inspect repository (kosong → fresh start)
 - [x] Buat struktur folder
 - [x] `docs/GAME_DESIGN.md`
@@ -10,30 +10,42 @@ Setiap fase harus memenuhi **Definition of Done** (lihat bawah) sebelum lanjut. 
 - [x] `docs/TECHNICAL_ARCHITECTURE.md`
 - [x] `docs/CONTENT_GUIDELINES.md`
 - [x] `docs/ROADMAP.md`
-- [ ] Foundation minimal Phase 1 (index.html, boot, preload, menu, responsive canvas)
-- [ ] Identifikasi dependency (Phaser 3) & keputusan teknis
+- [x] Foundation minimal Phase 1 (index.html, boot, preload, menu, responsive canvas)
+- [x] Identifikasi dependency (Phaser 3) & keputusan teknis
 
-## PHASE 1 — Project Foundation
-- [ ] Struktur folder final sesuai Technical Architecture
-- [ ] Phaser setup (`src/core/Game.js`, `src/main.js`)
-- [ ] BootScene
-- [ ] PreloadScene (asset placeholder)
-- [ ] MenuScene (PLAY, SETTINGS, kredit)
-- [ ] Scene dasar World + UIScene shell
-- [ ] Responsive canvas desktop & mobile
-- [ ] Base path compatible GitHub Pages
-- [ ] AudioManager placeholder
-- [ ] PWA dasar: manifest.json + sw.js (+ register)
-- [ ] docs/TEST_PLAN.md dibuat
+## PHASE 1 — Game Foundation & Player System ✅
+- [x] Struktur folder final sesuai Technical Architecture
+- [x] Phaser setup (`src/core/Game.js`, `src/main.js`)
+- [x] BootScene
+- [x] PreloadScene (loading screen + placeholder texture generator)
+- [x] MenuScene (PLAY, SETTINGS, ABOUT)
+- [x] WorldScene shell + tile placeholder (TileSprite ground/path)
+- [x] UIScene (HUD, tombol pause, overlay debug)
+- [x] Responsive canvas desktop & mobile (Phaser Scale.FIT)
+- [x] Base path compatible GitHub Pages (`Config.BASE_PATH`)
+- [x] AudioManager placeholder
+- [x] PWA dasar: manifest.json + sw.js (+ register)
+- [x] docs/TEST_PLAN.md dibuat
+- [x] docs/PLAYER_ASSET_SPEC.md (kontrak asset player 4×4)
+- [x] InputManager (WASD/Arrows/E/ESC/F1) + VirtualJoystick (mobile)
+- [x] Player + PlayerController + PlayerState (IDLE/WALK/INTERACT/DISABLED)
+- [x] Animasi idle/walk placeholder 4 arah
+- [x] Collision & world bounds
+- [x] Camera follow + smoothing
+- [x] HUD (Level/XP/Coins) + PauseMenu + Panel (settings stepper/toggle)
+- [x] Debug overlay (F1)
+- [x] Automated smoke test + E2E input test (CDP)
+- [x] Commit & push Phase 1 (`e9aec96` → fase ini)
 
-## PHASE 2 — Player
-- [ ] PlayerController (WASD/Arrow, mobile joystick)
-- [ ] Animasi idle/walk (placeholder)
-- [ ] Collision & world bounds
-- [ ] Camera follow + smoothing + zoom
-- [ ] PlayerState (IDLE/WALK/…)
-- [ ] Footsteps placeholder
-- [ ] Test pergerakan & collision
+## PHASE 2 — Player Depth & Polish (sisa dari sistem player)
+- [x] PlayerController (WASD/Arrow, mobile joystick) — sudah dari Phase 1
+- [x] Animasi idle/walk (placeholder) — sudah dari Phase 1
+- [x] Collision & world bounds — sudah dari Phase 1
+- [x] Camera follow + smoothing + zoom — sudah dari Phase 1
+- [x] PlayerState (IDLE/WALK/…) — sudah dari Phase 1
+- [ ] Footsteps placeholder (sfx langkah)
+- [ ] Pola gerak lebih halus (acceleration/attack, sheen, dsb.) jika perlu
+- [ ] QA mobile device nyata (joystick, tombol aksi, safe-area)
 
 ## PHASE 3 — World (Desa Harmoni)
 - [ ] Tilemap Desa Harmoni (data JSON + spritesheet placeholder)
@@ -125,8 +137,10 @@ Fase selesai jika:
 ## Progress Tracker
 | Fase | Status |
 |------|--------|
-| Phase 0 | 🔄 dikerjakan |
-| Phase 1–12 | ⏳ menunggu |
+| Phase 0 | ✅ selesai |
+| Phase 1 | ✅ selesai |
+| Phase 2 | 🔄 sebagian (dikerjakan utuh di Phase 1 prompt; sisa: audio footsteps + QA perangkat nyata) |
+| Phase 3–12 | ⏳ menunggu |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.

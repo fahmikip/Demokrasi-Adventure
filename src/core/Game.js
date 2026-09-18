@@ -13,8 +13,14 @@ export class Game {
   constructor(containerId = "game-root") {
     const container = document.getElementById(containerId);
 
+    const forceCanvas =
+      Config.DEBUG &&
+      new URLSearchParams(window.location.search).get("renderer") === "canvas";
+    const renderMode =
+      forceCanvas || Config.GAME.RENDER_MODE === "canvas" ? Phaser.CANVAS : Phaser.AUTO;
+
     this.phaser = new Phaser.Game({
-      type: Config.GAME.RENDER_MODE === "canvas" ? Phaser.CANVAS : Phaser.AUTO,
+      type: renderMode,
       parent: container,
       width: Config.GAME.WIDTH,
       height: Config.GAME.HEIGHT,
@@ -33,5 +39,8 @@ export class Game {
       },
       scene: [BootScene, PreloadScene, MenuScene, WorldScene, UIScene],
     });
+
+    window.__DEMOKRASI = window.__DEMOKRASI || {};
+    window.__DEMOKRASI.phaser = this.phaser;
   }
 }

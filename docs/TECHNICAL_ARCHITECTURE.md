@@ -39,19 +39,24 @@ BOOT → PRELOAD → MAIN_MENU
 ```
 
 Implementasi: `src/core/GameState.js` (state registry tunggal), bukan boolean acak.
+Konstanta state siap pakai di-export sebagai `GAME_STATES` (`Object.freeze`). Perubahan state mengirim event `GAME_STATE_CHANGED` ke EventBus.
 
 ## 4. Event Bus
 
 `src/core/EventBus.js` — pub/sub ringan.
 
-Event inti:
+Event inti (sudah aktif di Phase 1):
+```
+GAME_STATE_CHANGED, ASSETS_LOADED, PROGRESS_CHANGED, PLAYER_STATE_CHANGED
+```
+Rencana event fase berikutnya:
 ```
 PLAYER_MOVED, INTERACTION_REQUESTED, NPC_INTERACTED,
 DIALOGUE_STARTED, DIALOGUE_COMPLETED,
 QUEST_STARTED, QUEST_PROGRESSED, QUEST_COMPLETED,
 ITEM_COLLECTED, XP_GAINED, LEVEL_UP,
 ACHIEVEMENT_UNLOCKED, AREA_UNLOCKED,
-JOURNAL_UPDATED, PLAYER_STATE_CHANGED, SAVE_REQUESTED, LOAD_REQUESTED
+JOURNAL_UPDATED, SAVE_REQUESTED, LOAD_REQUESTED
 ```
 
 ## 5. Struktur Folder
@@ -61,66 +66,86 @@ src/
 ├── main.js                 — entry point
 ├── core/
 │   ├── Game.js             — Phaser.Game instance & bootstrap
-│   ├── GameState.js        — global state machine
+│   ├── GameState.js        — global state machine (+ GAME_STATES konstanta)
 │   ├── EventBus.js         — pub/sub
-│   └── Config.js           — constants, tuning, debug flags
+│   ├── Config.js           — constants, tuning, debug flags
+│   ├── DebugState.js       — nilai debug runtime (fps, posisi, input)
+│   ├── ProgressState.js    — data runtime Level/XP/Coins (placeholder)
+│   └── PlaceholderAssets.js— generator texture placeholder & animasi player
 ├── scenes/
 │   ├── BootScene.js
-│   ├── PreloadScene.js
-│   ├── MenuScene.js
-│   ├── WorldScene.js
-│   └── UIScene.js
+│   ├── PreloadScene.js     — loading screen; generate placeholder → MenuScene
+│   ├── MenuScene.js        — PLAY / SETTINGS / ABOUT
+│   ├── WorldScene.js       — world placeholder (ground/path/obstacle), player, camera
+│   └── UIScene.js          — HUD, tombol pause, interaksi aksi, overlay debug
 ├── player/
-│   ├── Player.js
-│   ├── PlayerController.js
-│   └── PlayerState.js
-├── npc/
+│   ├── Player.js           — sprite player (state, facing, anim, interact)
+│   ├── PlayerController.js — baca input → velocity (normalisasi diagonal)
+│   └── PlayerState.js      — state machine player (IDLE/WALK/INTERACT/DISABLED)
+├── input/
+│   ├── InputManager.js     — abstraksi keyboard + akses joystick (dibuat UIScene)
+│   └── VirtualJoystick.js  — joystick virtual (touch/mobile)
+├── ui/
+│   ├── HUD.js              — panel Level/XP/Coins + tombol pause
+│   ├── Panel.js            — panel modal reusable (stepper/toggle/close)
+│   ├── PauseMenu.js        — menu pause (LANJUT/PENGATURAN/KEMBALI KE MENU)
+│   ├── DebugOverlay.js     — overlay debug (F1)
+│   └── widgets.js          — helper tombol & teks
+├── tests/
+│   └── smoke.js            — smoke test otomatis (DEBUG + ?selftest=1)
+├── npc/                    — (fase berikutnya)
 │   ├── NPC.js
 │   ├── NPCManager.js
 │   └── NPCSchedule.js
-├── dialogue/
+├── dialogue/               — (fase berikutnya)
 │   ├── DialogueManager.js
 │   ├── DialogueBox.js
 │   └── DialogueChoice.js
-├── quest/
+├── quest/                  — (fase berikutnya)
 │   ├── QuestManager.js
 │   ├── Quest.js
 │   └── Objective.js
-├── inventory/
+├── inventory/              — (fase berikutnya)
 │   ├── InventoryManager.js
 │   └── Item.js
-├── progression/
+├── progression/            — (fase berikutnya)
 │   ├── XPManager.js
 │   ├── LevelManager.js
 │   └── AchievementManager.js
-├── journal/
+├── journal/                — (fase berikutnya)
 │   └── JournalManager.js
-├── map/
+├── map/                    — (fase berikutnya)
 │   ├── MapManager.js
 │   ├── InteractionManager.js
 │   └── TriggerManager.js
-├── save/
+├── save/                   — (fase berikutnya)
 │   ├── SaveManager.js
 │   └── SaveMigration.js
-├── audio/
-│   └── AudioManager.js
-└── ui/
-    ├── HUD.js
-    ├── QuestTracker.js
-    ├── JournalUI.js
-    ├── InventoryUI.js
-    └── AchievementUI.js
+└── audio/
+    └── AudioManager.js
 ```
 
 Data (JSON) terpisah di `data/`, asset di `assets/`.
 
 ## 6. Alur Boot
 
-1. `main.js` membuat `Config` dari base-path & mode.
-2. `Game.js` instantiate Phaser dengan scenes.
-3. `BootScene` → `PreloadScene` load asset inti → `MenuScene`.
-4. `MenuScene` → PLAY → `WorldScene` (map pertama) + `UIScene` (overlay HUD).
-5. Sistem game (quest, inventory, progression, dll) diinisialisasi oleh WorldScene dan terhubung ke EventBus.
+1. `main.js` membuat stub `Config` dari base-path & mode (`window.__DEMOKRASI_BASE__`).
+2. `Game.js` instantiate Phaser (renderer WebGL/Canvas, Scale.FIT, group physics arcade) dengan scenes; instance di-expose ke `window.__DEMOKRASI.phaser`.
+3. `BootScene` → `PreloadScene` menampilkan loading bar simulasi, lalu `PlaceholderAssets.generatePlaceholderTextures()` membuat semua placeholder (player sheet 4×4 + frame individual, tile, obstacle, icon, joystick, marker) dan mendaftarkan animasi idle/walk 4 arah → `MenuScene`.
+   - Catatan: placeholder memakai **frame-texture individual** (`player_frame_0..15`) untuk animasi karena `addSpriteSheet` dari canvas source menghasilkan texture kosong di beberapa target (headless/test). Layout sheet 4×4 tetap dipertahankan untuk spesifikasi asset final (`docs/PLAYER_ASSET_SPEC.md`).
+4. `MenuScene` → PLAY → `WorldScene` (world placeholder) + `UIScene` (HUD/pause/input/debug).
+   - `UIScene` membuat `InputManager`; `WorldScene` mengambilnya lazy via `ui.getInputManager()`.
+5. Sistem game (quest, inventory, progression, dll) ditambahkan pada fase berikutnya dan terhubung ke EventBus.
+
+## 6b. Player, Input & UI (Phase 1)
+
+- `InputManager` (dibuat di `UIScene`): keyboard WASD/Arrows + E (interaksi) + ESC (pause) + F1 (debug), expose `getVector()`, `consumeInteract()`, `consumePause()`, `consumeDebug()`; menyediakan joystick virtual bila perangkat touch.
+- `PlayerController` membaca vector input → menormalkan diagonal → set velocity pada `Player` (SPEED 180) bila `ui.isPlayable()`.
+- `Player`: state machine (IDLE/WALK/INTERACT/DISABLED), `facing` (up/down/left/right), animasi `idle_*` / `walk_*`, body 20×30, `collideWorldBounds`.
+- `WorldScene`: `tileSprite` ground/path placeholder, static group obstacle (tree/rock/building/wall) dengan collision body custom via `setSize`+`setOffset`, collider player↔obstacle, kamera follow (lerp 0.15, roundPixels), world edge bounds.
+- `UIScene` layering (depth): HUD 9000 · PauseMenu root 9600 · Panel root 9650 · dim -1.
+- `DebugOverlay` (F1) menampilkan FPS / posisi / state / facing / input via `DebugState`.
+- `AudioManager` placeholder: mem-`play` key audio tak ada → warn tanpa crash.
 
 ## 7. Map System
 
@@ -206,13 +231,14 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 ## 14. Debug Mode
 
 - Aktif via `Config.DEBUG = true` (development only).
-- Shortcuts:
-  - `F1` debug overlay
-  - `F2` teleport
-  - `F3` complete quest
-  - `F4` add XP
-  - `F5` unlock achievement
-  - `F6` reset save
+- Shortcuts (sudah jalan Phase 1: `F1` debug overlay; lainnya rencana):
+  - `F1` debug overlay ✅
+  - `F2` teleport (rencana)
+  - `F3` complete quest (rencana)
+  - `F4` add XP (rencana)
+  - `F5` unlock achievement (rencana)
+  - `F6` reset save (rencana)
+- Smoke test otomatis (`?selftest=1`) hanya aktif saat `Config.DEBUG`.
 - Tidak diaktifkan pada production build.
 
 ## 15. Performance & Cleanliness
