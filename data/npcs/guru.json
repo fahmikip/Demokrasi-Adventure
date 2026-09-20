@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "npc_guru",
+  "name": "Bu Ratna",
+  "role": "guru",
+  "bio": "Guru SDN Nusantara bidang Pendidikan Kewarganegaraan. Menjelaskan materi dengan contoh sederhana.",
+  "personality": "sabar, jelas, edukatif",
+  "dialogue": { "id": "dialogue_guru", "start": "sapa" },
+  "sprite": { "frame": 48 },
+  "portrait": { "key": "portrait_npc_guru" },
+  "fictional": true
+}

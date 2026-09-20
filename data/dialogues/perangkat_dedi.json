@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "id": "dialogue_perangkat",
+  "title": "Percakapan dengan Pak Dedi (Perangkat Desa)",
+  "fictional": true,
+  "npcId": "npc_perangkat",
+  "startNode": "sapa",
+  "nodes": {
+    "sapa": {
+      "speaker": "Pak Dedi",
+      "lines": [
+        "Selamat datang di kantor desa. Saya Pak Dedi, perangkat desa di sini.",
+        "Tugas kami melayani warga: urusan administrasi, pembangunan, dan menyelenggarakan kegiatan desa.",
+        "Kalau ada yang perlu kamu tanyakan, silakan."
+      ],
+      "choices": [
+        {
+          "label": "Apa tugas desa dalam menyelenggarakan pemilu?",
+          "next": "tugas_desa_pemilu",
+          "setFlags": ["flag_belajar_tugas_desa_pemilu"]
+        },
+        {
+          "label": "Bagaimana warga bisa berpartisipasi?",
+          "next": "partisipasi_warga",
+          "setFlags": ["flag_belajar_partisipasi_warga"]
+        },
+        {
+          "label": "Terima kasih, Pak. Saya lanjut jalan.",
+          "next": "penutup"
+        }
+      ]
+    },
+    "tugas_desa_pemilu": {
+      "speaker": "Pak Dedi",
+      "lines": [
+        "Desa tidak menentukan siapa yang menang atau kalah, karena itu bukan kewenangan kami.",
+        "Tugas desa membantu kelancaran penyelenggaraan: menyediakan tempat, mendata warga, dan memastikan suasana kondusif.",
+        "Kami menjaga netralitas, karena itu prinsip penting dalam penyelenggaraan pemilu."
+      ],
+      "next": "partisipasi_warga"
+    },
+    "partisipasi_warga": {
+      "speaker": "Pak Dedi",
+      "lines": [
+        "Warga bisa berpartisipasi dengan mendaftar sebagai pemilih, menggunakan hak pilih, dan ikut mengawasi jalannya pemilu.",
+        "Ada banyak peran: saksi, pengawas, petugas penghitungan, sampai penyelenggara di tingkat TPS.",
+        "Partisipasi sukarela seperti ini memperkuat demokrasi kita."
+      ],
+      "next": "penutup"
+    },
+    "penutup": {
+      "speaker": "Pak Dedi",
+      "lines": [
+        "Terima kasih sudah bertanya. Semoga kamu tumbuh menjadi warga yang peduli dan berpartisipasi aktif.",
+        "Kantor desa selalu terbuka untuk warga."
+      ],
+      "next": null
+    }
+  }
+}

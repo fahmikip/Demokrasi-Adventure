@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "id": "dialogue_pedagang",
+  "title": "Percakapan dengan Pak Slamet (Pedagang)",
+  "fictional": true,
+  "npcId": "npc_pedagang",
+  "startNode": "sapa",
+  "nodes": {
+    "sapa": {
+      "speaker": "Pak Slamet",
+      "lines": [
+        "Halo, konco! Nama aku Pak Slamet, pedagang buah di sini.",
+        "Alhamdulillah, jualan ramai ketika ada acara di lapangan.",
+        "Kalau haus, aku ada es kelapa muda. Yang segar-segar!"
+      ],
+      "choices": [
+        {
+          "label": "Es kelapanya boleh satu, Pak!",
+          "next": "es_kelapa",
+          "setFlags": ["flag_beli_es_kelapa"]
+        },
+        {
+          "label": "Bagaimana kabar dagangan, Pak?",
+          "next": "kabar_dagangan",
+          "setFlags": ["flag_ngobrol_kabar_dagangan"]
+        },
+        {
+          "label": "Aku buru-buru, Pak. Terima kasih!",
+          "next": "penutup"
+        }
+      ]
+    },
+    "es_kelapa": {
+      "speaker": "Pak Slamet",
+      "lines": [
+        "Nih, es kelapanya. Segar sekali, cocok untuk menghilangkan dahaga.",
+        "Satu gelas hanya simbolis 1 koin. Tapi di dunia nyata, silakan bayar dengan uang yang sah, ya!",
+        "Ayo dinikmati!"
+      ],
+      "next": "penutup"
+    },
+    "kabar_dagangan": {
+      "speaker": "Pak Slamet",
+      "lines": [
+        "Begitu saja, biasa. Ada untung, ada sepi. Yang penting tetap jujur dalam berdagang.",
+        "Menjelang pemilihan, warga banyak belanja untuk hajatan dan acara komunitas.",
+        "Semoga pemilihan nanti berjalan lancar dan damai, supaya ekonomi desa juga ikut bergairah."
+      ],
+      "next": "penutup"
+    },
+    "penutup": {
+      "speaker": "Pak Slamet",
+      "lines": [
+        "Terima kasih sudah mampir ke kiosku. Jangan lupa belanja yang cerdas, ya!",
+        "Selamat berjalan-jalan di desa kita."
+      ],
+      "next": null
+    }
+  }
+}

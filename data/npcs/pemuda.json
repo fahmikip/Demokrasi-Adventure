@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "npc_pemuda",
+  "name": "Ayu",
+  "role": "pemuda",
+  "bio": "Pemuda desa yang aktif mengajak generasi muda berpartisipasi, tapi netral: tidak memihak kandidat mana pun.",
+  "personality": "antisias, kritis, ramah",
+  "dialogue": { "id": "dialogue_pemuda", "start": "sapa" },
+  "sprite": { "frame": 68 },
+  "portrait": { "key": "portrait_npc_pemuda" },
+  "fictional": true
+}

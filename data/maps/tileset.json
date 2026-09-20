@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "id": "tileset_village",
+  "tileSize": 32,
+  "columns": 8,
+  "tileCount": 32,
+  "collisionGids": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "tiles": [
+    {
+      "gid": 1,
+      "id": "grass",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 2,
+      "id": "grass_accent",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 3,
+      "id": "grass_dark",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 4,
+      "id": "dirt",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 5,
+      "id": "dirt_accent",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 6,
+      "id": "sand",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 7,
+      "id": "sand_accent",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 8,
+      "id": "stone",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 9,
+      "id": "stone_accent",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 10,
+      "id": "road_h",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 11,
+      "id": "road_v",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 12,
+      "id": "road_corner_tl",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 13,
+      "id": "road_corner_tr",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 14,
+      "id": "road_corner_bl",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 15,
+      "id": "road_corner_br",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 16,
+      "id": "road_cross",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 17,
+      "id": "road_edge_top",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 18,
+      "id": "road_edge_bottom",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 19,
+      "id": "road_edge_left",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 20,
+      "id": "road_edge_right",
+      "walkable": true,
+      "layer": "road"
+    },
+    {
+      "gid": 21,
+      "id": "water",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 22,
+      "id": "water_edge_top",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 23,
+      "id": "water_edge_bottom",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 24,
+      "id": "water_edge_left",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 25,
+      "id": "water_edge_right",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 26,
+      "id": "water_corner_tl",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 27,
+      "id": "water_corner_tr",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 28,
+      "id": "water_corner_bl",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 29,
+      "id": "water_corner_br",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 30,
+      "id": "water_plants",
+      "walkable": false,
+      "layer": "water"
+    },
+    {
+      "gid": 31,
+      "id": "stone_decor",
+      "walkable": true,
+      "layer": "ground"
+    },
+    {
+      "gid": 32,
+      "id": "grass_flowers",
+      "walkable": true,
+      "layer": "ground"
+    }
+  ]
+}

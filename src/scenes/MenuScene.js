@@ -81,6 +81,7 @@ export class MenuScene extends Phaser.Scene {
 
   _startGame() {
     GameState.set("PLAYING");
+    this.scene.launch("UIScene");
     this.cameras.main.fadeOut(200, 26, 26, 26);
     this.cameras.main.once("camerafadeoutcomplete", () => {
       this.scene.start("WorldScene");

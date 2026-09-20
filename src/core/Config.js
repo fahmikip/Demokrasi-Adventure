@@ -31,22 +31,12 @@ export const Config = {
   },
 
   WORLD: {
-    WIDTH: 2400,
-    HEIGHT: 1600,
-    PLAYER_SPAWN: { x: 1200, y: 800 },
-    OBSTACLES: [
-      { type: "tree", x: 350, y: 700 },
-      { type: "tree", x: 300, y: 200 },
-      { type: "tree", x: 1500, y: 300 },
-      { type: "tree", x: 2100, y: 500 },
-      { type: "tree", x: 900, y: 1300 },
-      { type: "tree", x: 2200, y: 1400 },
-      { type: "rock", x: 600, y: 1200 },
-      { type: "rock", x: 1850, y: 1400 },
-      { type: "building", x: 700, y: 300 },
-      { type: "building", x: 1800, y: 1100 },
-      { type: "wall", x: 1400, y: 1300 },
-    ],
+    START_MAP: "desa_harmoni",
+    INTERACT_RADIUS: 48,
+    TRANSITION_MS: 400,
+    FADE_IN_MS: 250,
+    POST_TRANSITION_COOLDOWN_MS: 900,
+    AMBIENT: "ambient_placeholder",
   },
 
   PLAYER: {
@@ -102,6 +92,30 @@ export const Config = {
     COLOR_DARK: 0x2c3e50,
     COLOR_DARK_HOVER: 0x1f2c38,
     COLOR_CREAM: 0xfdf6e3,
+  },
+
+  NPC: {
+    INTERACT_RADIUS: 80,
+    WANDER_RADIUS: 72,
+    WANDER_PAUSE_MS: 1500,
+    WANDER_SPEED: 55,
+    TALK_SPEED: 0,
+  },
+
+  DIALOGUE: {
+    TYPING_MS_PER_CHAR: 22,
+    TYPING_MIN_MS: 600,
+    SKIP_ON_INTERACT: true,
+    PORTRAIT_SCALE: 0.9,
+    PANEL_PADDING: 18,
+    MAX_VISIBLE_LINES: 3,
+    BG: 0xfdf6e3,
+    BG_ALPHA: 0.96,
+    BORDER: 0x2c3e50,
+    BORDER_WIDTH: 3,
+    TEXT_COLOR: "#2c3e50",
+    NAME_COLOR: "#c0392b",
+    DEFAULT_PORTRAIT: "portrait_npc",
   },
 
   TIME: {

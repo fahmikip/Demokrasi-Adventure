@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "npc_pedagang",
+  "name": "Pak Slamet",
+  "role": "pedagang",
+  "bio": "Pemilik warung di pasar rakyat. Obrolan santai sembari melayani pembeli.",
+  "personality": "ceria, humoris, ramah",
+  "dialogue": { "id": "dialogue_pedagang", "start": "sapa" },
+  "sprite": { "frame": 70 },
+  "portrait": { "key": "portrait_npc_pedagang" },
+  "fictional": true
+}

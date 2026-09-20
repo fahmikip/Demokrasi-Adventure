@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-09-20T04:32:54.968Z",
+  "registryVersion": 1,
+  "totalRegistryEntries": 37,
+  "totalFilesOnDisk": 4,
+  "registeredFiles": 4,
+  "summary": {
+    "issues": 0,
+    "warnings": 33,
+    "missingRegistryFiles": 0,
+    "unregisteredDiskFiles": 0,
+    "duplicateIds": 0
+  },
+  "files": [
+    {
+      "path": "assets/ui/favicon.png",
+      "size": 330,
+      "sha256": "ebadfa3575ea703b45e34ae2994721cb0dedf1506c1e2e0fa7ea1a752bc5a717",
+      "registryId": "ui_icon_favicon",
+      "status": "approved",
+      "ok": true
+    },
+    {
+      "path": "assets/ui/icon-192.png",
+      "size": 1134,
+      "sha256": "4f6447cbee8216d10ae88c0704d385959a450d5e96851d909306dadeccbe555c",
+      "registryId": "ui_icon_192",
+      "status": "approved",
+      "ok": true
+    },
+    {
+      "path": "assets/ui/icon-512.png",
+      "size": 4278,
+      "sha256": "8c51d667fad8968d816c25726d1e89f90e2253837a5f4e3b765d24ac17c47ca1",
+      "registryId": "ui_icon_512",
+      "status": "approved",
+      "ok": true
+    },
+    {
+      "path": "assets/ui/icon-maskable-512.png",
+      "size": 4278,
+      "sha256": "8c51d667fad8968d816c25726d1e89f90e2253837a5f4e3b765d24ac17c47ca1",
+      "registryId": "ui_icon_maskable_512",
+      "status": "approved",
+      "ok": true
+    }
+  ],
+  "issues": [],
+  "warnings": [
+    "registry: \"characters_player_sheet\" = placebo procedural (src/core/PlaceholderAssets.js::_generatePlayerSheet)",
+    "registry: \"maps_tileset_village\" = placebo procedural (src/core/PlaceholderAssets.js::_generateTilesetAtlas)",
+    "registry: \"buildings_small_house_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateBuildings)",
+    "registry: \"buildings_large_house_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateBuildings)",
+    "registry: \"buildings_school_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateBuildings)",
+    "registry: \"buildings_village_hall_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateBuildings)",
+    "registry: \"buildings_shop_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateBuildings)",
+    "registry: \"buildings_warung_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateBuildings)",
+    "registry: \"buildings_tent_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateBuildings)",
+    "registry: \"objects_tree_large_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_tree_small_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_bush_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_flower_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_rock_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_bench_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_lamp_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_trash_bin_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_fence_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_sign_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_notice_board_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_motorcycle_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_bicycle_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_well_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"objects_halte_01\" = placebo procedural (src/core/PlaceholderAssets.js::_generateObjects)",
+    "registry: \"icons_icon_lvl\" = placebo procedural (src/core/PlaceholderAssets.js::_generateIcons)",
+    "registry: \"icons_xp\" = placebo procedural (src/core/PlaceholderAssets.js::_generateIcons)",
+    "registry: \"icons_coins\" = placebo procedural (src/core/PlaceholderAssets.js::_generateIcons)",
+    "registry: \"icons_pause\" = placebo procedural (src/core/PlaceholderAssets.js::_generateIcons)",
+    "registry: \"icons_map\" = placebo procedural (src/core/PlaceholderAssets.js::_generateIcons)",
+    "registry: \"icons_interact_marker\" = placebo procedural (src/core/PlaceholderAssets.js::_generateMarker)",
+    "registry: \"icons_joystick_base\" = placebo procedural (src/core/PlaceholderAssets.js::_generateJoystickTextures)",
+    "registry: \"icons_joystick_knob\" = placebo procedural (src/core/PlaceholderAssets.js::_generateJoystickTextures)",
+    "registry: \"audio_ambient_placeholder\" = placebo procedural (src/audio/AudioManager.js)"
+  ]
+}

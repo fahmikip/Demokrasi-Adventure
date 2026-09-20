@@ -9,6 +9,7 @@ import { GameState } from "../core/GameState.js";
 import { EventBus } from "../core/EventBus.js";
 import { Config } from "../core/Config.js";
 import { generatePlaceholderTextures } from "../core/PlaceholderAssets.js";
+import { generateNPCPlaceholderTextures } from "../core/PlaceholderAssetsNPC.js";
 
 const LOAD_DURATION = 1600;
 
@@ -55,7 +56,8 @@ export class PreloadScene extends Phaser.Scene {
     this.percentText.setText("100%");
     this.labelText.setText("Siap!");
 
-    generatePlaceholderTextures(this);
+    generatePlaceholderTextures(thisscience);
+    generateNPCPlaceholderTextures(this);
 
     EventBus.emit("ASSETS_LOADED");
 

@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "id": "dialogue_warga",
+  "title": "Percakapan dengan Mbah Karto (Warga Desa)",
+  "speaker": "Mbah Karto",
+  "npcId": "npc_warga",
+  "fictional": true,
+  "startNode": "sapa",
+  "nodes": {
+    "sapa": {
+      "speaker": "Mbah Karto",
+      "lines": [
+        "Selamat pagi, cak. Dirimu masih muda, ya. Bagus, bagus.",
+        "Ini desa kami, Desa Harmoni. Kata 'harmoni' artinya serasi dan rukun.",
+        "Kalau mau tahu soal desa atau pemilu, dirimu boleh bertanya kepada siapa saja."
+      ],
+      "choices": [
+        {
+          "label": "Apa itu musyawarah, Mbah?",
+          "next": "musyawarah",
+          "setFlags": [
+            "flag_belajar_musyawarah"
+          ]
+        },
+        {
+          "label": "Bisa cerita tentang pemilu, Mbah?",
+          "next": "pemilu",
+          "setFlags": [
+            "flag_belajar_pemilu"
+          ]
+        },
+        {
+          "label": "Terima kasih, Mbah. Saya lanjut jalan.",
+          "next": "penutup"
+        }
+      ]
+    },
+    "musyawarah": {
+      "speaker": "Mbah Karto",
+      "lines": [
+        "Musyawarah itu cara kami mengambil keputusan bersama. Semua pendapat didengar.",
+        "Tidak ada yang dipaksakan. Dari musyawarah lahir mufakat untuk kepentingan bersama.",
+        "Itu warisan budaya kita yang luhur."
+      ],
+      "next": "pemilu"
+    },
+    "pemilu": {
+      "speaker": "Mbah Karto",
+      "lines": [
+        "Pemilu itu pesta demokrasi, cak. Rakyat memilih wakilnya dan pemimpinnya.",
+        "Dulu Mbah ikut memilih sejak muda. Rasanya senang bisa ikut menentukan masa depan desa.",
+        "Yang penting bagi Mbah: pilih dengan hati nurani, jangan mau diiming-imingi."
+      ],
+      "next": "penutup"
+    },
+    "penutup": {
+      "speaker": "Mbah Karto",
+      "lines": [
+        "Terima kasih sudah mau berbagi cerita dengan orang tua seperti Mbah.",
+        "Teruslah belajar dan berbuat baik untuk desa. Sampai jumpa lagi, cak!"
+      ],
+      "next": null
+    }
+  },
+  "npc": "npc_warga"
+}

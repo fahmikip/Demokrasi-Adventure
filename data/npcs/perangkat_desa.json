@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "npc_perangkat",
+  "name": "Pak Dedi",
+  "role": "perangkat desa",
+  "bio": "Sekretaris desa yang memastikan proses pemilihan berjalan adil dan jujur. Netral, tidak mengarahkan pilihan warga.",
+  "personality": "teliti, netral, profesional",
+  "dialogue": { "id": "dialogue_perangkat_desa", "start": "sapa" },
+  "sprite": { "frame": 72 },
+  "portrait": { "key": "portrait_npc_perangkat" },
+  "fictional": true
+}

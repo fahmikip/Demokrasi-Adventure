@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "id": "dialogue_pemuda",
+  "title": "Percakapan dengan Ayu (Pemuda)",
+  "fictional": true,
+  "npcId": "npc_pemuda",
+  "startNode": "sapa",
+  "nodes": {
+    "sapa": {
+      "speaker": "Ayu",
+      "lines": [
+        "Hai! Nama aku Ayu. Aku aktif di Karang Taruna Desa Harmoni.",
+        "Kami sering mengadakan kegiatan untuk pemuda, juga sosialisasi tentang demokrasi dan pemilu.",
+        "Kamu tertarik ikut belajar?"
+      ],
+      "choices": [
+        {
+          "label": "Iya, aku mau belajar!",
+          "next": "mau_belajar",
+          "setFlags": ["flag_mau_belajar_demokrasi"]
+        },
+        {
+          "label": "Apa itu Karang Taruna?",
+          "next": "karang_taruna",
+          "setFlags": ["flag_belajar_karang_taruna"]
+        },
+        {
+          "label": "Maaf, aku lagi buru-buru.",
+          "next": "penutup"
+        }
+      ]
+    },
+    "mau_belajar": {
+      "speaker": "Ayu",
+      "lines": [
+        "Asyik! Demokrasi itu bukan cuma soal pemilu, tapi cara kita menghargai pendapat orang lain.",
+        "Kita bisa mulai dari hal kecil: berani berpendapat, mendengarkan, dan menghormati perbedaan.",
+        "Mari kita wujudkan demokrasi yang sehat, mulai dari Lingkaran Harmoni."
+      ],
+      "next": "penutup"
+    },
+    "karang_taruna": {
+      "speaker": "Ayu",
+      "lines": [
+        "Karang Taruna adalah organisasi pemuda di desa. Anggotanya para pemuda yang ingin berkontribusi.",
+        "Kegiatan kami mulai dari kerja bakti, pelatihan, sampai sosialisasi untuk warga.",
+        "Kami juga membantu menyukseskan pemilu dengan cara netral dan edukatif."
+      ],
+      "next": "penutup"
+    },
+    "penutup": {
+      "speaker": "Ayu",
+      "lines": [
+        "Terima kasih sudah menyapa. Kalau mau ikut kegiatan, temui aku di balai desa, ya!",
+        "Sampai jumpa!"
+      ],
+      "next": null
+    }
+  }
+}

@@ -18,11 +18,11 @@ export class PlayerController {
 
     if (!GameState.canMove || player.state.value === PlayerState.DISABLED) {
       player.setVelocity(0, 0);
-      return;
+      return false;
     }
 
     const input = this._resolveInput();
-    if (!input) return;
+    if (!input) return false;
 
     const vector = input.getVector();
 
@@ -40,8 +40,8 @@ export class PlayerController {
       }
     }
 
-    if (input.consumeInteract()) {
-      player.startInteract();
-    }
+    const interacted = input.consumeInteract();
+    if (interacted) player.startInteract();
+    return interacted;
   }
 }

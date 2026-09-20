@@ -73,6 +73,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.state.value === PlayerState.INTERACT && time >= this._interactUntil) {
       this.state.set(PlayerState.IDLE);
     }
+    // anis dapat belum tersedia sesaat saat scene restart / headless; amankan.
+    if (!this.anims) return;
     const key = this._animationKey();
     if (!this.anims.isPlaying || this.anims.currentAnim.key !== key) {
       this.play(key, true);

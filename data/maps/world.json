@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "demokrasi_city",
+  "name": "DEMOKRASI CITY",
+  "startArea": "desa_harmoni",
+  "areas": [
+    {
+      "id": "desa_harmoni",
+      "name": "Desa Harmoni",
+      "type": "village",
+      "start": true
+    },
+    {
+      "id": "sekolah_nusantara",
+      "name": "Sekolah Nusantara",
+      "type": "education"
+    },
+    {
+      "id": "pasar_rakyat",
+      "name": "Pasar Rakyat",
+      "type": "market"
+    },
+    {
+      "id": "pusat_kota",
+      "name": "Pusat Kota",
+      "type": "public"
+    },
+    {
+      "id": "tps",
+      "name": "TPS",
+      "type": "simulation"
+    }
+  ]
+}

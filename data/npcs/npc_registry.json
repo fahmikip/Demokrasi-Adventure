@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "updated": "2026-09-18",
+  "description": "Daftar seluruh NPC di Demokrasi-Adventure (semua fiktif, netral, tidak mewakili orang/partai/simbol nyata). Registry memetakan npcId → file data + koordinat penempatan default.",
+  "npcs": [
+    { "id": "npc_warga", "name": "Mbah Karto", "role": "warga", "file": "warga.json", "map": "desa_harmoni", "x": 6, "y": 12, "facing": "right" },
+    { "id": "npc_guru", "name": "Bu Ratna", "role": "guru", "file": "guru.json", "map": "desa_harmoni", "x": 55, "y": 10, "facing": "down" },
+    { "id": "npc_pemuda", "name": "Ayu", "role": "pemuda", "file": "pemuda.json", "map": "desa_harmoni", "x": 26, "y": 36, "facing": "left" },
+    { "id": "npc_pedagang", "name": "Pak Slamet", "role": "pedagang", "file": "pedagang.json", "map": "desa_harmoni", "x": 17, "y": 34, "facing": "up" },
+    { "id": "npc_perangkat", "name": "Pak Dedi", "role": "perangkat desa", "file": "perangkat_desa.json", "map": "desa_harmoni", "x": 13, "y": 11, "facing": "down" }
+  ]
+}

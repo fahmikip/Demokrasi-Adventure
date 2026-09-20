@@ -8,7 +8,7 @@ import { Config } from "../core/Config.js";
 import { DebugState } from "../core/DebugState.js";
 import { VirtualJoystick } from "./VirtualJoystick.js";
 
-const STRING_KEYS = "W,A,S,D,E,ESC,F1";
+const STRING_KEYS = "W,A,S,D,E,ESC,F1,F7,F8,F9,F10,M";
 
 export class InputManager {
   constructor(scene) {
@@ -53,6 +53,16 @@ export class InputManager {
   consumeDebug() {
     if (!this.keys) return false;
     return Phaser.Input.Keyboard.JustDown(this.keys.F1);
+  }
+
+  consumeMap() {
+    if (!this.keys) return false;
+    return Phaser.Input.Keyboard.JustDown(this.keys.M);
+  }
+
+  consumeDebugKey(name) {
+    if (!this.keys || !this.keys[name]) return false;
+    return Phaser.Input.Keyboard.JustDown(this.keys[name]);
   }
 
   requestInteract() {

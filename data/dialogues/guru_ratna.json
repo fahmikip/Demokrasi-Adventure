@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "id": "dialogue_guru",
+  "title": "Percakapan dengan Bu Ratna (Guru PPKn)",
+  "speaker": "Bu Ratna",
+  "npcId": "npc_guru",
+  "fictional": true,
+  "startNode": "sapa",
+  "nodes": {
+    "sapa": {
+      "speaker": "Bu Ratna",
+      "lines": [
+        "Halo, selamat datang di Sekolah Nusantara! Aku Bu Ratna, guru Pendidikan Kewarganegaraan.",
+        "Kalau kamu mau tahu tentang demokrasi dan pemilu, kamu datang ke tempat yang tepat.",
+        "Mari kita mengobrol santai. Kamu boleh bertanya apa saja."
+      ],
+      "choices": [
+        {
+          "label": "Apa itu demokrasi?",
+          "next": "demokrasi",
+          "setFlags": [
+            "flag_belajar_demokrasi"
+          ]
+        },
+        {
+          "label": "Apa itu pemilu?",
+          "next": "pemilu",
+          "setFlags": [
+            "flag_belajar_pemilu"
+          ]
+        },
+        {
+          "label": "Terima kasih, Bu. Saya mau berkeliling dulu.",
+          "next": "praktik"
+        }
+      ]
+    },
+    "demokrasi": {
+      "speaker": "Bu Ratna",
+      "lines": [
+        "Demokrasi berarti kedaulatan berada di tangan rakyat. Dari rakyat, oleh rakyat, dan untuk rakyat.",
+        "Dalam demokrasi, setiap warga memiliki hak dan kesempatan yang sama untuk menyuarakan pendapat.",
+        "Di Indonesia, demokrasi juga menghormati nilai musyawarah dan gotong royong."
+      ],
+      "next": "pemilu"
+    },
+    "pemilu": {
+      "speaker": "Bu Ratna",
+      "lines": [
+        "Pemilu adalah pemilihan umum untuk memilih wakil rakyat dan pemimpin.",
+        "Di Indonesia diadakan setiap lima tahun sekali, langsung, umum, bebas, rahasia, jujur, dan adil.",
+        "Pemilu adalah salah satu wujud nyata kedaulatan rakyat."
+      ],
+      "choices": [
+        {
+          "label": "Bagaimana cara saya memilih dengan benar?",
+          "next": "cara_memilih",
+          "setFlags": [
+            "flag_belajar_cara_memilih"
+          ]
+        },
+        {
+          "label": "Apa itu netralitas penyelenggara?",
+          "next": "netralitas",
+          "setFlags": [
+            "flag_belajar_netralitas"
+          ]
+        },
+        {
+          "label": "Terima kasih, Bu. Cukup dulu.",
+          "next": "praktik"
+        }
+      ]
+    },
+    "cara_memilih": {
+      "speaker": "Bu Ratna",
+      "lines": [
+        "Pertama, pastikan kamu terdaftar sebagai pemilih dan membawa undangan serta identitas.",
+        "Datang ke TPS, serahkan undangan, lalu tunggu giliran dengan tertib.",
+        "Masuk ke bilik suara, beri tanda pada pilihanmu, lalu lipat dan masukkan ke kotak suara."
+      ],
+      "next": "praktik"
+    },
+    "netralitas": {
+      "speaker": "Bu Ratna",
+      "lines": [
+        "Penyelenggara pemilu wajib bersikap netral dan tidak memihak calon mana pun.",
+        "Mereka bertugas memastikan proses berjalan jujur dan adil bagi semua.",
+        "Netralitas menjaga kepercayaan rakyat terhadap hasil pemilu."
+      ],
+      "next": "praktik"
+    },
+    "praktik": {
+      "speaker": "Bu Ratna",
+      "lines": [
+        "Bagus sekali. Sekarang kamu sudah tahu sedikit tentang demokrasi dan pemilu di Indonesia.",
+        "Kalau ingin tahu lebih banyak, kamu bisa ikut pendidikan pemilih atau mengunjungi TPS.",
+        "Terima kasih sudah belajar denganku. Sampai jumpa lagi di sekolah!"
+      ],
+      "next": null
+    }
+  },
+  "npc": "npc_guru"
+}

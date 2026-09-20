@@ -1,5 +1,5 @@
 /**
- * UIScene — overlay UI: HUD, pause, kontrol sentuh, debug overlay.
+ * UIScene — overlay UI: HUD, pause, peta dunia, kontrol sentuh, debug overlay.
  * Menjadi pembuat InputManager yang dibagikan ke WorldScene.
  */
 
@@ -11,6 +11,7 @@ import { InputManager } from "../input/InputManager.js";
 import { HUD } from "../ui/HUD.js";
 import { PauseMenu } from "../ui/PauseMenu.js";
 import { DebugOverlay } from "../ui/DebugOverlay.js";
+import { WorldMapUI } from "../ui/WorldMapUI.js";
 
 export class UIScene extends Phaser.Scene {
   constructor() {
@@ -21,9 +22,12 @@ export class UIScene extends Phaser.Scene {
     this.inputManager = new InputManager(this);
 
     this._buildHUD();
+    this._buildAreaChip();
+    this._buildToast();
     this._buildTouchControls();
     this._buildPause();
     this._buildDebug();
+    this.worldMapUI = new WorldMapUI(this);
 
     this._subscriptions = [
       EventBus.on("PROGRESS_CHANGED", ({ level, xp, coins }) => {
@@ -31,6 +35,10 @@ export class UIScene extends Phaser.Scene {
       }),
       EventBus.on("DIALOGUE_STARTED", () => this._onUiBlocker(true)),
       EventBus.on("DIALOGUE_COMPLETED", () => this._onUiBlocker(false)),
+      EventBus.on("AREA_ENTERED", ({ name }) => this._announceArea(name)),
+      EventBus.on("POI_INTERACTED", ({ poi }) =>
+        this._showToast(`📍 ${poi.name || "Landmark"}`)
+      ),
     ];
   }
 
@@ -42,10 +50,23 @@ export class UIScene extends Phaser.Scene {
       this.debugOverlay.toggle();
     }
 
-    if (this.inputManager.consumePause() && !this._isUiBlocked()) {
-      this.togglePause();
+    if (this.inputManager.consumeMap()) {
+      if (GameState.current === "MAP") {
+        this.worldMapUI.close();
+      } else if (GameState.current === "PLAYING" && !this._isUiBlocked()) {
+        this.worldMapUI.open();
+      }
     }
 
+    if (this.inputManager.consumePause()) {
+      if (this.worldMapUI.isOpen) {
+        this.worldMapUI.close();
+      } else if (!this._isUiBlocked()) {
+        this.togglePause();
+      }
+    }
+
+    this._handleDebugShortcuts();
     this.debugOverlay.update(time);
   }
 
@@ -91,10 +112,68 @@ export class UIScene extends Phaser.Scene {
     this.scene.start("MenuScene");
   }
 
+  _handleDebugShortcuts() {
+    const im = this.inputManager;
+    if (im.consumeDebugKey("F7")) DebugState.showCollision = !DebugState.showCollision;
+    if (im.consumeDebugKey("F8")) DebugState.showGrid = !DebugState.showGrid;
+    if (im.consumeDebugKey("F9")) DebugState.showPOI = !DebugState.showPOI;
+  }
+
+  // ==================== UI building ====================
+
   _buildHUD() {
     this.hud = new HUD(this);
     this.hud.setStats({ level: 1, xp: 0, coins: 0 });
-    this.hud.panel.setScrollFactor(0);
+  }
+
+  _buildAreaChip() {
+    const w = this.scale.width;
+    this.areaChip = this.add
+      .text(w / 2, 20, "", {
+        fontFamily: Config.UI.FONT_FAMILY,
+        fontSize: "15px",
+        fontStyle: "bold",
+        color: "#ffffff",
+        backgroundColor: "#c0392bdd",
+        padding: { x: 14, y: 6 },
+      })
+      .setOrigin(0.5, 0)
+      .setScrollFactor(0)
+      .setDepth(8550)
+      .setAlpha(0);
+    this.areaChip._hideTween = null;
+  }
+
+  _announceArea(name) {
+    this.areaChip.setText(String(name || "").toUpperCase());
+    this.tweens.killTweensOf(this.areaChip);
+    this.areaChip.setAlpha(1);
+    this.areaChip._hideTween = this.time.delayedCall(2600, () => {
+      this.tweens.add({ targets: this.areaChip, alpha: 0, duration: 600 });
+    });
+  }
+
+  _buildToast() {
+    this.toast = this.add
+      .text(this.scale.width / 2, this.scale.height - 110, "", {
+        fontFamily: Config.UI.FONT_FAMILY,
+        fontSize: "17px",
+        color: "#ffffff",
+        backgroundColor: "#000000aa",
+        padding: { x: 16, y: 10 },
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(9560)
+      .setAlpha(0);
+  }
+
+  _showToast(msg) {
+    this.toast.setText(msg).setAlpha(1);
+    this.tweens.killTweensOf(this.toast);
+    this.time.delayedCall(2200, () => {
+      this.tweens.add({ targets: this.toast, alpha: 0, duration: 500 });
+    });
   }
 
   _buildPause() {
@@ -112,6 +191,21 @@ export class UIScene extends Phaser.Scene {
     const w = this.scale.width;
     const h = this.scale.height;
 
+    // tombol peta (icon_map)
+    this.mapBtn = this.add
+      .image(w - 84, 34, "icon_map")
+      .setScrollFactor(0)
+      .setDepth(8700)
+      .setScale(0.9)
+      .setInteractive({ useHandCursor: true });
+    this.mapBtn.on("pointerup", () => {
+      if (GameState.current === "MAP") {
+        this.worldMapUI.close();
+      } else if (GameState.current === "PLAYING" && !this._isUiBlocked()) {
+        this.worldMapUI.open();
+      }
+    });
+
     // tombol pause (tampil di desktop & mobile)
     this.pauseBtn = this.add
       .image(w - 34, 34, "icon_pause")
@@ -119,7 +213,11 @@ export class UIScene extends Phaser.Scene {
       .setDepth(8700)
       .setInteractive({ useHandCursor: true });
     this.pauseBtn.on("pointerup", () => {
-      if (!this._isUiBlocked()) this.togglePause();
+      if (this.worldMapUI.isOpen) {
+        this.worldMapUI.close();
+      } else if (!this._isUiBlocked()) {
+        this.togglePause();
+      }
     });
 
     // tombol interaksi (mobile saja, bottom-right)

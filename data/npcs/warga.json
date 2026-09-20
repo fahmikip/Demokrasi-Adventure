@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "npc_warga",
+  "name": "Mbah Karto",
+  "role": "warga",
+  "bio": "Pensiunan guru SD yang dikenal bijaksana. Suka bercerita soal sejarah desa dan pentingnya rukun.",
+  "personality": "ramah, sabar, bijak",
+  "dialogue": { "id": "dialogue_warga", "start": "sapa" },
+  "sprite": { "frame": 32 },
+  "portrait": { "key": "portrait_npc_warga" },
+  "fictional": true
+}
