@@ -17,6 +17,7 @@ export class NPC extends Phaser.GameObjects.Container {
     super(scene, def.x || 0, def.y || 0);
 
     this.scene = scene;
+    this.def = def || {};
     this.npcId = def.npcId || def.id || "npc_unknown";
     this.netralId = def.netralId || `npc_${this.npcId}`;
 
@@ -74,5 +75,9 @@ export class NPC extends Phaser.GameObjects.Container {
 
   get worldY() {
     return this.y;
+  }
+
+  get meta() {
+    return this.def;
   }
 }

@@ -1,4 +1,6 @@
 import { GameState } from "../core/GameState.js";
+import { QuestData } from "../quest/QuestData.js";
+import { EventBus } from "../core/EventBus.js";
 
 const ALLOWED_TARGETS = ["MenuScene", "WorldScene"];
 
@@ -44,6 +46,7 @@ export function runSmoke(game) {
   const target = wanted && ALLOWED_TARGETS.includes(wanted) ? wanted : null;
   const testTransition = params.get("transition") === "1";
   const testInteract = params.get("interact") === "1";
+  const testQuest = params.get("quest") === "1";
   if (target) {
     window.__DEMOKRASI_TEST_TARGET = target;
     console.info(`[Smoke] target scene: ${target}`);
@@ -91,6 +94,7 @@ export function runSmoke(game) {
   let originalMap = null;
   let transitionTriggered = false;
   let testInteractDone = false;
+  let questTestDone = false;
 
   function finish(data, attempts) {
     if (finished) return;
@@ -127,6 +131,15 @@ export function runSmoke(game) {
                 attempts = 0;
               }
             }
+          } else if (testQuest) {
+            if (!questTestDone) {
+              if (data.questLoaded) {
+                questTestDone = true;
+                driveQuest();
+                phase = "quest";
+                attempts = 0;
+              }
+            }
           } else {
             if (testInteract) {
               const ws = game.scene.getScene("WorldScene");
@@ -153,6 +166,14 @@ export function runSmoke(game) {
           finish(data, attempts);
           return;
         }
+      } else if (live && phase === "quest") {
+        if (data.questCompleted) {
+          data.questId = data.questCompletedId;
+          const qm = data.questReward || {};
+          data.questReward = qm;
+          finish(data, attempts);
+          return;
+        }
       }
 
       if (attempts >= maxAttempts) {
@@ -170,6 +191,28 @@ export function runSmoke(game) {
 
   setTimeout(check, 200);
   drive();
+}
+
+function driveQuest() {
+  // Skenario Misi 01: bicara guru -> baca papan -> lapor perangkat
+  const onComplete = ({ quest, reward }) => {
+    window.__SMOKE_QUEST_COMPLETED = true;
+    window.__SMOKE_QUEST_ID = quest ? quest.id : null;
+    window.__SMOKE_QUEST_REWARD = reward || null;
+    console.info(`[Smoke] quest selesai: ${quest ? quest.id : "?"}`);
+  };
+  EventBus.on("QUEST_COMPLETED", onComplete);
+
+  console.info("[Smoke] quest: bicara dgn Bu Ratna");
+  EventBus.emit("DIALOGUE_STARTED", { npc: { npcId: "npc_guru" } });
+  setTimeout(() => {
+    console.info("[Smoke] quest: periksa papan informasi");
+    EventBus.emit("POI_INTERACTED", { poi: { id: "poi_papan_informasi" } });
+  }, 100);
+  setTimeout(() => {
+    console.info("[Smoke] quest: lapor ke Pak Dedi");
+    EventBus.emit("DIALOGUE_STARTED", { npc: { npcId: "npc_perangkat" } });
+  }, 200);
 }
 
 function snapshot(game) {
@@ -204,6 +247,11 @@ function snapshot(game) {
       worldChildren: worldScene ? worldScene.children.getChildren().length : 0,
       hasUI: !!uiScene && uiScene.scene.isActive(),
       gameState: GameState.current,
+      questLoaded: QuestData.loaded,
+      questCount: QuestData.all().length,
+      questCompleted: window.__SMOKE_QUEST_COMPLETED || false,
+      questCompletedId: window.__SMOKE_QUEST_ID || null,
+      questReward: window.__SMOKE_QUEST_REWARD || null,
       idleDownFrames: idleAnim ? idleAnim.frames.length : -1,
       walkDownFrames: walkAnim ? walkAnim.frames.length : -1,
       logs: (window.__SMOKE_LOGS || []).slice(-8),

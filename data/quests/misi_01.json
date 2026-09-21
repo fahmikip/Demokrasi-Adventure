@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "id": "misi_01_hari_yang_semakin_dekat",
+  "title": "Hari yang Semakin Dekat",
+  "type": "main",
+  "giver": "npc_guru",
+  "description": "Bu Ratna meminta bantuamu menyebarkan informasi pemilu yang benar di Desa Harmoni.",
+  "objectives": [
+    {
+      "id": "talk_guru",
+      "type": "talk",
+      "target": "npc_guru",
+      "label": "Bicaralah dengan Bu Ratna",
+      "hint": "Dekati Bu Ratna lalu tekan E."
+    },
+    {
+      "id": "read_bulletin",
+      "type": "interact",
+      "target": "poi_papan_informasi",
+      "label": "Periksa Papan Informasi pemilu",
+      "hint": "Cari Papan Informasi di desa dan tekan E."
+    },
+    {
+      "id": "talk_perangkat",
+      "type": "talk",
+      "target": "npc_perangkat",
+      "label": "Laporkan temuan ke Pak Dedi",
+      "hint": "Temui Pak Dedi di dekat Balai Desa."
+    }
+  ],
+  "conditions": {
+    "requireVisited": ["desa_harmoni"]
+  },
+  "reward": {
+    "xp": 40,
+    "coins": 15
+  },
+  "journalEntries": [
+    {
+      "category": "Pemilu",
+      "title": "Hari Pemungutan Suara",
+      "source": "Percakapan dengan Bu Ratna",
+      "text": "Pemilu adalah momen kedaulatan rakyat. Setiap warga yang memenuhi syarat memiliki hak suara, dan penting menyebarkan informasi yang benar."
+    }
+  ]
+}

@@ -184,7 +184,7 @@ export class WorldScene extends Phaser.Scene {
         this._showInteractMarkerNpc(npc);
       }
       if (interactPressed) {
-        EventBus.emit("DIALOGUE_STARTED", { npc: npc.data });
+        EventBus.emit("DIALOGUE_STARTED", { npc: npc.meta });
       }
       return;
     }

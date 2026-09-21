@@ -56,7 +56,7 @@ export class PreloadScene extends Phaser.Scene {
     this.percentText.setText("100%");
     this.labelText.setText("Siap!");
 
-    generatePlaceholderTextures(thisscience);
+    generatePlaceholderTextures(this);
     generateNPCPlaceholderTextures(this);
 
     EventBus.emit("ASSETS_LOADED");

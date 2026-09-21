@@ -20,8 +20,8 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T05 | Collision | Tabrak batas layar | Player terhenti di batas world (world bounds aktif) |
 | T06 | Camera | Gerakkan player | Kamera follow halus, tidak patah |
 | T07 | Pause | Tekan Esc | GameState `PAUSE`, menu pause tampil; Esc lagi kembali `PLAYING` (Phase 1) |
-| T08 | Dialog | Interaksi dengan NPC | Dialog tampil, player terkunci (Phase 4+) |
-| T09 | Quest | Jalankan quest | Objective bertambah, reward diterima (Phase 5+) |
+| T08 | Dialog | Interaksi dengan NPC | Dialog tampil, player terkunci (Phase 3) |
+| T09 | Quest | Jalankan quest | Objective bertambah, reward diterima (Phase 4) |
 | T10 | Save/Load | Simpan lalu reload halaman | Posisi & progress pulih (Phase 5+) |
 | T11 | Achievement | Capai pencapaian | Unlock event & UI (Phase 6+) |
 | T12 | Journal | Kumpulkan collectible | Journal bertambah dengan source (Phase 7+) |
@@ -58,6 +58,9 @@ chrome --headless=new --no-sandbox --use-angle=swiftshader \
 # boot → MenuScene
 ... "http://127.0.0.1:8000/index.html?scene=MenuScene&selftest=1"
 
+# quest flow (misi 01) → boot WorldScene, drive quest, verifikasi QUEST_COMPLETED + reward
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&quest=1"
+
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
@@ -73,3 +76,4 @@ Parameter debug headless:
 |------|-----|-----|-----|-----|-----|-----|---------|-----------|
 | 0 | - | - | - | - | - | - | - | Foundation, belum runtime QA |
 | 1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T07 ✅, T18 ⏳ manual, T15 ⏳ manual | Smoke matrix + E2E CDP: load, menu, world+UI, movement (arrow → 1200,800→1527,800 & y↓), world bounds aktif, anim idle(2)/walk(3) frame OK, pause toggle `PLAYING⇄PAUSE` OK. T15/T18 pending QA device nyata. |
+| 4 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T09 ✅ | Quest: Misi 01 auto-start bicara Bu Ratna → baca papan info → lapor Pak Dedi; `QUEST_COMPLETED` terkirim + reward XP/Coins; tracker HUD tampil (`?quest=1` smoke; unit harness juga verified load 1 quest, objective talk/interact). |

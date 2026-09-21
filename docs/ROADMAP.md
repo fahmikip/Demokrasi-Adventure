@@ -72,11 +72,11 @@ NPC & Dialogue:
 - [x] Commit & push (`e30ef4b` → fase ini)
 
 ## PHASE 4 — Quest
-- [ ] Quest data (JSON) + QuestManager + Objective
-- [ ] Main Quest Misi 01 "Hari yang Semakin Dekat"
-- [ ] Quest tracker di HUD
-- [ ] Reward (XP/Coins/Journal)
-- [ ] Test quest flow
+- [x] Quest data (JSON) + QuestManager + Objective
+- [x] Main Quest Misi 01 "Hari yang Semakin Dekat"
+- [x] Quest tracker di HUD
+- [x] Reward (XP/Coins/Journal) — Journal dicollect via `QUEST_COMPLETED.journalEntries`
+- [x] Test quest flow (smoke.js param `quest` + unit harness) — belum eksekusi di browser manual
 
 ## PHASE 5 — Progression
 - [ ] XPManager, LevelManager
@@ -150,7 +150,7 @@ Fase selesai jika:
 | Phase 1 | ✅ selesai |
 | Phase 2 | 🔄 sebagian (sisa: audio footsteps + QA perangkat nyata) |
 | Phase 3 | ✅ selesai (commit `e30ef4b`) — sisa ringan: NPCSchedule, NPC trust |
-| Phase 4 | ⏳ menunggu (Quest) |
+| Phase 4 | 🔄 dikerjakan (Quest) — sistem quest berjalan; sisa: eksekusi smoke di browser + commit |
 | Phase 5–11 | ⏳ menunggu |
 
 ## Proteksi

@@ -12,6 +12,8 @@ import { HUD } from "../ui/HUD.js";
 import { PauseMenu } from "../ui/PauseMenu.js";
 import { DebugOverlay } from "../ui/DebugOverlay.js";
 import { WorldMapUI } from "../ui/WorldMapUI.js";
+import { QuestTracker } from "../ui/QuestTracker.js";
+import { QuestManager } from "../quest/QuestManager.js";
 
 export class UIScene extends Phaser.Scene {
   constructor() {
@@ -27,7 +29,15 @@ export class UIScene extends Phaser.Scene {
     this._buildTouchControls();
     this._buildPause();
     this._buildDebug();
+    this._buildQuestTracker();
     this.worldMapUI = new WorldMapUI(this);
+
+    if (!this.questsLoaded) {
+      this.questsLoaded = true;
+      QuestManager.load().catch((err) => {
+        console.warn("[UIScene] QuestManager.load gagal:", err);
+      });
+    }
 
     this._subscriptions = [
       EventBus.on("PROGRESS_CHANGED", ({ level, xp, coins }) => {
@@ -185,6 +195,10 @@ export class UIScene extends Phaser.Scene {
 
   _buildDebug() {
     this.debugOverlay = new DebugOverlay(this);
+  }
+
+  _buildQuestTracker() {
+    this.questTracker = new QuestTracker(this);
   }
 
   _buildTouchControls() {
