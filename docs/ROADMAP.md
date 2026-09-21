@@ -2,6 +2,8 @@
 
 Setiap fase harus memenuhi **Definition of Done** (lihat bawah) sebelum lanjut. Kerjakan satu fase pada satu waktu. Laporkan hasil tiap fase lalu tunggu instruksi `LANJUT PHASE <n>`.
 
+> **Catatan penomoran:** Phase 3 dikerjakan sebagai *vertical slice* (commit `e30ef4b`) yang menggabungkan World + NPC & Dialogue. Fase setelahnya digeser satu tingkat.
+
 ## PHASE 0 — Project Audit & Game Foundation Plan ✅
 - [x] Inspect repository (kosong → fresh start)
 - [x] Buat struktur folder
@@ -47,29 +49,36 @@ Setiap fase harus memenuhi **Definition of Done** (lihat bawah) sebelum lanjut. 
 - [ ] Pola gerak lebih halus (acceleration/attack, sheen, dsb.) jika perlu
 - [ ] QA mobile device nyata (joystick, tombol aksi, safe-area)
 
-## PHASE 3 — World (Desa Harmoni)
-- [ ] Tilemap Desa Harmoni (data JSON + spritesheet placeholder)
-- [ ] Buildings, objects, collision
-- [ ] Transisi antar area (school, pasar) — stub akhir dulu
-- [ ] Interaction points (papan informasi, dll)
-- [ ] Test map & transitions
+## PHASE 3 — World + NPC & Dialogue (vertical slice) ✅
+World:
+- [x] Tilemap area (Desa Harmoni, Sekolah Nusantara, Pasar Rakyat, Pusat Kota, TPS) — data JSON + spritesheet placeholder
+- [x] Tileset & ObjectDefs: buildings, objects, collision (walkable per tile)
+- [x] WorldBuilder + MapManager (cache, load JSON)
+- [x] Transisi antar area (TransitionManager + fade + spawn target)
+- [x] Interaction points / POIs (POIManager: marker, label, nearest)
+- [x] AreaState + debug (map, area, weather, tod)
+- [x] Test map & transitions (smoke.js param `transition`)
 
-## PHASE 4 — NPC & Dialogue
-- [ ] NPC base + NPCManager + NPCSchedule
-- [ ] DialogueManager + DialogueBox + choices
-- [ ] Portrait & emotion placeholder
-- [ ] Interaksi radius, E / tap untuk bicara
-- [ ] NPC relaasi (trust variable)
-- [ ] Test dialog & interaksi
+NPC & Dialogue:
+- [x] NPC base + NPCManager + NPCState (IDLE/WANDER/TALKING/DISABLED)
+- [x] NPC registry + placement per map (data JSON, semua fiktif & netral)
+- [x] DialogueManager + DialogueRunner + DialogueState (ketik, advance, choices)
+- [x] DialogueUI: panel, portrait placeholder, nama, baris, pilihan
+- [x] Data dialogue (5 NPC fiktif) + registry JSON
+- [x] Interaksi radius + tombol E / tap untuk bicara
+- [x] Test dialog & interaksi (smoke.js param `interact`)
+- [ ] NPCSchedule (jadwal waktu/posisi NPC) — belum
+- [ ] NPC relasi / trust variable — belum
+- [x] Commit & push (`e30ef4b` → fase ini)
 
-## PHASE 5 — Quest
+## PHASE 4 — Quest
 - [ ] Quest data (JSON) + QuestManager + Objective
 - [ ] Main Quest Misi 01 "Hari yang Semakin Dekat"
 - [ ] Quest tracker di HUD
 - [ ] Reward (XP/Coins/Journal)
 - [ ] Test quest flow
 
-## PHASE 6 — Progression
+## PHASE 5 — Progression
 - [ ] XPManager, LevelManager
 - [ ] Democracy Coins
 - [ ] AchievementManager (15+)
@@ -78,27 +87,27 @@ Setiap fase harus memenuhi **Definition of Done** (lihat bawah) sebelum lanjut. 
 - [ ] Achievement UI
 - [ ] Test progression
 
-## PHASE 7 — Journal & Education
+## PHASE 6 — Journal & Education
 - [ ] JournalManager
 - [ ] Journal UI (7 kategori)
 - [ ] Educational cards dengan source
 - [ ] Collectible → journal entry
 - [ ] Test update konten tanpa ubah engine
 
-## PHASE 8 — Decision System
+## PHASE 7 — Decision System
 - [ ] Choices branching real
 - [ ] Consequence: NPC relationship, quest, story
 - [ ] Skenario verifikasi informasi (Pasar Rakyat)
 - [ ] Test branching & konsekuensi
 
-## PHASE 9 — TPS Simulation
+## PHASE 8 — TPS Simulation
 - [ ] Mini-game TPS lengkap (alur 8 langkah)
 - [ ] Kandidat fiktif/abstrak
 - [ ] Review & feedback literasi
 - [ ] Completion reward
 - [ ] Test simulasi
 
-## PHASE 10 — Polish
+## PHASE 9 — Polish
 - [ ] Animasi & animasi transisi
 - [ ] Audio lengkap (music/sfx/ambient/ui/footsteps)
 - [ ] Particle (daun, debu)
@@ -106,14 +115,14 @@ Setiap fase harus memenuhi **Definition of Done** (lihat bawah) sebelum lanjut. 
 - [ ] Accessibility (reduced motion, subtitle, skip dialog, volume)
 - [ ] Test polish & accessibility
 
-## PHASE 11 — PWA + Mobile
+## PHASE 10 — PWA + Mobile
 - [ ] Installable PWA
 - [ ] Offline cache Service Worker
 - [ ] Responsive mobile QA (touch, safe-area, landscape)
 - [ ] iPad/Android/iOS test
 - [ ] Test offline & install
 
-## PHASE 12 — Production & Deployment
+## PHASE 11 — Production & Deployment
 - [ ] Optimization & performance
 - [ ] Bug fixing
 - [ ] Dokumentasi lengkap (README)
@@ -139,8 +148,10 @@ Fase selesai jika:
 |------|--------|
 | Phase 0 | ✅ selesai |
 | Phase 1 | ✅ selesai |
-| Phase 2 | 🔄 sebagian (dikerjakan utuh di Phase 1 prompt; sisa: audio footsteps + QA perangkat nyata) |
-| Phase 3–12 | ⏳ menunggu |
+| Phase 2 | 🔄 sebagian (sisa: audio footsteps + QA perangkat nyata) |
+| Phase 3 | ✅ selesai (commit `e30ef4b`) — sisa ringan: NPCSchedule, NPC trust |
+| Phase 4 | ⏳ menunggu (Quest) |
+| Phase 5–11 | ⏳ menunggu |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.

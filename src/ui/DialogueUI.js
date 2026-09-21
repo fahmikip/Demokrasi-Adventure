@@ -19,7 +19,7 @@ export class DialogueUI {
   constructor(scene) {
     this.scene = scene;
     this.visible = false;
-    this.panel = nulligure;
+    this.panel = null;
     this.portrait = null;
     this.speaker = null;
     this.text = null;

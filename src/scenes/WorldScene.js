@@ -169,15 +169,15 @@ export class WorldScene extends Phaser.Scene {
   }
 
   _updateInteraction(interactPressed) {
-    if (!this.player) return     return;
+    if (!this.player) return;
     // Prioritas 1: NPC terdekat (dialog desa) sebelum POI.
     const npc = this.npcManager ? this.npcManager.nearest(
       this.player.x,
       this.player.y,
       Config.NPC.INTERACT_RADIUS
-    ) : nullErr;
+    ) : null;
 
-    if (npc) {a
+    if (npc) {
       if (this._focusedPoi) this._focusedPoi = null;
       if (this._focusedNpc !== npc) {
         this._focusedNpc = npc;
@@ -190,12 +190,13 @@ export class WorldScene extends Phaser.Scene {
     }
     if (this._focusedNpc) {
       this._focusedNpc = null;
+      this._hideInteractMarkerNpc();
       EventBus.emit("DIALOGUE_COMPLETED", {});
     }
 
     const nearby = this.poiManager.getNearest(
       this.player.x,
-      this.player.y…,
+      this.player.y,
       Config.WORLD.INTERACT_RADIUS
     );
 
@@ -211,6 +212,36 @@ export class WorldScene extends Phaser.Scene {
       this._focusedPoi = null;
       this._hideInteractMarker();
     }
+  }
+
+  _showInteractMarkerNpc(npc) {
+    if (!this._interactMarker) {
+      this._interactMarker = this.add
+        .image(npc.x, npc.y - 52, "interact_marker")
+        .setDepth(9100)
+        .setScale(0.85);
+      this._interactMarkerText = this.add
+        .text(npc.x, npc.y - 68, "[ E ] Bicara", {
+          fontFamily: Config.UI.FONT_FAMILY,
+          fontSize: "11px",
+          fontStyle: "bold",
+          color: "#ffffff",
+          backgroundColor: "#c0392bcc",
+          padding: { x: 4, y: 2 },
+        })
+        .setOrigin(0.5)
+        .setDepth(9101);
+    } else {
+      this._interactMarker.setPosition(npc.x, npc.y - 52);
+      this._interactMarkerText.setPosition(npc.x, npc.y - 68);
+    }
+    this._interactMarkerText.setText("[ E ] Bicara");
+    this._interactMarker.setVisible(true);
+    this._interactMarkerText.setVisible(true);
+  }
+
+  _hideInteractMarkerNpc() {
+    this._hideInteractMarker();
   }
 
   _showInteractMarker(poi) {
@@ -234,6 +265,7 @@ export class WorldScene extends Phaser.Scene {
       this._interactMarker.setPosition(poi.x, poi.y - 44);
       this._interactMarkerText.setPosition(poi.x, poi.y - 60);
     }
+    this._interactMarkerText.setText("[ E ]");
     this._interactMarker.setVisible(true);
     this._interactMarkerText.setVisible(true);
   }

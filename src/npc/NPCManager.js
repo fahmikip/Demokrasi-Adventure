@@ -8,7 +8,8 @@
 import { EventBus } from "../core/EventBus.js";
 import { Config } from "../core/Config.js";
 import { NPC } from "../npc/NPC.js";
-import { NPCRegistry } from "../npc/NPCRegistry.js";
+import { NPC_STATES } from "../npc/NPCState.js";
+import { NPCRegistry } from "../npc/npc_registry.js";
 
 export class NPCManager {
   /**
@@ -44,7 +45,7 @@ export class NPCManager {
     let best = null;
     let bestD = radius * radius;
     for (const npc of this.npcs) {
-      if (!npc.active || npc.state.isDisabled()) continue;
+      if (!npc.active || npc.state === NPC_STATES.DISABLED) continue;
       const dx = npc.x - x;
       const dy = npc.y - y;
       const d2 = dx * dx + dy * dy;

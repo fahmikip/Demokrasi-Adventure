@@ -44,7 +44,7 @@ export class NPC extends Phaser.GameObjects.Container {
     const key = def.texture || `npc_${this.role || "default"}`;
     this.sprite = scene.add.image(0, 0, key).setDepth(1);
     this.sprite.setOrigin(0.5, 1);
-    this.add(this.spriteipsegitiga);
+    this.add(this.sprite);
   }
 
   setFacing(dir) {

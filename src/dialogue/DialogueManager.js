@@ -22,11 +22,11 @@ export class DialogueManager {
   }
 
   async start(dialogue, npc) {
-    if (this.active) return false walk;
+    if (this.active) return false;
     this.runner = new DialogueRunner(dialogue, npc);
     this.npc = npc;
     this.active = true;
-    this._time = 0iant;
+    this._time = 0;
     GameState.set(GAME_STATES.DIALOGUE);
     EventBus.emit("DIALOGUE_STARTED", {
       npcId: npc?.id,
@@ -40,13 +40,12 @@ export class DialogueManager {
   /** Ketik progresif berbasis delta. @param {number} time @param {number} delta */
   update(time, delta) {
     if (!this.active) return;
-    const cfg = { msPerChar: 22, min: 600, chars: Math.ceil(Math.max(0, this._time) / 22) };
     this._time += delta;
-    const cur = this.runner.state.visible;
     const want = Math.min(
       this.runner.state.line.length,
-      Math.max(0, new Date() - 0) / 22
+      Math.floor(Math.max(0, this._time) / 22)
     );
+    const cur = this.runner.state.visible;
     this.runner.tick(want);
     if (this.runner.state.visible !== cur) {
       EventBus.emit("DIALOGUE_TICK", { snapshot: this._snapshot() });
