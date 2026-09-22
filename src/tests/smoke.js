@@ -1,6 +1,9 @@
 import { GameState } from "../core/GameState.js";
 import { QuestData } from "../quest/QuestData.js";
 import { EventBus } from "../core/EventBus.js";
+import { ProgressState } from "../core/ProgressState.js";
+import { AchievementManager } from "../progression/AchievementManager.js";
+import { CollectibleManager } from "../collectibles/CollectibleManager.js";
 
 const ALLOWED_TARGETS = ["MenuScene", "WorldScene"];
 
@@ -47,6 +50,7 @@ export function runSmoke(game) {
   const testTransition = params.get("transition") === "1";
   const testInteract = params.get("interact") === "1";
   const testQuest = params.get("quest") === "1";
+  const testProgression = params.get("progression") === "1";
   if (target) {
     window.__DEMOKRASI_TEST_TARGET = target;
     console.info(`[Smoke] target scene: ${target}`);
@@ -95,6 +99,7 @@ export function runSmoke(game) {
   let transitionTriggered = false;
   let testInteractDone = false;
   let questTestDone = false;
+  let progressionTestDone = false;
 
   function finish(data, attempts) {
     if (finished) return;
@@ -140,6 +145,15 @@ export function runSmoke(game) {
                 attempts = 0;
               }
             }
+          } else if (testProgression) {
+            if (!progressionTestDone) {
+              if (data.questLoaded && data.achievementsLoaded) {
+                progressionTestDone = true;
+                driveProgression(game);
+                phase = "progression";
+                attempts = 0;
+              }
+            }
           } else {
             if (testInteract) {
               const ws = game.scene.getScene("WorldScene");
@@ -171,6 +185,11 @@ export function runSmoke(game) {
           data.questId = data.questCompletedId;
           const qm = data.questReward || {};
           data.questReward = qm;
+          finish(data, attempts);
+          return;
+        }
+      } else if (live && phase === "progression") {
+        if (data.progUnlocked >= 3 && data.progLevel >= 2 && data.collectibleClaimed >= 1) {
           finish(data, attempts);
           return;
         }
@@ -215,6 +234,44 @@ function driveQuest() {
   }, 200);
 }
 
+function driveProgression(game) {
+  EventBus.on("QUEST_COMPLETED", ({ quest, reward }) => {
+    window.__SMOKE_QUEST_COMPLETED = true;
+    window.__SMOKE_QUEST_ID = quest ? quest.id : null;
+    window.__SMOKE_QUEST_REWARD = reward || null;
+    console.info(`[Smoke] quest selesai (progression): ${quest ? quest.id : "?"}`);
+  });
+  EventBus.on("ACHIEVEMENT_UNLOCKED", ({ achievement }) => {
+    if (!window.__SMOKE_ACH_ID && achievement) window.__SMOKE_ACH_ID = achievement.id;
+  });
+  window.__SMOKE_ACH_ID = window.__SMOKE_ACH_ID || null;
+
+  console.info("[Smoke] progression: quest misi 01 + POI + collectible (player walk-in)");
+  // Mulai + selesaikan Misi 01 (reward XP/Koin & achievement quest)
+  EventBus.emit("DIALOGUE_STARTED", { npc: { npcId: "npc_guru" } });
+  setTimeout(() => EventBus.emit("POI_INTERACTED", { poi: { id: "poi_papan_informasi" } }), 80);
+  setTimeout(() => EventBus.emit("POI_INTERACTED", { poi: { id: "poi_lapangan" } }), 160);
+  setTimeout(() => EventBus.emit("DIALOGUE_STARTED", { npc: { npcId: "npc_perangkat" } }), 240);
+
+  // Klaim collectible nyata dengan menggeser player ke koordinat item
+  const steps = [
+    { itemId: "ctl_buku_pemilu", x: 9, y: 14 },
+    { itemId: "ctl_koin_warga", x: 40, y: 44 },
+  ];
+  let delay = 320;
+  const ws = game.scene.getScene("WorldScene");
+  const T = ws && ws.mapData ? ws.mapData.tileSize : 32;
+  for (const s of steps) {
+    const ts = delay;
+    setTimeout(() => {
+      const scene = game.scene.getScene("WorldScene");
+      if (scene && scene.player) scene.player.setPosition((s.x + 0.5) * T, (s.y + 0.5) * T);
+      console.info(`[Smoke] pemain ke kollectible ${s.itemId}@(${s.x},${s.y})`);
+    }, ts);
+    delay += 200;
+  }
+}
+
 function snapshot(game) {
   try {
     const active = game.scene.getScenes(true).map((s) => s.scene.key);
@@ -252,6 +309,16 @@ function snapshot(game) {
       questCompleted: window.__SMOKE_QUEST_COMPLETED || false,
       questCompletedId: window.__SMOKE_QUEST_ID || null,
       questReward: window.__SMOKE_QUEST_REWARD || null,
+      achievementsLoaded: AchievementManager._loaded,
+      achievementCount: AchievementManager.count,
+      progLevel: ProgressState.snapshot().level,
+      progLevelName: ProgressState.snapshot().levelName,
+      progXp: ProgressState.snapshot().xp,
+      progCoins: ProgressState.snapshot().coins,
+      progTotalEarned: ProgressState.snapshot().totalEarned,
+      progUnlocked: AchievementManager.unlockedCount,
+      progFirstAchievement: window.__SMOKE_ACH_ID || null,
+      collectibleClaimed: CollectibleManager.claimedCount(),
       idleDownFrames: idleAnim ? idleAnim.frames.length : -1,
       walkDownFrames: walkAnim ? walkAnim.frames.length : -1,
       logs: (window.__SMOKE_LOGS || []).slice(-8),

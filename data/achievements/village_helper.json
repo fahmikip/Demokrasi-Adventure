@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "village_helper",
+  "category": "Misi",
+  "title": "Sang Penolong Warga",
+  "description": "Selesaikan misi 'Hari yang Semakin Dekat' dan bantu Desa Harmoni.",
+  "icon": "quest",
+  "reward": { "xp": 15, "coins": 10 },
+  "condition": { "event": "QUEST_COMPLETED", "mode": "match", "field": "quest.id", "value": "misi_01_hari_yang_semakin_dekat" }
+}

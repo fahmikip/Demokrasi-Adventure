@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "perfect_mission",
+  "category": "Misi",
+  "title": "Misi Utama",
+  "description": "Selesaikan misi alur utama cerita.",
+  "icon": "quest",
+  "reward": { "xp": 30, "coins": 15 },
+  "condition": { "event": "QUEST_COMPLETED", "mode": "match", "field": "quest.type", "value": "main" }
+}

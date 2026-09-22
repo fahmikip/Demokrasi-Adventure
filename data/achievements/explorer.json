@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "explorer",
+  "category": "Eksplorasi",
+  "title": "Penjelajah",
+  "description": "Kunjungi 3 area berbeda di Demokrasi City.",
+  "icon": "map",
+  "reward": { "xp": 15, "coins": 5 },
+  "condition": { "event": "AREA_ENTERED", "mode": "distinct", "field": "mapId", "count": 3 }
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "city_explorer",
+  "category": "Eksplorasi",
+  "title": "Berkunjung ke Kota",
+  "description": "Datang ke Pusat Kota.",
+  "icon": "map",
+  "reward": { "xp": 10, "coins": 0 },
+  "condition": { "event": "AREA_ENTERED", "mode": "match", "field": "mapId", "value": "pusat_kota" }
+}

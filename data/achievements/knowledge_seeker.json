@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "knowledge_seeker",
+  "category": "Eksplorasi",
+  "title": "Pencari Ilmu",
+  "description": "Interaksi dengan 10 tempat penting di seluruh kota.",
+  "icon": "poi",
+  "reward": { "xp": 25, "coins": 10 },
+  "condition": { "event": "POI_INTERACTED", "mode": "count", "count": 10 }
+}

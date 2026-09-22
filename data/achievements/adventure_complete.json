@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "adventure_complete",
+  "category": "Prestasi",
+  "title": "Petualangan Selesai",
+  "description": "Capai level tertinggi: Penjelajah Demokrasi.",
+  "icon": "trophy",
+  "reward": { "xp": 50, "coins": 50 },
+  "condition": { "event": "LEVEL_UP", "mode": "value", "field": "level", "value": 5, "op": ">=" }
+}

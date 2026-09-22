@@ -10,10 +10,11 @@ import { AudioManager } from "../audio/AudioManager.js";
 import { ProgressState } from "../core/ProgressState.js";
 
 export class PauseMenu {
-  constructor(scene, { onResume, onQuit }) {
+  constructor(scene, { onResume, onQuit, onAchievements }) {
     this.scene = scene;
     this.onResume = onResume;
     this.onQuit = onQuit;
+    this.onAchievements = onAchievements;
     this.root = null;
     this.settingsPanel = null;
 
@@ -51,7 +52,7 @@ export class PauseMenu {
     this.root.add(dim);
 
     const panelW = 300;
-    const panelH = 340;
+    const panelH = 396;
     const g = scene.add.graphics();
     g.fillStyle(0xfdf6e3, 1);
     g.fillRoundedRect(cx - panelW / 2, cy - panelH / 2, panelW, panelH, 16);
@@ -69,26 +70,34 @@ export class PauseMenu {
       .setOrigin(0.5);
     this.root.add(title);
 
-    const btnRes = makeButton(scene, cx, cy - 40, "LANJUT", () => this.onResume(), {
+    const btnRes = makeButton(scene, cx, cy - 64, "LANJUT", () => this.onResume(), {
       width: 200,
       height: 48,
       color: Config.UI.COLOR_PRIMARY,
       hoverColor: Config.UI.COLOR_PRIMARY_HOVER,
     });
-    const btnSet = makeButton(scene, cx, cy + 20, "PENGATURAN", () => this._openSettings(), {
+    const btnAch = makeButton(scene, cx, cy - 4, "PRESTASI", () => {
+      if (typeof this.onAchievements === "function") this.onAchievements();
+    }, {
+      width: 200,
+      height: 48,
+      color: 0xf1c40f,
+      hoverColor: 0xd4ac0d,
+    });
+    const btnSet = makeButton(scene, cx, cy + 56, "PENGATURAN", () => this._openSettings(), {
       width: 200,
       height: 48,
       color: Config.UI.COLOR_DARK,
       hoverColor: Config.UI.COLOR_DARK_HOVER,
     });
-    const btnQuit = makeButton(scene, cx, cy + 80, "KEMBALI KE MENU", () => this.onQuit(), {
+    const btnQuit = makeButton(scene, cx, cy + 116, "KEMBALI KE MENU", () => this.onQuit(), {
       width: 200,
       height: 48,
       color: 0x7f8c8d,
       hoverColor: 0x6c7a85,
     });
 
-    this.root.add([btnRes, btnSet, btnQuit]);
+    this.root.add([btnRes, btnAch, btnSet, btnQuit]);
   }
 
   _openSettings() {
@@ -106,9 +115,9 @@ export class PauseMenu {
 
     const saved = localStorage.getItem(Config.SAVE.KEY);
     if (saved) {
-      panel.addLabel("Data disimpan tersedia. Reset dengan FITUR SAVE pada Phase 5+.", { color: "#7f8c8d" });
+      panel.addLabel("Data save ditemukan. Reset lewat tombol RESET di menu utama.", { color: "#7f8c8d" });
     } else {
-      panel.addLabel("Belum ada data disimpan.", { color: "#7f8c8d" });
+      panel.addLabel("Belum ada data save.", { color: "#7f8c8d" });
     }
 
     this.settingsPanel = panel;

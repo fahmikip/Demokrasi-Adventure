@@ -8,7 +8,7 @@ import { Config } from "../core/Config.js";
 import { DebugState } from "../core/DebugState.js";
 import { VirtualJoystick } from "./VirtualJoystick.js";
 
-const STRING_KEYS = "W,A,S,D,E,ESC,F1,F7,F8,F9,F10,M";
+const STRING_KEYS = "W,A,S,D,E,ESC,F1,F4,F5,F7,F8,F9,F10,M";
 
 export class InputManager {
   constructor(scene) {

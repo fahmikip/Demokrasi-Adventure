@@ -15631,5 +15631,27 @@
       }
     }
   ],
+  "collectibles": [
+    {
+      "itemId": "ctl_buku_pemilu",
+      "x": 9,
+      "y": 14
+    },
+    {
+      "itemId": "ctl_koin_warga",
+      "x": 40,
+      "y": 44
+    },
+    {
+      "itemId": "ctl_poster_kampanye",
+      "x": 18,
+      "y": 33
+    },
+    {
+      "itemId": "ctl_lencana_relawan",
+      "x": 66,
+      "y": 25
+    }
+  ],
   "createdBy": "tools/build-maps.js"
 }

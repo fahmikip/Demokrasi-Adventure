@@ -7799,5 +7799,27 @@
       }
     }
   ],
+  "collectibles": [
+    {
+      "itemId": "ctl_buku_pancasila",
+      "x": 24,
+      "y": 24
+    },
+    {
+      "itemId": "ctl_koin_cerdas",
+      "x": 46,
+      "y": 14
+    },
+    {
+      "itemId": "ctl_poster_siswa",
+      "x": 12,
+      "y": 24
+    },
+    {
+      "itemId": "ctl_lencana_siswa",
+      "x": 49,
+      "y": 33
+    }
+  ],
   "createdBy": "tools/build-maps.js"
 }

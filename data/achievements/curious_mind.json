@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "curious_mind",
+  "category": "Eksplorasi",
+  "title": "Rasa Ingin Tahu",
+  "description": "Interaksi dengan 3 tempat penting (landmark).",
+  "icon": "poi",
+  "reward": { "xp": 10, "coins": 0 },
+  "condition": { "event": "POI_INTERACTED", "mode": "count", "count": 3 }
+}

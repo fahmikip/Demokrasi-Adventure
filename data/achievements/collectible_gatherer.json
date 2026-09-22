@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "collectible_gatherer",
+  "category": "Koleksi",
+  "title": "Kolektor Benda",
+  "description": "Ambil 5 collectible di seluruh kota.",
+  "icon": "collectible",
+  "reward": { "xp": 20, "coins": 10 },
+  "condition": { "event": "ITEM_COLLECTED", "mode": "count", "count": 5 }
+}

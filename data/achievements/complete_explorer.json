@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "complete_explorer",
+  "category": "Eksplorasi",
+  "title": "Penjelajah Lengkap",
+  "description": "Kunjungi kelima area di Demokrasi City.",
+  "icon": "map",
+  "reward": { "xp": 30, "coins": 15 },
+  "condition": { "event": "AREA_ENTERED", "mode": "distinct", "field": "mapId", "count": 5 }
+}

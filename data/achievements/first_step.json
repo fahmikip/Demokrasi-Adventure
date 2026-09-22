@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "first_step",
+  "category": "Percakapan",
+  "title": "Langkah Pertama",
+  "description": "Mulai percakapan dengan warga untuk pertama kalinya.",
+  "icon": "talk",
+  "reward": { "xp": 5, "coins": 0 },
+  "condition": { "event": "DIALOGUE_STARTED", "mode": "count", "count": 1 }
+}

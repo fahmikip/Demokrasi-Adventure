@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "information_hunter",
+  "category": "Eksplorasi",
+  "title": "Pemburu Informasi",
+  "description": "Kunjungi 5 tempat berbeda untuk menggali informasi.",
+  "icon": "poi",
+  "reward": { "xp": 15, "coins": 5 },
+  "condition": { "event": "POI_INTERACTED", "mode": "distinct", "field": "poi.id", "count": 5 }
+}

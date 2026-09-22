@@ -30,6 +30,7 @@ BOOT → PRELOAD → MAIN_MENU
                   PLAYING ⇄ DIALOGUE
                     ⇄ QUEST
                     ⇄ CUTSCENE
+                    ⇄ ACHIEVEMENTS
                     ⇄ PAUSE
                     ⇄ JOURNAL
                     ⇄ INVENTORY
@@ -45,17 +46,18 @@ Konstanta state siap pakai di-export sebagai `GAME_STATES` (`Object.freeze`). Pe
 
 `src/core/EventBus.js` — pub/sub ringan.
 
-Event inti (sudah aktif di Phase 1):
+Event inti (aktif):
 ```
 GAME_STATE_CHANGED, ASSETS_LOADED, PROGRESS_CHANGED, PLAYER_STATE_CHANGED
+DIALOGUE_STARTED, DIALOGUE_COMPLETED,
+QUEST_STARTED, QUEST_PROGRESSED, QUEST_COMPLETED,
+ITEM_COLLECTED, XP_GAINED, LEVEL_UP, COIN_CHANGED,
+ACHIEVEMENT_UNLOCKED, AREA_ENTERED
 ```
 Rencana event fase berikutnya:
 ```
 PLAYER_MOVED, INTERACTION_REQUESTED, NPC_INTERACTED,
-DIALOGUE_STARTED, DIALOGUE_COMPLETED,
-QUEST_STARTED, QUEST_PROGRESSED, QUEST_COMPLETED,
-ITEM_COLLECTED, XP_GAINED, LEVEL_UP,
-ACHIEVEMENT_UNLOCKED, AREA_UNLOCKED,
+AREA_UNLOCKED,
 JOURNAL_UPDATED, SAVE_REQUESTED, LOAD_REQUESTED
 ```
 
@@ -86,38 +88,50 @@ src/
 │   ├── InputManager.js     — abstraksi keyboard + akses joystick (dibuat UIScene)
 │   └── VirtualJoystick.js  — joystick virtual (touch/mobile)
 ├── ui/
-│   ├── HUD.js              — panel Level/XP/Coins + tombol pause
+│   ├── HUD.js              — panel Level/XP/Coins + progress bar XP + tombol pause
 │   ├── Panel.js            — panel modal reusable (stepper/toggle/close)
-│   ├── PauseMenu.js        — menu pause (LANJUT/PENGATURAN/KEMBALI KE MENU)
+│   ├── PauseMenu.js        — menu pause (LANJUT/PRESTASI/PENGATURAN/KEMBALI)
+│   ├── AchievementUI.js    — overlay daftar achievement (scrollable, mask)
 │   ├── DebugOverlay.js     — overlay debug (F1)
-│   └── widgets.js          — helper tombol & teks
+│   ├── widgets.js          — helper tombol & teks
+│   ├── QuestTracker.js     — tracker quest di HUD
+│   └── WorldMapUI.js       — peta dunia (F7)
 ├── tests/
 │   └── smoke.js            — smoke test otomatis (DEBUG + ?selftest=1)
-├── npc/                    — (fase berikutnya)
+├── npc/
 │   ├── NPC.js
 │   ├── NPCManager.js
-│   └── NPCSchedule.js
-├── dialogue/               — (fase berikutnya)
+│   └── NPCState.js
+├── dialogue/
 │   ├── DialogueManager.js
-│   ├── DialogueBox.js
-│   └── DialogueChoice.js
-├── quest/                  — (fase berikutnya)
+│   ├── DialogueRunner.js
+│   ├── DialogueState.js
+│   └── DialogueUI.js
+├── quest/
 │   ├── QuestManager.js
 │   ├── Quest.js
-│   └── Objective.js
+│   ├── Objective.js
+│   └── QuestData.js        — loader data quest (data/quests/*.json)
 ├── inventory/              — (fase berikutnya)
 │   ├── InventoryManager.js
 │   └── Item.js
-├── progression/            — (fase berikutnya)
-│   ├── XPManager.js
-│   ├── LevelManager.js
-│   └── AchievementManager.js
+├── progression/
+│   ├── LevelManager.js     — level table (Config.PROGRESSION.LEVELS)
+│   ├── XPManager.js        — XP + passive XP (dialog/POI/area, dedup)
+│   ├── CoinManager.js      — koin + totalEarned
+│   ├── AchievementData.js  — loader data achievement
+│   └── AchievementManager.js — evaluator & unlock (mode count/distinct/match/value)
+├── collectibles/
+│   ├── CollectibleData.js  — loader registry item
+│   └── CollectibleManager.js — spawn & klaim collectible (singleton)
 ├── journal/                — (fase berikutnya)
 │   └── JournalManager.js
-├── map/                    — (fase berikutnya)
+├── map/
 │   ├── MapManager.js
-│   ├── InteractionManager.js
-│   └── TriggerManager.js
+│   ├── WorldBuilder.js
+│   ├── TransitionManager.js
+│   ├── POIManager.js
+│   └── TilesetDefs.js
 ├── save/                   — (fase berikutnya)
 │   ├── SaveManager.js
 │   └── SaveMigration.js
@@ -191,12 +205,16 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 - `QuestManager` melacak objective, mengirim `QUEST_PROGRESSED`, `QUEST_COMPLETED`.
 - Quest tracker di HUD.
 
-## 11. Progression
+## 11. Progression (Phase 5)
 
-- `XPManager`: XP dari dialog/quest/exploration/collectible/challenge.
-- `LevelManager`: naik level dari XP (formula di Config).
-- `AchievementManager`: 15+ achievement dari event.
-- Semua reward data-driven (JSON), tidak ada hardcoded reward dalam logic.
+- `LevelManager`: level table di `Config.PROGRESSION.LEVELS` (`[{level:1,xpRequired:0,name:"Pemula"}, … , {level:5,xpRequired:500,name:"Penjelajah Demokrasi"}]`); pemetaan XP→level via `levelForXP`, plus `name/xpToNext/progress`. `Config.PROGRESSION.MAX_LEVEL` membatasi cap.
+- `XPManager`: sumber kebenaran XP. `addXP` → `XP_GAINED` + `LEVEL_UP`; **passive XP** (event di `Config.PROGRESSION.EVENTS`: `dialogue_xp=10, poi_xp=8, area_xp=15, collectible_xp=10`) dengan dedup: dialog sekali per `npc.npcId`, POI sekali per `poi.id`, area hanya `firstVisit`. Reward quest TIDAK diduplikasi — QuestManager memanggil `ProgressState.addXP` langsung, XPManager tidak meng-hook `QUEST_COMPLETED`.
+- `CoinManager`: koin (`coins`, `totalEarned`) → `COIN_CHANGED`.
+- `ProgressState` = facade (API lama `level/xp/coins/addXP/addCoins/reset` + `snapshot`), memancarkan `PROGRESS_CHANGED {level, xp, coins, levelName, xpToNext, progress}` untuk HUD.
+- `AchievementManager` (data di `data/achievements/*.json` + `achievement_registry.json`): evaluator kondisi `{event, mode: count|distinct|match|value, field, value, count, op}`; saat terpenuhi → `unlock()` (reward XP/Koin via ProgressState) + `ACHIEVEMENT_UNLOCKED`. 17 achievement dipasang.
+- `CollectibleManager` (singleton, registry `data/collectibles/collectible_registry.json`, penempatan lewat key `collectibles` di `data/maps/*.json` yang digenerate `tools/build-maps.js`): klaim saat player dalam radius (`Config.PROGRESSION.COLLECTIBLES.RADIUS`), sekali per `mapId:itemId`, reward XP/Koin dari item, `ITEM_COLLECTED`.
+- `AchievementUI`: overlay scrollable (mask + wheel); tombol trophy di HUD & menu PRESTASI di pause sambil tetap menyimpan state `ACHIEVEMENTS`.
+- Debug shortcut: `F4` tambah XP (25), `F5` buka achievement acak (lihat §14).
 
 ## 12. Save System
 
@@ -231,12 +249,11 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 ## 14. Debug Mode
 
 - Aktif via `Config.DEBUG = true` (development only).
-- Shortcuts (sudah jalan Phase 1: `F1` debug overlay; lainnya rencana):
-  - `F1` debug overlay ✅
+- Hotkeys (Phase 1): `F1` debug overlay ✅
   - `F2` teleport (rencana)
   - `F3` complete quest (rencana)
-  - `F4` add XP (rencana)
-  - `F5` unlock achievement (rencana)
+  - `F4` add XP (Phase 5) ✅
+  - `F5` unlock achievement acak (Phase 5) ✅
   - `F6` reset save (rencana)
 - Smoke test otomatis (`?selftest=1`) hanya aktif saat `Config.DEBUG`.
 - Tidak diaktifkan pada production build.

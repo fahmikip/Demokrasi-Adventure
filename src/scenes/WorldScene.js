@@ -16,6 +16,7 @@ import { MapManager } from "../map/MapManager.js";
 import { WorldBuilder } from "../map/WorldBuilder.js";
 import { AreaState } from "../map/AreaState.js";
 import { NPCManager } from "../npc/NPCManager.js";
+import { CollectibleManager } from "../collectibles/CollectibleManager.js";
 
 const FALLBACK_MAP = "desa_harmoni";
 
@@ -70,6 +71,14 @@ export class WorldScene extends Phaser.Scene {
   }
 
   _buildWorld(mapData, spawn) {
+    if (this.player) {
+      try {
+        if (this.player.active) this.player.destroy();
+      } catch {
+        /* sprite mungkin sudah hancur saat restart; lanjut */
+      }
+      this.player = null;
+    }
     const TILE = Config.TILE.SIZE;
     console.info(`[WorldScene] build start: ${mapData.id}`);
     const builder = new WorldBuilder(this);
@@ -113,13 +122,18 @@ export class WorldScene extends Phaser.Scene {
 
     // state area
     AreaState.markCurrent(mapData.id);
-    AreaState.markVisited(mapData.id);
+    const firstVisit = AreaState.markVisited(mapData.id);
     DebugState.map = mapData.id;
     DebugState.area = mapData.name;
     DebugState.weather = (mapData.environment && mapData.environment.weather) || "clear";
     DebugState.tod = (mapData.environment && mapData.environment.tod) || "day";
 
-    EventBus.emit("AREA_ENTERED", { mapId: mapData.id, name: mapData.name });
+    // collectible
+    CollectibleManager.setup(this, mapData).then((sprites) => {
+      if (sprites && sprites.length) this.sorted.push(...sprites);
+    });
+
+    EventBus.emit("AREA_ENTERED", { mapId: mapData.id, name: mapData.name, firstVisit });
 
     this._hideLoading();
     this._cooldownUntil = this.time.now + Config.WORLD.POST_TRANSITION_COOLDOWN_MS;
@@ -142,6 +156,7 @@ export class WorldScene extends Phaser.Scene {
     this._ySortObjects();
     this._updateInteraction(interactPressed);
     this._applyDebugFlags();
+    if (this.player) CollectibleManager.update(this.player.x, this.player.y);
 
     // DebugState
     if (this.player) {
@@ -280,6 +295,7 @@ export class WorldScene extends Phaser.Scene {
   _handleTransition(zone) {
     if (this._transitioning) return false;
     if (this.time.now < this._cooldownUntil) return false;
+    console.info(`[WorldScene] transition -> ${zone.target} (spawn ${zone.targetSpawn ? `${zone.targetSpawn.x},${zone.targetSpawn.y}` : "default"})`);
 
     this._transitioning = true;
     GameState.set(GAME_STATES.CUTSCENE);

@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-09-20T04:32:54.968Z",
+  "generatedAt": "2026-09-22T13:59:08.222Z",
   "registryVersion": 1,
-  "totalRegistryEntries": 37,
+  "totalRegistryEntries": 42,
   "totalFilesOnDisk": 4,
   "registeredFiles": 4,
   "summary": {
     "issues": 0,
-    "warnings": 33,
+    "warnings": 38,
     "missingRegistryFiles": 0,
     "unregisteredDiskFiles": 0,
     "duplicateIds": 0
@@ -79,6 +79,11 @@
     "registry: \"icons_interact_marker\" = placebo procedural (src/core/PlaceholderAssets.js::_generateMarker)",
     "registry: \"icons_joystick_base\" = placebo procedural (src/core/PlaceholderAssets.js::_generateJoystickTextures)",
     "registry: \"icons_joystick_knob\" = placebo procedural (src/core/PlaceholderAssets.js::_generateJoystickTextures)",
-    "registry: \"audio_ambient_placeholder\" = placebo procedural (src/audio/AudioManager.js)"
+    "registry: \"audio_ambient_placeholder\" = placebo procedural (src/audio/AudioManager.js)",
+    "registry: \"icons_icon_trophy\" = placebo procedural (src/core/PlaceholderAssets.js::_generateIcons)",
+    "registry: \"collectibles_collectible_book\" = placebo procedural (src/core/PlaceholderAssets.js::_generateCollectibles)",
+    "registry: \"collectibles_collectible_coin\" = placebo procedural (src/core/PlaceholderAssets.js::_generateCollectibles)",
+    "registry: \"collectibles_collectible_poster\" = placebo procedural (src/core/PlaceholderAssets.js::_generateCollectibles)",
+    "registry: \"collectibles_collectible_badge\" = placebo procedural (src/core/PlaceholderAssets.js::_generateCollectibles)"
   ]
 }

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "coin_collector",
+  "category": "Keuangan",
+  "title": "Pengumpul Koin",
+  "description": "Kumpulkan 100 Democracy Coins.",
+  "icon": "coin",
+  "reward": { "xp": 20, "coins": 0 },
+  "condition": { "event": "COIN_CHANGED", "mode": "value", "field": "totalEarned", "value": 100, "op": ">=" }
+}

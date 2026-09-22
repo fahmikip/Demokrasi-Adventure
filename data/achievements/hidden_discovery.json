@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "hidden_discovery",
+  "category": "Koleksi",
+  "title": "Temuan Tersembunyi",
+  "description": "Temukan collectible yang tersembunyi.",
+  "icon": "collectible",
+  "reward": { "xp": 15, "coins": 5 },
+  "condition": { "event": "ITEM_COLLECTED", "mode": "match", "field": "item.hidden", "value": true }
+}

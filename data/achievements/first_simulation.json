@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "first_simulation",
+  "category": "Eksplorasi",
+  "title": "Simulasi Pertama",
+  "description": "Datang ke area TPS dan saksikan simulasi pemungutan suara.",
+  "icon": "tps",
+  "reward": { "xp": 10, "coins": 0 },
+  "condition": { "event": "AREA_ENTERED", "mode": "match", "field": "mapId", "value": "tps" }
+}

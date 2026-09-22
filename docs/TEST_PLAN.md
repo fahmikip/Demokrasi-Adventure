@@ -23,7 +23,7 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T08 | Dialog | Interaksi dengan NPC | Dialog tampil, player terkunci (Phase 3) |
 | T09 | Quest | Jalankan quest | Objective bertambah, reward diterima (Phase 4) |
 | T10 | Save/Load | Simpan lalu reload halaman | Posisi & progress pulih (Phase 5+) |
-| T11 | Achievement | Capai pencapaian | Unlock event & UI (Phase 6+) |
+| T11 | Achievement | Capai pencapaian | Unlock event & UI (Phase 5) |
 | T12 | Journal | Kumpulkan collectible | Journal bertambah dengan source (Phase 7+) |
 | T13 | TPS Simulation | Jalankan mini-game | Alur 8 langkah berjalan, review tampil (Phase 9+) |
 | T14 | Audio | Ubah volume master/music/sfx | Volume berubah, mute berfungsi (Phase 10+) |
@@ -61,6 +61,10 @@ chrome --headless=new --no-sandbox --use-angle=swiftshader \
 # quest flow (misi 01) → boot WorldScene, drive quest, verifikasi QUEST_COMPLETED + reward
 ... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&quest=1"
 
+# progression flow (Phase 5) → quest misi 01 + passive XP + collectible (player walk-in),
+# verifikasi level up + achievement unlock + koin
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&progression=1"
+
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
@@ -77,3 +81,4 @@ Parameter debug headless:
 | 0 | - | - | - | - | - | - | - | Foundation, belum runtime QA |
 | 1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T07 ✅, T18 ⏳ manual, T15 ⏳ manual | Smoke matrix + E2E CDP: load, menu, world+UI, movement (arrow → 1200,800→1527,800 & y↓), world bounds aktif, anim idle(2)/walk(3) frame OK, pause toggle `PLAYING⇄PAUSE` OK. T15/T18 pending QA device nyata. |
 | 4 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T09 ✅ | Quest: Misi 01 auto-start bicara Bu Ratna → baca papan info → lapor Pak Dedi; `QUEST_COMPLETED` terkirim + reward XP/Coins; tracker HUD tampil (`?quest=1` smoke; unit harness juga verified load 1 quest, objective talk/interact). |
+| 5 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T11 ✅, T09 ✅ | Progression: XP pasif + quest → level 2–3, level-up; Achievement unlock (first_step, first_collectible, village_helper, perfect_mission) + reward XP/Koin; coin economy (`totalEarned`); collectible klaim nyata via player walk-in (2/20); transition fix restart (`?progression=1` + `?transition=1` smoke). HUD progress bar & Achievement UI tampil. |

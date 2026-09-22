@@ -60,7 +60,7 @@ function emitMap({ id, name, w, h, spawn, build }) {
   const ground = grid(w, h, G.grass);
   const road = grid(w, h, 0);
   const water = grid(w, h, 0);
-  const out = { buildings: [], objects: [], pois: [], transitions: [] };
+  const out = { buildings: [], objects: [], pois: [], transitions: [], collectibles: [] };
   build({ ground, road, water, out, w, h, rnd: mulberry32(hash(id)) });
   const env = {
     weather: "clear",
@@ -80,6 +80,7 @@ function emitMap({ id, name, w, h, spawn, build }) {
     objects: out.objects,
     pois: out.pois,
     transitions: out.transitions,
+    collectibles: out.collectibles,
     createdBy: "tools/build-maps.js",
   };
 }
@@ -90,6 +91,9 @@ function hash(str) {
 }
 function addObject(list, type, x, y, extra = {}) {
   list.push({ type, x, y, ...extra });
+}
+function addCollectible(list, itemId, x, y, extra = {}) {
+  list.push({ itemId, x, y, ...extra });
 }
 
 const maps = {};
@@ -254,6 +258,13 @@ maps.desa_harmoni = emitMap({
       { id: "to_pasar_rakyat", label: "Pasar Rakyat", x: 16, y: 58, width: 9, height: 2, target: "pasar_rakyat", targetSpawn: { x: 30, y: 4 } },
       { id: "to_tps", label: "TPS", x: 18, y: 4, width: 4, height: 4, target: "tps", targetSpawn: { x: 24, y: 24 } }
     );
+
+    // === Collectible ===
+    const C = (x, y, itemId) => addCollectible(out.collectibles, itemId, x, y);
+    C(9, 14, "ctl_buku_pemilu");
+    C(40, 44, "ctl_koin_warga");
+    C(18, 33, "ctl_poster_kampanye");
+    C(66, 25, "ctl_lencana_relawan");
     void tx;
   },
 });
@@ -300,6 +311,11 @@ maps.sekolah_nusantara = emitMap({
     out.transitions.push(
       { id: "to_desa", label: "Desa Harmoni", x: 26, y: 38, width: 9, height: 2, target: "desa_harmoni", targetSpawn: { x: 50, y: 4 } }
     );
+    const C = (x, y, itemId) => addCollectible(out.collectibles, itemId, x, y);
+    C(24, 24, "ctl_buku_pancasila");
+    C(46, 14, "ctl_koin_cerdas");
+    C(12, 24, "ctl_poster_siswa");
+    C(49, 33, "ctl_lencana_siswa");
   },
 });
 
@@ -335,6 +351,11 @@ maps.pasar_rakyat = emitMap({
     out.transitions.push(
       { id: "to_desa", label: "Desa Harmoni", x: 26, y: 0, width: 9, height: 2, target: "desa_harmoni", targetSpawn: { x: 19, y: 55 } }
     );
+    const C = (x, y, itemId) => addCollectible(out.collectibles, itemId, x, y);
+    C(14, 22, "ctl_koin_pasar");
+    C(30, 28, "ctl_buku_kewarganegaraan");
+    C(20, 32, "ctl_poster_warga");
+    C(55, 12, "ctl_lencana_pedagang");
   },
 });
 
@@ -401,6 +422,11 @@ maps.pusat_kota = emitMap({
     out.transitions.push(
       { id: "to_desa", label: "Desa Harmoni", x: 0, y: 12, width: 2, height: 9, target: "desa_harmoni", targetSpawn: { x: 5, y: 29 } }
     );
+    const C = (x, y, itemId) => addCollectible(out.collectibles, itemId, x, y);
+    C(26, 18, "ctl_buku_kota");
+    C(49, 28, "ctl_koin_kota");
+    C(22, 38, "ctl_poster_wakil");
+    C(52, 38, "ctl_lencana_warga");
   },
 });
 
@@ -441,6 +467,11 @@ maps.tps = emitMap({
     out.transitions.push(
       { id: "to_desa", label: "Desa Harmoni", x: 18, y: 30, width: 13, height: 2, target: "desa_harmoni", targetSpawn: { x: 20, y: 9 } }
     );
+    const C = (x, y, itemId) => addCollectible(out.collectibles, itemId, x, y);
+    C(20, 12, "ctl_buku_tatacara");
+    C(30, 16, "ctl_koin_demokrasi");
+    C(14, 16, "ctl_poster_coblos");
+    C(5, 14, "ctl_lencana_pemilih");
   },
 });
 

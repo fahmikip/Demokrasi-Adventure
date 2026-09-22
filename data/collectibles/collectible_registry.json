@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "updated": "2026-09-17",
+  "description": "Registry collectible — metadata item yang bisa dikoleksi pemain. Penempatan per peta ada di data/maps/*.json (kunci `collectibles`).",
+  "collectibles": [
+    {
+      "id": "ctl_buku_pemilu",
+      "kind": "book",
+      "name": "Buku Panduan Pemilu",
+      "description": "Buku ringkas tata cara memilih.",
+      "texture": "collectible_book",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 10,
+      "coins": 0
+    },
+    {
+      "id": "ctl_koin_warga",
+      "kind": "coin",
+      "name": "Koin Warga",
+      "description": "Koin kebanggaan warga Desa Harmoni.",
+      "texture": "collectible_coin",
+      "scale": 0.8,
+      "hidden": false,
+      "xp": 5,
+      "coins": 10
+    },
+    {
+      "id": "ctl_poster_kampanye",
+      "kind": "poster",
+      "name": "Poster Kampanye",
+      "description": "Poster sosialisasi pemilu yang informatif.",
+      "texture": "collectible_poster",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 5,
+      "coins": 5
+    },
+    {
+      "id": "ctl_lencana_relawan",
+      "kind": "badge",
+      "name": "Lencana Relawan",
+      "description": "Lencana tersembunyi milik relawan desa.",
+      "texture": "collectible_badge",
+      "scale": 0.8,
+      "hidden": true,
+      "xp": 15,
+      "coins": 10
+    },
+    {
+      "id": "ctl_buku_pancasila",
+      "kind": "book",
+      "name": "Buku Pancasila",
+      "description": "Panduan nilai kebangsaan di sekolah.",
+      "texture": "collectible_book",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 10,
+      "coins": 0
+    },
+    {
+      "id": "ctl_poster_siswa",
+      "kind": "poster",
+      "name": "Poster Siswa",
+      "description": "Poster karya siswa tentang pemilu bersih.",
+      "texture": "collectible_poster",
+      "scale": 0.9,
+      "hidden": true,
+      "xp": 20,
+      "coins": 5
+    },
+    {
+      "id": "ctl_koin_cerdas",
+      "kind": "coin",
+      "name": "Koin Cerdas",
+      "description": "Koin penghargaan kegiatan sekolah.",
+      "texture": "collectible_coin",
+      "scale": 0.8,
+      "hidden": false,
+      "xp": 5,
+      "coins": 10
+    },
+    {
+      "id": "ctl_lencana_siswa",
+      "kind": "badge",
+      "name": "Lencana Siswa",
+      "description": "Lencana siswa teladan Nusantara.",
+      "texture": "collectible_badge",
+      "scale": 0.8,
+      "hidden": false,
+      "xp": 10,
+      "coins": 5
+    },
+    {
+      "id": "ctl_buku_kewarganegaraan",
+      "kind": "book",
+      "name": "Buku Kewarganegaraan",
+      "description": "Buku pendidikan warga negara.",
+      "texture": "collectible_book",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 10,
+      "coins": 0
+    },
+    {
+      "id": "ctl_koin_pasar",
+      "kind": "coin",
+      "name": "Koin Dagangan",
+      "description": "Koin hasil jual-beli di Pasar Rakyat.",
+      "texture": "collectible_coin",
+      "scale": 0.8,
+      "hidden": false,
+      "xp": 5,
+      "coins": 10
+    },
+    {
+      "id": "ctl_poster_warga",
+      "kind": "poster",
+      "name": "Poster Warga",
+      "description": "Poster ajakan partisipasi warga.",
+      "texture": "collectible_poster",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 5,
+      "coins": 5
+    },
+    {
+      "id": "ctl_lencana_pedagang",
+      "kind": "badge",
+      "name": "Lencana Pedagang",
+      "description": "Lencana tersembunyi dari pedagang pasar.",
+      "texture": "collectible_badge",
+      "scale": 0.8,
+      "hidden": true,
+      "xp": 15,
+      "coins": 10
+    },
+    {
+      "id": "ctl_buku_tatacara",
+      "kind": "book",
+      "name": "Buku Tatacara Pemungutan",
+      "description": "Petunjuk lengkap proses pemungutan suara.",
+      "texture": "collectible_book",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 10,
+      "coins": 0
+    },
+    {
+      "id": "ctl_koin_demokrasi",
+      "kind": "coin",
+      "name": "Koin Demokrasi",
+      "description": "Koin peraga simulasi di TPS.",
+      "texture": "collectible_coin",
+      "scale": 0.8,
+      "hidden": false,
+      "xp": 5,
+      "coins": 10
+    },
+    {
+      "id": "ctl_poster_coblos",
+      "kind": "poster",
+      "name": "Poster Coblos",
+      "description": "Poster tersembunyi panduan mencoblos.",
+      "texture": "collectible_poster",
+      "scale": 0.9,
+      "hidden": true,
+      "xp": 20,
+      "coins": 5
+    },
+    {
+      "id": "ctl_lencana_pemilih",
+      "kind": "badge",
+      "name": "Lencana Pemilih",
+      "description": "Lencana pemilih muda yang siap memilih.",
+      "texture": "collectible_badge",
+      "scale": 0.8,
+      "hidden": false,
+      "xp": 10,
+      "coins": 5
+    },
+    {
+      "id": "ctl_buku_kota",
+      "kind": "book",
+      "name": "Buku Pedoman Warga",
+      "description": "Buku panduan hak dan kewajiban warga kota.",
+      "texture": "collectible_book",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 10,
+      "coins": 0
+    },
+    {
+      "id": "ctl_koin_kota",
+      "kind": "coin",
+      "name": "Koin Warga Kota",
+      "description": "Koin penghargaan untuk warga yang peduli.",
+      "texture": "collectible_coin",
+      "scale": 0.8,
+      "hidden": false,
+      "xp": 5,
+      "coins": 10
+    },
+    {
+      "id": "ctl_poster_wakil",
+      "kind": "poster",
+      "name": "Poster Sang Wakil",
+      "description": "Poster sosialisasi wakil rakyat yang amanah.",
+      "texture": "collectible_poster",
+      "scale": 0.9,
+      "hidden": false,
+      "xp": 5,
+      "coins": 5
+    },
+    {
+      "id": "ctl_lencana_warga",
+      "kind": "badge",
+      "name": "Lencana Warga",
+      "description": "Lencana tersembunyi warga kota yang aktif.",
+      "texture": "collectible_badge",
+      "scale": 0.8,
+      "hidden": true,
+      "xp": 15,
+      "coins": 10
+    }
+  ]
+}

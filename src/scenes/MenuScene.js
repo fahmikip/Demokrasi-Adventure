@@ -6,6 +6,10 @@ import { GameState } from "../core/GameState.js";
 import { Config } from "../core/Config.js";
 import { AudioManager } from "../audio/AudioManager.js";
 import { ProgressState } from "../core/ProgressState.js";
+import { AchievementManager } from "../progression/AchievementManager.js";
+import { CollectibleManager } from "../collectibles/CollectibleManager.js";
+import { QuestManager } from "../quest/QuestManager.js";
+import { AreaState } from "../map/AreaState.js";
 import { Panel } from "../ui/Panel.js";
 import { makeButton } from "../ui/widgets.js";
 
@@ -71,7 +75,7 @@ export class MenuScene extends Phaser.Scene {
     });
 
     this.add
-      .text(this.scale.width - 12, this.scale.height - 8, "v1.0.0", {
+      .text(this.scale.width - 12, this.scale.height - 8, "v1.1.0", {
         fontFamily: Config.UI.FONT_FAMILY,
         fontSize: "12px",
         color: "#95a5a6",
@@ -99,10 +103,14 @@ export class MenuScene extends Phaser.Scene {
       else this.scale.exitFullscreen();
     });
 
-    panel.addButton("Reset Simpan (placeholder)", () => {
-      console.info("[MenuScene] Reset Simpan dipanggil (placeholder).");
+    panel.addButton("Reset Simpan", () => {
       ProgressState.reset();
+      QuestManager.reset();
+      AreaState.reset();
+      AchievementManager.reset();
+      CollectibleManager.reset();
       localStorage.removeItem(Config.SAVE.KEY);
+      console.info("[MenuScene] Semua progresi game direset.");
     }, { color: 0x7f8c8d, hoverColor: 0x6c7a85, width: 260, height: 48 });
 
     panel.addButton("Tutup", () => panel.close(), { width: 120, height: 40 });
@@ -115,7 +123,7 @@ export class MenuScene extends Phaser.Scene {
     panel.addLabel("Jelajahi Kotanya. Temukan Informasinya. Pahami Prosesnya.", { fontSize: 14, color: "#7f8c8d" });
     panel.addLabel("Game petualangan 2D edukasi tentang", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("literasi demokrasi & pemilu untuk pemilih pemula.", { fontSize: 14, color: "#2c2c2c" });
-    panel.addLabel("Versi 1.0.0 - Phase 1", { fontSize: 14, color: "#2c2c2c" });
+    panel.addLabel("Versi 1.1.0 — Phase 5: Progression & Achievement", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("Kredit: Tim Pengembang Demokrasi Adventure", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("Phaser 3 • HTML5 • JavaScript ES Modules • PWA", { fontSize: 12, color: "#95a5a6" });
 

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "dialogue_explorer",
+  "category": "Percakapan",
+  "title": "Pendengar Setia",
+  "description": "Selesaikan 8 percakapan dengan berbagai warga.",
+  "icon": "talk",
+  "reward": { "xp": 15, "coins": 5 },
+  "condition": { "event": "DIALOGUE_STARTED", "mode": "count", "count": 8 }
+}

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-09-18",
+  "updated": "2026-09-22",
   "schema": {
     "id": "<category>_<name>_<variant>",
     "status": "approved | placeholder",
@@ -415,6 +415,61 @@
       "generatedBy": "src/audio/AudioManager.js",
       "format": "silence",
       "notes": "Ambilannya hening; musik ambient final dicari (ASSET_BACKLOG)."
+    },
+    {
+      "id": "icons_icon_trophy",
+      "category": "icons",
+      "name": "icon_trophy",
+      "variant": null,
+      "status": "placeholder",
+      "origin": "procedural",
+      "generatedBy": "src/core/PlaceholderAssets.js::_generateIcons",
+      "format": "texture",
+      "notes": "Key: icon_trophy."
+    },
+    {
+      "id": "collectibles_collectible_book",
+      "category": "collectibles",
+      "name": "collectible_book",
+      "variant": null,
+      "status": "placeholder",
+      "origin": "procedural",
+      "generatedBy": "src/core/PlaceholderAssets.js::_generateCollectibles",
+      "format": "texture",
+      "notes": "Key: collectible_book."
+    },
+    {
+      "id": "collectibles_collectible_coin",
+      "category": "collectibles",
+      "name": "collectible_coin",
+      "variant": null,
+      "status": "placeholder",
+      "origin": "procedural",
+      "generatedBy": "src/core/PlaceholderAssets.js::_generateCollectibles",
+      "format": "texture",
+      "notes": "Key: collectible_coin."
+    },
+    {
+      "id": "collectibles_collectible_poster",
+      "category": "collectibles",
+      "name": "collectible_poster",
+      "variant": null,
+      "status": "placeholder",
+      "origin": "procedural",
+      "generatedBy": "src/core/PlaceholderAssets.js::_generateCollectibles",
+      "format": "texture",
+      "notes": "Key: collectible_poster."
+    },
+    {
+      "id": "collectibles_collectible_badge",
+      "category": "collectibles",
+      "name": "collectible_badge",
+      "variant": null,
+      "status": "placeholder",
+      "origin": "procedural",
+      "generatedBy": "src/core/PlaceholderAssets.js::_generateCollectibles",
+      "format": "texture",
+      "notes": "Key: collectible_badge."
     }
   ]
 }

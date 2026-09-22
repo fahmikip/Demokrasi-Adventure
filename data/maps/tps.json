@@ -5197,5 +5197,27 @@
       }
     }
   ],
+  "collectibles": [
+    {
+      "itemId": "ctl_buku_tatacara",
+      "x": 20,
+      "y": 12
+    },
+    {
+      "itemId": "ctl_koin_demokrasi",
+      "x": 30,
+      "y": 16
+    },
+    {
+      "itemId": "ctl_poster_coblos",
+      "x": 14,
+      "y": 16
+    },
+    {
+      "itemId": "ctl_lencana_pemilih",
+      "x": 5,
+      "y": 14
+    }
+  ],
   "createdBy": "tools/build-maps.js"
 }

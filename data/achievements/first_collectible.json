@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "first_collectible",
+  "category": "Koleksi",
+  "title": "Kolektor Pertama",
+  "description": "Ambil collectible pertamamu di dunia.",
+  "icon": "collectible",
+  "reward": { "xp": 5, "coins": 0 },
+  "condition": { "event": "ITEM_COLLECTED", "mode": "count", "count": 1 }
+}

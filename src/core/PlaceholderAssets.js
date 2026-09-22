@@ -25,6 +25,7 @@ export function generatePlaceholderTextures(scene) {
   _generateObjects(scene);
   _generatePlayerSheet(scene);
   _generateIcons(scene);
+  _generateCollectibles(scene);
   _generateJoystickTextures(scene);
   _generateMarker(scene);
 }
@@ -1051,6 +1052,103 @@ function _generateMarker(scene) {
   g.fillRect(14, 20, 4, 3);
   g.generateTexture("interact_marker", 32, 32);
   g.destroy();
+}
+
+function _generateCollectibles(scene) {
+  // buku
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0x000000, 0.16);
+    g.fillEllipse(15, 26, 26, 5);
+    g.fillStyle(0xc0392b);
+    g.fillRect(4, 6, 8, 18);
+    g.fillStyle(0xfdf6e3);
+    g.fillRect(11, 5, 16, 19);
+    g.lineStyle(1, 0x2c3e50, 0.6);
+    g.strokeRect(11, 5, 16, 19);
+    g.lineStyle(1, 0x2c3e50, 0.4);
+    g.strokeLineShape(new Phaser.Geom.Line(14, 10, 24, 10));
+    g.strokeLineShape(new Phaser.Geom.Line(13, 15, 24, 15));
+    g.fillStyle(0xc0392b);
+    g.fillRect(14, 8, 9, 2);
+    g.generateTexture("collectible_book", 31, 27);
+    g.destroy();
+  }
+
+  // poster
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0x000000, 0.16);
+    g.fillEllipse(15, 27, 22, 4);
+    g.fillStyle(0xfdf6e3);
+    g.fillRect(3, 2, 12, 24);
+    g.lineStyle(1, 0xc0392b, 0.8);
+    g.strokeRect(3, 2, 12, 24);
+    g.fillStyle(0xc0392b);
+    g.fillCircle(9, 9, 3);
+    g.fillStyle(0x2c3e50);
+    g.fillRect(5, 16, 8, 2);
+    g.fillRect(5, 20, 6, 2);
+    g.fillStyle(0xc0392b);
+    g.fillRect(4, 26, 10, 2);
+    g.generateTexture("collectible_poster", 19, 30);
+    g.destroy();
+  }
+
+  // koin
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(COLORS.gold);
+    g.fillCircle(13, 13, 12);
+    g.lineStyle(2, COLORS.goldDark, 1);
+    g.strokeCircle(13, 13, 12);
+    g.lineStyle(1, COLORS.goldDark, 1);
+    g.strokeCircle(13, 13, 9);
+    g.fillStyle(0xc0392b);
+    g.fillCircle(13, 13, 4);
+    g.fillStyle(0xffffff, 0.9);
+    g.fillCircle(13, 13, 1.6);
+    g.generateTexture("collectible_coin", 26, 26);
+    g.destroy();
+  }
+
+  // lencana
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0x000000, 0.16);
+    g.fillEllipse(14, 25, 24, 4);
+    g.fillStyle(0x95a5a6);
+    g.fillRect(12, 22, 4, 6);
+    g.fillCircle(14, 22, 3);
+    g.fillStyle(0x2c3e50);
+    g.fillCircle(13, 13, 10);
+    g.fillStyle(0x34495e);
+    g.fillCircle(13, 13, 8);
+    g.fillStyle(COLORS.gold);
+    const star = _starPoints(13, 13, 6, 3, 5);
+    g.fillPoints(star, true);
+    g.generateTexture("collectible_badge", 27, 28);
+    g.destroy();
+  }
+
+  // ikon trofi (untuk tombol PRESTASI di HUD)
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0x000000, 0.5);
+    g.fillCircle(20, 20, 18);
+    g.lineStyle(3, COLORS.gold, 1);
+    g.strokeRect(10, 8, 20, 14);
+    g.fillStyle(COLORS.gold, 0.9);
+    g.fillRect(16, 8, 8, 14);
+    g.lineStyle(2, COLORS.gold, 1);
+    g.strokeLineShape(new Phaser.Geom.Line(14, 8, 10, 2));
+    g.strokeLineShape(new Phaser.Geom.Line(26, 8, 30, 2));
+    g.strokeLineShape(new Phaser.Geom.Line(18, 22, 18, 28));
+    g.strokeLineShape(new Phaser.Geom.Line(18, 28, 14, 32));
+    g.strokeLineShape(new Phaser.Geom.Line(18, 28, 22, 32));
+    g.generateTexture("icon_trophy", 40, 40);
+    g.destroy();
+  }
 }
 
 function _starPoints(cx, cy, outer, inner, points) {

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "quest_master",
+  "category": "Misi",
+  "title": "Jagoan Misi",
+  "description": "Selesaikan 3 misi.",
+  "icon": "quest",
+  "reward": { "xp": 40, "coins": 20 },
+  "condition": { "event": "QUEST_COMPLETED", "mode": "count", "count": 3 }
+}

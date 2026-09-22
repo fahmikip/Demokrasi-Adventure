@@ -8425,5 +8425,27 @@
       }
     }
   ],
+  "collectibles": [
+    {
+      "itemId": "ctl_buku_kota",
+      "x": 26,
+      "y": 18
+    },
+    {
+      "itemId": "ctl_koin_kota",
+      "x": 49,
+      "y": 28
+    },
+    {
+      "itemId": "ctl_poster_wakil",
+      "x": 22,
+      "y": 38
+    },
+    {
+      "itemId": "ctl_lencana_warga",
+      "x": 52,
+      "y": 38
+    }
+  ],
   "createdBy": "tools/build-maps.js"
 }

@@ -133,8 +133,29 @@ export const Config = {
     SFX_DEFAULT: 1,
   },
 
+  PROGRESSION: {
+    LEVELS: [
+      { level: 1, name: "Pemula", xpRequired: 0 },
+      { level: 2, name: "Penjelajah", xpRequired: 60 },
+      { level: 3, name: "Pencari Informasi", xpRequired: 160 },
+      { level: 4, name: "Literasi Digital", xpRequired: 300 },
+      { level: 5, name: "Penjelajah Demokrasi", xpRequired: 500 },
+    ],
+    MAX_LEVEL: 5,
+    EVENTS: {
+      dialogue_xp: 10,
+      poi_xp: 8,
+      area_xp: 15,
+      collectible_xp: 10,
+    },
+    COLLECTIBLES: {
+      COIN_VALUE: 5,
+      RADIUS: 28,
+    },
+  },
+
   ACHIEVEMENTS: {
-    MAX: 15,
+    MAX: 18,
   },
 
   PATHS: {
@@ -144,6 +165,7 @@ export const Config = {
     DIALOGUES: "data/dialogues/",
     ITEMS: "data/items/",
     ACHIEVEMENTS: "data/achievements/",
+    COLLECTIBLES: "data/collectibles/",
     EDUCATION: "data/education/",
     ASSETS_CHARACTERS: "assets/characters/",
     ASSETS_MAPS: "assets/maps/",

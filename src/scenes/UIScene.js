@@ -13,7 +13,11 @@ import { PauseMenu } from "../ui/PauseMenu.js";
 import { DebugOverlay } from "../ui/DebugOverlay.js";
 import { WorldMapUI } from "../ui/WorldMapUI.js";
 import { QuestTracker } from "../ui/QuestTracker.js";
+import { AchievementUI } from "../ui/AchievementUI.js";
 import { QuestManager } from "../quest/QuestManager.js";
+import { XPManager } from "../progression/XPManager.js";
+import { AchievementManager } from "../progression/AchievementManager.js";
+import { ProgressState } from "../core/ProgressState.js";
 
 export class UIScene extends Phaser.Scene {
   constructor() {
@@ -31,6 +35,7 @@ export class UIScene extends Phaser.Scene {
     this._buildDebug();
     this._buildQuestTracker();
     this.worldMapUI = new WorldMapUI(this);
+    this.achievementUI = new AchievementUI(this);
 
     if (!this.questsLoaded) {
       this.questsLoaded = true;
@@ -39,9 +44,17 @@ export class UIScene extends Phaser.Scene {
       });
     }
 
+    XPManager.ensureBound();
+    AchievementManager.load().catch((err) => {
+      console.warn("[UIScene] AchievementManager.load gagal:", err);
+    });
+
     this._subscriptions = [
-      EventBus.on("PROGRESS_CHANGED", ({ level, xp, coins }) => {
-        this.hud.setStats({ level, xp, coins });
+      EventBus.on("PROGRESS_CHANGED", (stats) => {
+        this.hud.setStats(stats);
+      }),
+      EventBus.on("XP_GAINED", () => {
+        if (this.hud) this.hud.setStats(ProgressState.snapshot());
       }),
       EventBus.on("DIALOGUE_STARTED", () => this._onUiBlocker(true)),
       EventBus.on("DIALOGUE_COMPLETED", () => this._onUiBlocker(false)),
@@ -49,6 +62,13 @@ export class UIScene extends Phaser.Scene {
       EventBus.on("POI_INTERACTED", ({ poi }) =>
         this._showToast(`📍 ${poi.name || "Landmark"}`)
       ),
+      EventBus.on("ITEM_COLLECTED", ({ item }) =>
+        this._showToast(`${item ? item.name : "Collectible"} ditemukan!`)
+      ),
+      EventBus.on("ACHIEVEMENT_UNLOCKED", ({ achievement }) => {
+        this._achievementToast(achievement);
+        if (Config.DEBUG) console.info(`[Prestasi] ${achievement.title}`);
+      }),
     ];
   }
 
@@ -71,6 +91,8 @@ export class UIScene extends Phaser.Scene {
     if (this.inputManager.consumePause()) {
       if (this.worldMapUI.isOpen) {
         this.worldMapUI.close();
+      } else if (this.achievementUI.isOpen) {
+        this.achievementUI.close();
       } else if (!this._isUiBlocked()) {
         this.togglePause();
       }
@@ -127,6 +149,15 @@ export class UIScene extends Phaser.Scene {
     if (im.consumeDebugKey("F7")) DebugState.showCollision = !DebugState.showCollision;
     if (im.consumeDebugKey("F8")) DebugState.showGrid = !DebugState.showGrid;
     if (im.consumeDebugKey("F9")) DebugState.showPOI = !DebugState.showPOI;
+    if (im.consumeDebugKey("F4")) {
+      XPManager.addXP(25, "debug");
+      this._showToast("+25 XP (debug)");
+    }
+    if (im.consumeDebugKey("F5")) {
+      const unlocked = AchievementManager.unlockRandomForDebug();
+      if (unlocked) this._showToast(`🏆 Debug: ${unlocked.title}`);
+      else this._showToast("Semua prestasi sudah terbuka");
+    }
   }
 
   // ==================== UI building ====================
@@ -186,10 +217,36 @@ export class UIScene extends Phaser.Scene {
     });
   }
 
+  _achievementToast(achievement) {
+    const msg = achievement && achievement.title ? `🏆 Prestasi: ${achievement.title}` : "🏆 Prestasi terbuka!";
+    const t = this.achToast || (this.achToast = this.add
+      .text(this.scale.width / 2, 140, "", {
+        fontFamily: Config.UI.FONT_FAMILY,
+        fontSize: "18px",
+        fontStyle: "bold",
+        color: "#2c3e50",
+        backgroundColor: "#f1c40f",
+        padding: { x: 18, y: 10 },
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(9561)
+      .setAlpha(0));
+    t.setText(msg).setAlpha(1);
+    this.tweens.killTweensOf(t);
+    this.time.delayedCall(3400, () => {
+      this.tweens.add({ targets: t, alpha: 0, duration: 700 });
+    });
+  }
+
   _buildPause() {
     this.pauseMenu = new PauseMenu(this, {
       onResume: () => this._resume(),
       onQuit: () => this._quitToMenu(),
+      onAchievements: () => {
+        this._resume();
+        this.achievementUI.open();
+      },
     });
   }
 
@@ -204,6 +261,20 @@ export class UIScene extends Phaser.Scene {
   _buildTouchControls() {
     const w = this.scale.width;
     const h = this.scale.height;
+
+    // tombol prestasi (trophy)
+    this.achBtn = this.add
+      .image(w - 134, 34, "icon_trophy")
+      .setScrollFactor(0)
+      .setDepth(8700)
+      .setInteractive({ useHandCursor: true });
+    this.achBtn.on("pointerup", () => {
+      if (this.achievementUI.isOpen) {
+        this.achievementUI.close();
+      } else if (GameState.current === "PLAYING" && !this._isUiBlocked()) {
+        this.achievementUI.open();
+      }
+    });
 
     // tombol peta (icon_map)
     this.mapBtn = this.add

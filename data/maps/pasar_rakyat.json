@@ -7617,5 +7617,27 @@
       }
     }
   ],
+  "collectibles": [
+    {
+      "itemId": "ctl_koin_pasar",
+      "x": 14,
+      "y": 22
+    },
+    {
+      "itemId": "ctl_buku_kewarganegaraan",
+      "x": 30,
+      "y": 28
+    },
+    {
+      "itemId": "ctl_poster_warga",
+      "x": 20,
+      "y": 32
+    },
+    {
+      "itemId": "ctl_lencana_pedagang",
+      "x": 55,
+      "y": 12
+    }
+  ],
   "createdBy": "tools/build-maps.js"
 }

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "updated": "2026-09-17",
+  "description": "Registry achievement — daftar semua prestasi di Demokrasi-Adventure. Konten netral & edukatif (netralitas, no condong).",
+  "achievements": [
+    { "id": "first_step", "file": "first_step.json" },
+    { "id": "dialogue_explorer", "file": "dialogue_explorer.json" },
+    { "id": "curious_mind", "file": "curious_mind.json" },
+    { "id": "knowledge_seeker", "file": "knowledge_seeker.json" },
+    { "id": "information_hunter", "file": "information_hunter.json" },
+    { "id": "explorer", "file": "explorer.json" },
+    { "id": "complete_explorer", "file": "complete_explorer.json" },
+    { "id": "city_explorer", "file": "city_explorer.json" },
+    { "id": "first_simulation", "file": "first_simulation.json" },
+    { "id": "village_helper", "file": "village_helper.json" },
+    { "id": "quest_master", "file": "quest_master.json" },
+    { "id": "perfect_mission", "file": "perfect_mission.json" },
+    { "id": "first_collectible", "file": "first_collectible.json" },
+    { "id": "collectible_gatherer", "file": "collectible_gatherer.json" },
+    { "id": "hidden_discovery", "file": "hidden_discovery.json" },
+    { "id": "coin_collector", "file": "coin_collector.json" },
+    { "id": "adventure_complete", "file": "adventure_complete.json" }
+  ]
+}
