@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "updated": "2026-09-22",
+  "description": "Registry materi edukasi (kartu jurnal) — konten netral & edukatif. Setiap kartu memiliki kategori, konten, source, dan lastUpdated. Enggine hanya menyajikan isi file; update konten cukup edit di sini tanpa mengubah kode.",
+  "categories": [
+    "Pemilu",
+    "Pemilih",
+    "Tahapan",
+    "Informasi",
+    "Literasi Digital",
+    "TPS",
+    "Penyelenggara"
+  ],
+  "cards": [
+    { "id": "edu_pemilu_01", "file": "edu_pemilu_01.json" },
+    { "id": "edu_pemilu_02", "file": "edu_pemilu_02.json" },
+    { "id": "edu_pemilih_01", "file": "edu_pemilih_01.json" },
+    { "id": "edu_pemilih_02", "file": "edu_pemilih_02.json" },
+    { "id": "edu_pemilih_03", "file": "edu_pemilih_03.json" },
+    { "id": "edu_pemilih_04", "file": "edu_pemilih_04.json" },
+    { "id": "edu_pemilih_05", "file": "edu_pemilih_05.json" },
+    { "id": "edu_tahapan_01", "file": "edu_tahapan_01.json" },
+    { "id": "edu_tahapan_02", "file": "edu_tahapan_02.json" },
+    { "id": "edu_informasi_01", "file": "edu_informasi_01.json" },
+    { "id": "edu_informasi_02", "file": "edu_informasi_02.json" },
+    { "id": "edu_informasi_03", "file": "edu_informasi_03.json" },
+    { "id": "edu_literasi_01", "file": "edu_literasi_01.json" },
+    { "id": "edu_literasi_02", "file": "edu_literasi_02.json" },
+    { "id": "edu_tps_01", "file": "edu_tps_01.json" },
+    { "id": "edu_tps_02", "file": "edu_tps_02.json" },
+    { "id": "edu_tps_03", "file": "edu_tps_03.json" },
+    { "id": "edu_penyelenggara_01", "file": "edu_penyelenggara_01.json" }
+  ]
+}

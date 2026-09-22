@@ -52,13 +52,13 @@ GAME_STATE_CHANGED, ASSETS_LOADED, PROGRESS_CHANGED, PLAYER_STATE_CHANGED
 DIALOGUE_STARTED, DIALOGUE_COMPLETED,
 QUEST_STARTED, QUEST_PROGRESSED, QUEST_COMPLETED,
 ITEM_COLLECTED, XP_GAINED, LEVEL_UP, COIN_CHANGED,
-ACHIEVEMENT_UNLOCKED, AREA_ENTERED
+ACHIEVEMENT_UNLOCKED, AREA_ENTERED, JOURNAL_UPDATED
 ```
 Rencana event fase berikutnya:
 ```
 PLAYER_MOVED, INTERACTION_REQUESTED, NPC_INTERACTED,
 AREA_UNLOCKED,
-JOURNAL_UPDATED, SAVE_REQUESTED, LOAD_REQUESTED
+SAVE_REQUESTED, LOAD_REQUESTED
 ```
 
 ## 5. Struktur Folder
@@ -92,6 +92,7 @@ src/
 │   ├── Panel.js            — panel modal reusable (stepper/toggle/close)
 │   ├── PauseMenu.js        — menu pause (LANJUT/PRESTASI/PENGATURAN/KEMBALI)
 │   ├── AchievementUI.js    — overlay daftar achievement (scrollable, mask)
+│   ├── JournalUI.js        — overlay jurnal edu (7 kategori, scrollable, mask)
 │   ├── DebugOverlay.js     — overlay debug (F1)
 │   ├── widgets.js          — helper tombol & teks
 │   ├── QuestTracker.js     — tracker quest di HUD
@@ -124,8 +125,9 @@ src/
 ├── collectibles/
 │   ├── CollectibleData.js  — loader registry item
 │   └── CollectibleManager.js — spawn & klaim collectible (singleton)
-├── journal/                — (fase berikutnya)
-│   └── JournalManager.js
+├── journal/
+│   ├── JournalData.js      — loader data edukasi (data/education/*.json)
+│   └── JournalManager.js   — koleksi entri jurnal (quest + collectible, singleton)
 ├── map/
 │   ├── MapManager.js
 │   ├── WorldBuilder.js
@@ -153,7 +155,7 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 
 ## 6b. Player, Input & UI (Phase 1)
 
-- `InputManager` (dibuat di `UIScene`): keyboard WASD/Arrows + E (interaksi) + ESC (pause) + F1 (debug), expose `getVector()`, `consumeInteract()`, `consumePause()`, `consumeDebug()`; menyediakan joystick virtual bila perangkat touch.
+- `InputManager` (dibuat di `UIScene`): keyboard WASD/Arrows + E (interaksi) + ESC (pause) + M (peta) + J (jurnal) + F1 (debug), expose `getVector()`, `consumeInteract()`, `consumePause()`, `consumeMap()`, `consumeJournal()`, `consumeDebug()`; menyediakan joystick virtual bila perangkat touch.
 - `PlayerController` membaca vector input → menormalkan diagonal → set velocity pada `Player` (SPEED 180) bila `ui.isPlayable()`.
 - `Player`: state machine (IDLE/WALK/INTERACT/DISABLED), `facing` (up/down/left/right), animasi `idle_*` / `walk_*`, body 20×30, `collideWorldBounds`.
 - `WorldScene`: `tileSprite` ground/path placeholder, static group obstacle (tree/rock/building/wall) dengan collision body custom via `setSize`+`setOffset`, collider player↔obstacle, kamera follow (lerp 0.15, roundPixels), world edge bounds.
@@ -216,6 +218,15 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 - `AchievementUI`: overlay scrollable (mask + wheel); tombol trophy di HUD & menu PRESTASI di pause sambil tetap menyimpan state `ACHIEVEMENTS`.
 - Debug shortcut: `F4` tambah XP (25), `F5` buka achievement acak (lihat §14).
 
+## 11b. Journal & Education (Phase 6)
+
+- `JournalData` (data di `data/education/education_registry.json` + `edu_*.json`): memuat **18 kartu edukasi** — `{id, category, title, content, source, lastUpdated}`; `categories` (7) dari registry. Konten sepenuhnya data-driven; update materi = edit/add file JSON tanpa sentuh engine.
+- `JournalManager` (singleton, `src/journal/JournalManager.js`): mengumpulkan entri dari dua sumber — `QUEST_COMPLETED.journalEntries` (`id: quest:<questId>:<i>`) dan `ITEM_COLLECTED` (`item.journalId` → kartu `JournalData`, `id: collectible:<itemId>`). Setiap entri membawa `category/title/text/source/lastUpdated/origin`. Entri baru → `JOURNAL_UPDATED {entry, total}`. Dedup per id.
+- Collectible registry (`data/collectibles/collectible_registry.json`) kini memuat key `journalId` yang menunjuk kartu (semua 20 item terikat, seluruh 7 kategori tercakup).
+- `JournalUI` (`src/ui/JournalUI.js`): overlay scrollable (mask + wheel) dengan tab **Semua + 7 kategori** (masing-masing menampilkan count). Dibuka via tombol `J` (InputManager `consumeJournal`) atau state `JOURNAL`; `ESC`/TUTUP kembali ke `PLAYING`.
+- HUD menampilkan counter `📖 Jurnal N — tekan J` (via `HUD.setJournal`).
+- Debug shortcut: `J` toggle journal (F key di §14).
+
 ## 12. Save System
 
 - `SaveManager` serialize ke LocalStorage.
@@ -255,6 +266,7 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
   - `F4` add XP (Phase 5) ✅
   - `F5` unlock achievement acak (Phase 5) ✅
   - `F6` reset save (rencana)
+- Gameplay keys: `E` interaksi · `M` peta dunia · `J` jurnal (Phase 6) ✅
 - Smoke test otomatis (`?selftest=1`) hanya aktif saat `Config.DEBUG`.
 - Tidak diaktifkan pada production build.
 

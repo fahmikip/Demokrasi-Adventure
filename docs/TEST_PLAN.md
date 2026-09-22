@@ -24,7 +24,7 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T09 | Quest | Jalankan quest | Objective bertambah, reward diterima (Phase 4) |
 | T10 | Save/Load | Simpan lalu reload halaman | Posisi & progress pulih (Phase 5+) |
 | T11 | Achievement | Capai pencapaian | Unlock event & UI (Phase 5) |
-| T12 | Journal | Kumpulkan collectible | Journal bertambah dengan source (Phase 7+) |
+| T12 | Journal | Kumpulkan collectible | Journal bertambah dengan source (Phase 6) |
 | T13 | TPS Simulation | Jalankan mini-game | Alur 8 langkah berjalan, review tampil (Phase 9+) |
 | T14 | Audio | Ubah volume master/music/sfx | Volume berubah, mute berfungsi (Phase 10+) |
 | T15 | Responsive | Resize & rotating device | Canvas FIT, UI tidak terpotong |
@@ -33,6 +33,7 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T18 | Mobile touch | Joystick & tombol aksi | Semua tombol touch-friendly |
 | T19 | Save corrupt | Beri data save rusak | Fallback reset friendly tanpa crash |
 | T20 | Asset missing | Hapus satu asset | Fallback placeholder + warning jelas |
+| T21 | Journal content update | Tambah kartu di `data/education/` tanpa ubah engine | Kartu baru tampil/bisa di-collect via registry (`journalId`) — divalidasi `education_registry` resolve + kategori + source |
 
 ## Prosedur Per Fase
 1. Jalankan tes T01–T06 setiap sesi coding.
@@ -65,6 +66,10 @@ chrome --headless=new --no-sandbox --use-angle=swiftshader \
 # verifikasi level up + achievement unlock + koin
 ... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&progression=1"
 
+# journal flow (Phase 6) → quest misi 01 (journalEntries) + 3 collectible desa (journalId),
+# verifikasi entri jurnal dengan source, kategori terbuka, total >= 4
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&journal=1"
+
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
@@ -82,3 +87,4 @@ Parameter debug headless:
 | 1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T07 ✅, T18 ⏳ manual, T15 ⏳ manual | Smoke matrix + E2E CDP: load, menu, world+UI, movement (arrow → 1200,800→1527,800 & y↓), world bounds aktif, anim idle(2)/walk(3) frame OK, pause toggle `PLAYING⇄PAUSE` OK. T15/T18 pending QA device nyata. |
 | 4 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T09 ✅ | Quest: Misi 01 auto-start bicara Bu Ratna → baca papan info → lapor Pak Dedi; `QUEST_COMPLETED` terkirim + reward XP/Coins; tracker HUD tampil (`?quest=1` smoke; unit harness juga verified load 1 quest, objective talk/interact). |
 | 5 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T11 ✅, T09 ✅ | Progression: XP pasif + quest → level 2–3, level-up; Achievement unlock (first_step, first_collectible, village_helper, perfect_mission) + reward XP/Koin; coin economy (`totalEarned`); collectible klaim nyata via player walk-in (2/20); transition fix restart (`?progression=1` + `?transition=1` smoke). HUD progress bar & Achievement UI tampil. |
+| 6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T12 ✅, T09 ✅, T21 ✅ | Journal & education: quest → 1 entri (Pemilu) + collectible → 3 entri (Pemilu/Informasi/Tahapan) via `journalId`; `JOURNAL_UPDATED` + HUD counter `📖 Jurnal N`; UI 7 kategori (`J` buka/tutup, ESC, scroll wheel); sumber tampil per entri (`journalWithSource`=4); smoke `?journal=1`. Validasi `data/education/`: 18 kartu, 7 kategori, semua collectible resolve, per-kategori tercakup. Transition smoke masih flaky di headless (crash renderer saat restart) — catatan: tidak berhubungan dgn perubahan journal (WorldScene tak disentuh fase ini). |

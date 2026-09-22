@@ -26,6 +26,12 @@ export class HUD {
     this._drawBar(p);
   }
 
+  setJournal(count) {
+    const has = (count || 0) > 0;
+    this.journalText.setText(has ? `📖 Jurnal ${count} — tekan J` : "");
+    this.journalText.setAlpha(has ? 1 : 0);
+  }
+
   _short(name) {
     const max = 18;
     return name.length > max ? name.slice(0, max - 1) + "…" : name;
@@ -82,6 +88,20 @@ export class HUD {
     scene.add.image(x + 30, y + 28, "icon_lvl").setScrollFactor(0).setDepth(8500).setScale(0.72);
     scene.add.image(x + 164, y + 28, "icon_xp").setScrollFactor(0).setDepth(8500).setScale(0.72);
     scene.add.image(x + 258, y + 28, "icon_coins").setScrollFactor(0).setDepth(8500).setScale(0.72);
+
+    this.journalText = scene.add
+      .text(x, y + h + 6, "", {
+        fontFamily: Config.UI.FONT_FAMILY,
+        fontSize: "12px",
+        fontStyle: "bold",
+        color: "#fff",
+        backgroundColor: "#7f3ff2cc",
+        padding: { x: 8, y: 4 },
+      })
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+      .setDepth(8500)
+      .setAlpha(0);
   }
 
   _stat(x, y, color, size) {

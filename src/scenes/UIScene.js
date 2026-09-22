@@ -14,7 +14,10 @@ import { DebugOverlay } from "../ui/DebugOverlay.js";
 import { WorldMapUI } from "../ui/WorldMapUI.js";
 import { QuestTracker } from "../ui/QuestTracker.js";
 import { AchievementUI } from "../ui/AchievementUI.js";
+import { JournalUI } from "../ui/JournalUI.js";
 import { QuestManager } from "../quest/QuestManager.js";
+import { JournalData } from "../journal/JournalData.js";
+import { JournalManager } from "../journal/JournalManager.js";
 import { XPManager } from "../progression/XPManager.js";
 import { AchievementManager } from "../progression/AchievementManager.js";
 import { ProgressState } from "../core/ProgressState.js";
@@ -36,6 +39,7 @@ export class UIScene extends Phaser.Scene {
     this._buildQuestTracker();
     this.worldMapUI = new WorldMapUI(this);
     this.achievementUI = new AchievementUI(this);
+    this.journalUI = new JournalUI(this);
 
     if (!this.questsLoaded) {
       this.questsLoaded = true;
@@ -48,6 +52,12 @@ export class UIScene extends Phaser.Scene {
     AchievementManager.load().catch((err) => {
       console.warn("[UIScene] AchievementManager.load gagal:", err);
     });
+
+    JournalData.load()
+      .then(() => JournalManager.ensureBound())
+      .catch((err) => {
+        console.warn("[UIScene] JournalData.load gagal:", err);
+      });
 
     this._subscriptions = [
       EventBus.on("PROGRESS_CHANGED", (stats) => {
@@ -69,6 +79,12 @@ export class UIScene extends Phaser.Scene {
         this._achievementToast(achievement);
         if (Config.DEBUG) console.info(`[Prestasi] ${achievement.title}`);
       }),
+      EventBus.on("JOURNAL_UPDATED", ({ entry, total }) => {
+        if (entry && entry.title && !this.journalUI.isOpen) {
+          this._showToast(`📖 ${entry.title}`);
+        }
+        if (this.hud) this.hud.setJournal(total);
+      }),
     ];
   }
 
@@ -88,11 +104,21 @@ export class UIScene extends Phaser.Scene {
       }
     }
 
+    if (this.inputManager.consumeJournal()) {
+      if (this.journalUI.isOpen) {
+        this.journalUI.close();
+      } else if (GameState.current === "PLAYING" && !this._isUiBlocked()) {
+        this.journalUI.open();
+      }
+    }
+
     if (this.inputManager.consumePause()) {
       if (this.worldMapUI.isOpen) {
         this.worldMapUI.close();
       } else if (this.achievementUI.isOpen) {
         this.achievementUI.close();
+      } else if (this.journalUI.isOpen) {
+        this.journalUI.close();
       } else if (!this._isUiBlocked()) {
         this.togglePause();
       }

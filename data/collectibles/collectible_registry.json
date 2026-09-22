@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updated": "2026-09-17",
-  "description": "Registry collectible — metadata item yang bisa dikoleksi pemain. Penempatan per peta ada di data/maps/*.json (kunci `collectibles`).",
+  "updated": "2026-09-22",
+  "description": "Registry collectible — metadata item yang bisa dikoleksi pemain. Penempatan per peta ada di data/maps/*.json (kunci `collectibles`). `journalId` menautkan item ke kartu jurnal di data/education/.",
   "collectibles": [
     {
       "id": "ctl_buku_pemilu",
@@ -12,7 +12,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 10,
-      "coins": 0
+      "coins": 0,
+      "journalId": "edu_pemilu_01"
     },
     {
       "id": "ctl_koin_warga",
@@ -23,7 +24,8 @@
       "scale": 0.8,
       "hidden": false,
       "xp": 5,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_pemilih_04"
     },
     {
       "id": "ctl_poster_kampanye",
@@ -34,7 +36,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 5,
-      "coins": 5
+      "coins": 5,
+      "journalId": "edu_informasi_03"
     },
     {
       "id": "ctl_lencana_relawan",
@@ -45,7 +48,8 @@
       "scale": 0.8,
       "hidden": true,
       "xp": 15,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_tahapan_01"
     },
     {
       "id": "ctl_buku_pancasila",
@@ -56,7 +60,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 10,
-      "coins": 0
+      "coins": 0,
+      "journalId": "edu_pemilih_03"
     },
     {
       "id": "ctl_poster_siswa",
@@ -67,7 +72,8 @@
       "scale": 0.9,
       "hidden": true,
       "xp": 20,
-      "coins": 5
+      "coins": 5,
+      "journalId": "edu_literasi_01"
     },
     {
       "id": "ctl_koin_cerdas",
@@ -78,7 +84,8 @@
       "scale": 0.8,
       "hidden": false,
       "xp": 5,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_literasi_02"
     },
     {
       "id": "ctl_lencana_siswa",
@@ -89,7 +96,8 @@
       "scale": 0.8,
       "hidden": false,
       "xp": 10,
-      "coins": 5
+      "coins": 5,
+      "journalId": "edu_pemilih_02"
     },
     {
       "id": "ctl_buku_kewarganegaraan",
@@ -100,7 +108,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 10,
-      "coins": 0
+      "coins": 0,
+      "journalId": "edu_pemilih_01"
     },
     {
       "id": "ctl_koin_pasar",
@@ -111,7 +120,8 @@
       "scale": 0.8,
       "hidden": false,
       "xp": 5,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_informasi_02"
     },
     {
       "id": "ctl_poster_warga",
@@ -122,7 +132,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 5,
-      "coins": 5
+      "coins": 5,
+      "journalId": "edu_tahapan_02"
     },
     {
       "id": "ctl_lencana_pedagang",
@@ -133,7 +144,8 @@
       "scale": 0.8,
       "hidden": true,
       "xp": 15,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_pemilih_05"
     },
     {
       "id": "ctl_buku_tatacara",
@@ -144,7 +156,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 10,
-      "coins": 0
+      "coins": 0,
+      "journalId": "edu_tps_01"
     },
     {
       "id": "ctl_koin_demokrasi",
@@ -155,7 +168,8 @@
       "scale": 0.8,
       "hidden": false,
       "xp": 5,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_tps_03"
     },
     {
       "id": "ctl_poster_coblos",
@@ -166,7 +180,8 @@
       "scale": 0.9,
       "hidden": true,
       "xp": 20,
-      "coins": 5
+      "coins": 5,
+      "journalId": "edu_tps_02"
     },
     {
       "id": "ctl_lencana_pemilih",
@@ -177,7 +192,8 @@
       "scale": 0.8,
       "hidden": false,
       "xp": 10,
-      "coins": 5
+      "coins": 5,
+      "journalId": "edu_pemilih_02"
     },
     {
       "id": "ctl_buku_kota",
@@ -188,7 +204,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 10,
-      "coins": 0
+      "coins": 0,
+      "journalId": "edu_penyelenggara_01"
     },
     {
       "id": "ctl_koin_kota",
@@ -199,7 +216,8 @@
       "scale": 0.8,
       "hidden": false,
       "xp": 5,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_tahapan_01"
     },
     {
       "id": "ctl_poster_wakil",
@@ -210,7 +228,8 @@
       "scale": 0.9,
       "hidden": false,
       "xp": 5,
-      "coins": 5
+      "coins": 5,
+      "journalId": "edu_pemilu_02"
     },
     {
       "id": "ctl_lencana_warga",
@@ -221,7 +240,8 @@
       "scale": 0.8,
       "hidden": true,
       "xp": 15,
-      "coins": 10
+      "coins": 10,
+      "journalId": "edu_tahapan_02"
     }
   ]
 }

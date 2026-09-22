@@ -4,6 +4,8 @@ import { EventBus } from "../core/EventBus.js";
 import { ProgressState } from "../core/ProgressState.js";
 import { AchievementManager } from "../progression/AchievementManager.js";
 import { CollectibleManager } from "../collectibles/CollectibleManager.js";
+import { JournalData } from "../journal/JournalData.js";
+import { JournalManager } from "../journal/JournalManager.js";
 
 const ALLOWED_TARGETS = ["MenuScene", "WorldScene"];
 
@@ -51,6 +53,7 @@ export function runSmoke(game) {
   const testInteract = params.get("interact") === "1";
   const testQuest = params.get("quest") === "1";
   const testProgression = params.get("progression") === "1";
+  const testJournal = params.get("journal") === "1";
   if (target) {
     window.__DEMOKRASI_TEST_TARGET = target;
     console.info(`[Smoke] target scene: ${target}`);
@@ -100,6 +103,7 @@ export function runSmoke(game) {
   let testInteractDone = false;
   let questTestDone = false;
   let progressionTestDone = false;
+  let journalTestDone = false;
 
   function finish(data, attempts) {
     if (finished) return;
@@ -154,6 +158,15 @@ export function runSmoke(game) {
                 attempts = 0;
               }
             }
+          } else if (testJournal) {
+            if (!journalTestDone) {
+              if (data.questLoaded && data.journalLoaded) {
+                journalTestDone = true;
+                driveJournal(game);
+                phase = "journal";
+                attempts = 0;
+              }
+            }
           } else {
             if (testInteract) {
               const ws = game.scene.getScene("WorldScene");
@@ -190,6 +203,16 @@ export function runSmoke(game) {
         }
       } else if (live && phase === "progression") {
         if (data.progUnlocked >= 3 && data.progLevel >= 2 && data.collectibleClaimed >= 1) {
+          finish(data, attempts);
+          return;
+        }
+      } else if (live && phase === "journal") {
+        if (
+          data.journalTotal >= 4 &&
+          data.journalCollectible >= 3 &&
+          data.journalQuest >= 1 &&
+          data.journalCategories >= 3
+        ) {
           finish(data, attempts);
           return;
         }
@@ -272,6 +295,33 @@ function driveProgression(game) {
   }
 }
 
+function driveJournal(game) {
+  console.info("[Smoke] journal: quest misi 01 + 3 collectible desa -> entri jurnal dgn source");
+  // Selesaikan Misi 01 (membawa journalEntries quest)
+  EventBus.emit("DIALOGUE_STARTED", { npc: { npcId: "npc_guru" } });
+  setTimeout(() => EventBus.emit("POI_INTERACTED", { poi: { id: "poi_papan_informasi" } }), 80);
+  setTimeout(() => EventBus.emit("DIALOGUE_STARTED", { npc: { npcId: "npc_perangkat" } }), 160);
+
+  // Klaim collectible yang menunjuk kartu edukasi di data/education/
+  const steps = [
+    { itemId: "ctl_buku_pemilu", card: "edu_pemilu_01", x: 9, y: 14 },
+    { itemId: "ctl_poster_kampanye", card: "edu_informasi_03", x: 18, y: 33 },
+    { itemId: "ctl_lencana_relawan", card: "edu_tahapan_01", x: 66, y: 25 },
+  ];
+  const ws = game.scene.getScene("WorldScene");
+  const T = ws && ws.mapData ? ws.mapData.tileSize : 32;
+  let delay = 220;
+  for (const s of steps) {
+    const ts = delay;
+    setTimeout(() => {
+      const scene = game.scene.getScene("WorldScene");
+      if (scene && scene.player) scene.player.setPosition((s.x + 0.5) * T, (s.y + 0.5) * T);
+      console.info(`[Smoke] pemain ke collectible ${s.itemId} (${s.card})`);
+    }, ts);
+    delay += 200;
+  }
+}
+
 function snapshot(game) {
   try {
     const active = game.scene.getScenes(true).map((s) => s.scene.key);
@@ -319,6 +369,14 @@ function snapshot(game) {
       progUnlocked: AchievementManager.unlockedCount,
       progFirstAchievement: window.__SMOKE_ACH_ID || null,
       collectibleClaimed: CollectibleManager.claimedCount(),
+      journalLoaded: JournalData.loaded,
+      journalCards: JournalData.all().length,
+      journalCategories: JournalManager.categoryTotals().filter((c) => c.count > 0).length,
+      journalTotal: JournalManager.count(),
+      journalQuest: JournalManager.all().filter((e) => e.origin === "quest").length,
+      journalCollectible: JournalManager.all().filter((e) => e.origin === "collectible").length,
+      journalTitles: JournalManager.all().map((e) => e.title).slice(-8),
+      journalWithSource: JournalManager.all().filter((e) => e.source && e.source.length > 0).length,
       idleDownFrames: idleAnim ? idleAnim.frames.length : -1,
       walkDownFrames: walkAnim ? walkAnim.frames.length : -1,
       logs: (window.__SMOKE_LOGS || []).slice(-8),

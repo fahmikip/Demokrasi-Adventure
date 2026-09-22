@@ -75,7 +75,7 @@ export class MenuScene extends Phaser.Scene {
     });
 
     this.add
-      .text(this.scale.width - 12, this.scale.height - 8, "v1.1.0", {
+      .text(this.scale.width - 12, this.scale.height - 8, "v1.2.0", {
         fontFamily: Config.UI.FONT_FAMILY,
         fontSize: "12px",
         color: "#95a5a6",
@@ -123,7 +123,7 @@ export class MenuScene extends Phaser.Scene {
     panel.addLabel("Jelajahi Kotanya. Temukan Informasinya. Pahami Prosesnya.", { fontSize: 14, color: "#7f8c8d" });
     panel.addLabel("Game petualangan 2D edukasi tentang", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("literasi demokrasi & pemilu untuk pemilih pemula.", { fontSize: 14, color: "#2c2c2c" });
-    panel.addLabel("Versi 1.1.0 — Phase 5: Progression & Achievement", { fontSize: 14, color: "#2c2c2c" });
+    panel.addLabel("Versi 1.2.0 — Phase 6: Journal & Education", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("Kredit: Tim Pengembang Demokrasi Adventure", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("Phaser 3 • HTML5 • JavaScript ES Modules • PWA", { fontSize: 12, color: "#95a5a6" });
 

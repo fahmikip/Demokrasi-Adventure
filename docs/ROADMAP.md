@@ -87,12 +87,13 @@ NPC & Dialogue:
 - [x] Achievement UI (overlay scrollable)
 - [x] Test progression (smoke.js param `progression`)
 
-## PHASE 6 — Journal & Education
-- [ ] JournalManager
-- [ ] Journal UI (7 kategori)
-- [ ] Educational cards dengan source
-- [ ] Collectible → journal entry
-- [ ] Test update konten tanpa ubah engine
+## PHASE 6 — Journal & Education ✅
+- [x] JournalManager (quest + collectible → entri, terbitkan `JOURNAL_UPDATED`)
+- [x] Journal UI (7 kategori: Pemilu, Pemilih, Tahapan, Informasi, Literasi Digital, TPS, Penyelenggara)
+- [x] Educational cards dengan source (`data/education/*.json` — 18 kartu, konten netral & bersumber)
+- [x] Collectible → journal entry (`journalId` di collectible registry menunjuk kartu)
+- [x] Test update konten tanpa ubah engine (smoke param `journal` + validasi data)
+- [x] Test journal flow (smoke.js param `journal`)
 
 ## PHASE 7 — Decision System
 - [ ] Choices branching real
@@ -152,7 +153,8 @@ Fase selesai jika:
 | Phase 3 | ✅ selesai (commit `e30ef4b`) — sisa ringan: NPCSchedule, NPC trust |
 | Phase 4 | ✅ selesai (quest) — dieksekusi & diverifikasi bareng Phase 5 |
 | Phase 5 | ✅ selesai (progression) |
-| Phase 6–11 | ⏳ menunggu |
+| Phase 6 | ✅ selesai (journal & education) — sisa: akses journal via tombol sentuh/mobile |
+| Phase 7–11 | ⏳ menunggu |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.
