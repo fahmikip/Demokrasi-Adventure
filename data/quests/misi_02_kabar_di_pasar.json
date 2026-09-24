@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "id": "misi_02_kabar_di_pasar",
+  "title": "Kabar di Pasar",
+  "type": "side",
+  "giver": "npc_warga_pasar",
+  "description": "Bantu Bu Sri memverifikasi kabar yang belum tentu benar di Pasar Rakyat sebelum kabar itu menyebar.",
+  "objectives": [
+    {
+      "id": "talk_bu_sri",
+      "type": "talk",
+      "target": "npc_warga_pasar",
+      "label": "Dengarkan kabar dari Bu Sri",
+      "hint": "Dekati Bu Sri di Pasar Rakyat lalu tekan E."
+    },
+    {
+      "id": "check_board",
+      "type": "interact",
+      "target": "poi_papan_informasi_pasar",
+      "label": "Periksa Papan Informasi Pasar",
+      "hint": "Baca Papan Informasi untuk memverifikasi kabar."
+    },
+    {
+      "id": "report_verified",
+      "type": "decision",
+      "target": "dec_rumor_verified",
+      "label": "Konfirmasi kebenaran kabar ke Bu Sri",
+      "hint": "Kembali ke Bu Sri setelah memahami isi papan informasi."
+    }
+  ],
+  "conditions": {
+    "requireVisited": ["pasar_rakyat"]
+  },
+  "reward": {
+    "xp": 50,
+    "coins": 20
+  },
+  "journalEntries": [
+    {
+      "category": "Informasi",
+      "title": "Misi Selesai: Kabar di Pasar",
+      "source": "Quest Kabar di Pasar",
+      "text": "Kabar yang beredar di pasar telah diperiksa. Jadwal pemilu dan lokasi TPS tidak berubah serta hanya sesuai surat undangan resmi. Warga yang menjaga pasar tetap waras belajar memverifikasi dulu sebelum menyebar."
+    }
+  ]
+}

@@ -195,7 +195,7 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 
 ## 9. Dialogue Engine
 
-- Data dialog di `data/dialogues/*.json`.
+- Data dialog di `data/dialogues/*.json` (lihat juga **Sistem Keputusan** di §11c).
 - Fitur: speaker, portrait, text, emotion, choices, branching, conditions, quest trigger, reward, next dialogue, event.
 - `DialogueManager` mensinkronkan state game ke `DIALOGUE`.
 - Skip dialog didukung (accessibility).
@@ -206,6 +206,16 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 - Quest memiliki: id, title, description, type, giver, objectives, conditions, reward, nextQuest.
 - `QuestManager` melacak objective, mengirim `QUEST_PROGRESSED`, `QUEST_COMPLETED`.
 - Quest tracker di HUD.
+- Tipe objective: `talk`, `interact`, `visit`, `flag`, `decision` (Phase 7 — terpenuhi saat `DECISION_MADE {id}`).
+
+## 10b. Sistem Keputusan (Phase 7)
+
+- `DecisionManager` (`src/decisions/DecisionManager.js`, singleton) = otak konsekuensi lintas sesi: `flags` (Set), `decisions` (Map id→record), `relationships` (Map npcId→`{trust}`, clamp `-10..10`).
+- `applyActions({flags, questFlags, relationship, xp, coins, decision, journalEntries})` — blok konsekuensi dari data JSON dialog → memancarkan `STORY_FLAG_SET`, `QUEST_FLAG`, `RELATIONSHIP_CHANGED`, `DECISION_MADE`, `DECISION_JOURNAL`.
+- **Branching real:** dialog dialihkan ke `DialogueRunner`/`DialogueState` dengan `context = DecisionManager`. Pilihan difilter `conditions` (`flags`, `anyFlags`, `notFlags`, `relationship:{npc,min}`); konsekuensi pilihan & node dijalankan saat dipilih/dimasuki (dedup per sesi per node). `startSelector` pada akar dialog memilih node awal berdasar state (`[{requires:{flags:[...]}, node:...}, …]`).
+- **Alur sesi:** `DialogueManager.startFromNpc(npc)` / `.startInfo(poi, lines, consequences)` → `DIALOGUE_STARTED` (hook quest/XP/UI) → ketik progresif (`DIALOGUE_TICK`) → pilihan / "lanjut" (`DIALOGUE_ROW`) → input `E`/angka 1-9/klik menu pilihan (`DIALOGUE_CHOICE_SELECTED`) → `DIALOGUE_COMPLETED` + GameState `DIALOGUE`→`PLAYING`.
+- **Skenario verifikasi informasi:** Misi 02 "Kabar di Pasar" (`data/quests/misi_02_kabar_di_pasar.json`), NPC `npc_warga_pasar` Bu Sri (`data/dialogues/warga_pasar.json` dengan `startSelector`), POI `poi_papan_informasi_pasar` di `data/maps/pasar_rakyat.json` membawa `info` (4 baris) + `infoConsequences` (flag/decision/jurnal). Pemain bisa percaya rumor (relationship turun, jurnal "Bahaya Meneruskan Kabar Tanpa Cek") atau verifikasi (jurnal + decision + reward).
+- **UI:** `DialogueUI` (panel, portrait, pilihan klik) dipasang di UIScene menunggangi event manager; `DialogueUI` diberi ukuran `Config.DIALOGUE.WIDTH/HEIGHT`.
 
 ## 11. Progression (Phase 5)
 

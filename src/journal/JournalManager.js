@@ -22,6 +22,7 @@ class JournalManagerClass {
     this._bound = true;
     EventBus.on("QUEST_COMPLETED", (payload) => this._onQuest(payload));
     EventBus.on("ITEM_COLLECTED", (payload) => this._onCollectible(payload));
+    EventBus.on("DECISION_JOURNAL", (payload) => this._onDecision(payload));
   }
 
   get(id) {
@@ -111,6 +112,20 @@ class JournalManagerClass {
         itemId: item.id,
       });
     }
+  }
+
+  _onDecision(payload) {
+    const entry = payload && payload.entry;
+    if (!entry || !entry.title) return;
+    this._add({
+      id: entry._decisionId || `decision:${entry.title}`,
+      category: entry.category || "Informasi",
+      title: entry.title,
+      text: entry.text || entry.content || "",
+      source: entry.source || "",
+      lastUpdated: entry.lastUpdated || "",
+      origin: "decision",
+    });
   }
 
   _add(entry) {

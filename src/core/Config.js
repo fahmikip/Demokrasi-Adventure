@@ -103,6 +103,8 @@ export const Config = {
   },
 
   DIALOGUE: {
+    WIDTH: 720,
+    HEIGHT: 120,
     TYPING_MS_PER_CHAR: 22,
     TYPING_MIN_MS: 600,
     SKIP_ON_INTERACT: true,

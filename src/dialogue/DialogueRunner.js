@@ -1,15 +1,20 @@
 /**
- * DialogueRunner — traversal node dialog berbasis data (Phase 3).
+ * DialogueRunner — traversal node dialog berbasis data (Phase 3, perluas Phase 7).
  * Mengetik line secara progresif; Advance per baris; Menangani choices.
- * Tidak tergantung Phaser — murni state machine agar mudah dites.
+ * Menerima `context` (DecisionManager) sehingga kondisi & konsekuensi
+ * berjalan sungguhan (branching & perubahan state). Murni state machine
+ * agar mudah dites tanpa Phaser.
  */
 
 import { DialogueState } from "./DialogueState.js";
 
 export class DialogueRunner {
-  constructor(dialogue, npc) {
-    this.state = new DialogueState(dialogue, npc);
+  constructor(dialogue, npc, context = null) {
+    this.state = new DialogueState(dialogue, npc, context);
     this.revealed = false; // seluruh teks baris sudah tampil
+    if (this.state.node && this.state.node.consequences) {
+      this.state._enterNode(this.state.nodeId); // konsekuensi node awal (dedup)
+    }
   }
 
   get finished() {
@@ -30,7 +35,7 @@ export class DialogueRunner {
       this.revealed = true;
       return this.state.node;
     }
-    const hasChoices = this.state.advance();
+    this.state.advance();
     this.revealed = false;
     return this.state.node;
   }

@@ -34,6 +34,7 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T19 | Save corrupt | Beri data save rusak | Fallback reset friendly tanpa crash |
 | T20 | Asset missing | Hapus satu asset | Fallback placeholder + warning jelas |
 | T21 | Journal content update | Tambah kartu di `data/education/` tanpa ubah engine | Kartu baru tampil/bisa di-collect via registry (`journalId`) — divalidasi `education_registry` resolve + kategori + source |
+| T22 | Decision / branching | Jalankan Misi 02 "Kabar di Pasar" | Dialog bercabang (pilihan verifikasi/percaya/tanya), konsekuensi tercatat: flag, decision, relationship, jurnal; quest selesai via `dec_rumor_verified` (Phase 7) |
 
 ## Prosedur Per Fase
 1. Jalankan tes T01–T06 setiap sesi coding.
@@ -70,6 +71,13 @@ chrome --headless=new --no-sandbox --use-angle=swiftshader \
 # verifikasi entri jurnal dengan source, kategori terbuka, total >= 4
 ... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&journal=1"
 
+# decision flow (Phase 7) → dunia WorldScene + DialogueManager sungguhan:
+# bicara Bu Sri (startNode via startSelector) → pilih jalur verifikasi → baca Papan
+# Informasi (startInfo) → kembali ber-Bu Sri (node "sudah_baca") → dec_rumor_verified.
+# Verifikasi: decisions >= 3, flags >= 3, relationship > 0, jurnal decision >= 2,
+# quest misi_02 selesai.
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&decision=1"
+
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
@@ -88,3 +96,4 @@ Parameter debug headless:
 | 4 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T09 ✅ | Quest: Misi 01 auto-start bicara Bu Ratna → baca papan info → lapor Pak Dedi; `QUEST_COMPLETED` terkirim + reward XP/Coins; tracker HUD tampil (`?quest=1` smoke; unit harness juga verified load 1 quest, objective talk/interact). |
 | 5 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T11 ✅, T09 ✅ | Progression: XP pasif + quest → level 2–3, level-up; Achievement unlock (first_step, first_collectible, village_helper, perfect_mission) + reward XP/Koin; coin economy (`totalEarned`); collectible klaim nyata via player walk-in (2/20); transition fix restart (`?progression=1` + `?transition=1` smoke). HUD progress bar & Achievement UI tampil. |
 | 6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T12 ✅, T09 ✅, T21 ✅ | Journal & education: quest → 1 entri (Pemilu) + collectible → 3 entri (Pemilu/Informasi/Tahapan) via `journalId`; `JOURNAL_UPDATED` + HUD counter `📖 Jurnal N`; UI 7 kategori (`J` buka/tutup, ESC, scroll wheel); sumber tampil per entri (`journalWithSource`=4); smoke `?journal=1`. Validasi `data/education/`: 18 kartu, 7 kategori, semua collectible resolve, per-kategori tercakup. Transition smoke masih flaky di headless (crash renderer saat restart) — catatan: tidak berhubungan dgn perubahan journal (WorldScene tak disentuh fase ini). |
+| 7 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T22 ✅ | Decision system: DialogueManager/UI aktif (buka/tutup, ketik, pilihan via klik/E/angka), branching nyata lewat `conditions` + `startSelector`, konsekuensi via DecisionManager (flags/decisions/relationship/jurnal) + auto-start sidebar Misi 02; Skenario verifikasi pasar melewati jalur sapa→verifikasi→info POI→sudah_baca→`dec_rumor_verified`, quest selesai, relationship `npc_warga_pasar` naik, 3 decision+jurnal tercatat; smoke `?decision=1`. |

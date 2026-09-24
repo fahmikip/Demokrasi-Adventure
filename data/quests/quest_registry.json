@@ -6,6 +6,10 @@
     {
       "id": "misi_01_hari_yang_semakin_dekat",
       "file": "misi_01.json"
+    },
+    {
+      "id": "misi_02_kabar_di_pasar",
+      "file": "misi_02_kabar_di_pasar.json"
     }
   ]
 }

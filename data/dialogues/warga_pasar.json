@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "id": "dialogue_warga_pasar",
+  "title": "Kabar yang Beredar di Pasar",
+  "fictional": true,
+  "npcId": "npc_warga_pasar",
+  "startNode": "sapa",
+  "startSelector": [
+    { "requires": { "flags": ["flag_board_read"] }, "node": "sudah_baca" },
+    { "requires": { "flags": ["story_believed_rumor"] }, "node": "dorong_cek" },
+    { "node": "sapa" }
+  ],
+  "nodes": {
+    "sapa": {
+      "speaker": "Bu Sri",
+      "lines": [
+        "Nak, kau dengar kabar yang ramai di pasar sejak tadi pagi?",
+        "Katanya hari pemungutan suara dipindah ke pekan depan, dan warga boleh mencoblos di TPS mana saja asal bawa KTP.",
+        "Aku ragu, tapi banyak pembeli yang mulai percaya lalu meneruskan kabar ini. Bagaimana menurutmu?"
+      ],
+      "choices": [
+        {
+          "label": "Mari kita periksa ke Papan Informasi di pasar dulu.",
+          "next": "verifikasi",
+          "consequences": {
+            "flags": ["story_verify_chosen"],
+            "relationship": { "npc": "npc_warga_pasar", "delta": 1 },
+            "xp": 5,
+            "decision": "dec_rumor_verify_path",
+            "journalEntries": [
+              {
+                "category": "Literasi Digital",
+                "title": "Memilih untuk Memeriksa Kabar",
+                "source": "Percakapan dengan Bu Sri",
+                "text": "Sebelum menyebarkan kabar, tanyakan dulu: sumbernya siapa, apakah ada pemberitahuan resmi, dan bisa dipastikan kebenarannya? Papan informasi resmi adalah rujukan pertama.",
+                "lastUpdated": "2026-09-24"
+              }
+            ]
+          }
+        },
+        {
+          "label": "Mungkin kabar itu memang benar. Nanti aku sampaikan ke tetangga.",
+          "next": "menyebar",
+          "consequences": {
+            "flags": ["story_believed_rumor"],
+            "relationship": { "npc": "npc_warga_pasar", "delta": -1 },
+            "xp": 3,
+            "decision": "dec_rumor_believed",
+            "journalEntries": [
+              {
+                "category": "Literasi Digital",
+                "title": "Bahaya Meneruskan Kabar Tanpa Cek",
+                "source": "Percakapan dengan Bu Sri",
+                "text": "Meneruskan kabar yang belum diverifikasi dapat menyesatkan warga lain. Kabar yang belum tentu benar sebaiknya diperiksa lebih dulu.",
+                "lastUpdated": "2026-09-24"
+              }
+            ]
+          }
+        },
+        {
+          "label": "Aku tanya Pak Dedi dulu — dia pegang informasi resmi desa.",
+          "next": "tanya_perangkat",
+          "consequences": {
+            "flags": ["story_ask_perangkat"],
+            "relationship": { "npc": "npc_perangkat", "delta": 1 },
+            "xp": 5,
+            "decision": "dec_rumor_ask_official",
+            "journalEntries": [
+              {
+                "category": "Informasi",
+                "title": "Tanya ke Sumber yang Berwenang",
+                "source": "Percakapan dengan Bu Sri",
+                "text": "Untuk informasi pemilu, tanyakan kepada perangkat desa atau penyelenggara pemilu setempat. Mereka memegang jadwal dan ketentuan resmi.",
+                "lastUpdated": "2026-09-24"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "verifikasi": {
+      "speaker": "Bu Sri",
+      "lines": [
+        "Setuju, Nak. Papan informasi resmi ada di tengah pasar, dekat lapak buah.",
+        "Bacalah dengan tenang, lalu kembali padaku. Kabar yang benar datang dari sumber yang bisa kita periksa."
+      ],
+      "choices": [
+        {
+          "label": "Siap, Bu. Aku berangkat ke Papan Informasi.",
+          "next": null,
+          "consequences": { "questFlags": ["flag_board_search_started"] }
+        }
+      ]
+    },
+    "menyebar": {
+      "speaker": "Bu Sri",
+      "lines": [
+        "Nak, sebaiknya jangan dulu menyebar. Kabar yang belum bisa kita pastikan bisa membuat warga panik.",
+        "Kalau nanti ternyata tidak benar, kita yang ikut menyebar bisa ikut terseret. Mendingan dicek dulu, walau sebentar.",
+        "Papan informasi resmi ada di tengah pasar. Setelah itu baru yakin, ya?"
+      ],
+      "choices": [
+        {
+          "label": "Baik, Bu. Aku periksa dulu kebenarannya.",
+          "next": null,
+          "consequences": { "questFlags": ["flag_board_search_started"] }
+        }
+      ]
+    },
+    "tanya_perangkat": {
+      "speaker": "Bu Sri",
+      "lines": [
+        "Bagus, itu langkah yang hati-hati. Pak Dedi sebagai perangkat desa pasti punya informasi resmi terkait jadwal pemilu.",
+        "Sambil menunggu jawabannya, kamu bisa membaca Papan Informasi di tengah pasar — isinya sama dengan yang diturunkan penyelenggara."
+      ],
+      "choices": [
+        {
+          "label": "Aku cek Papan Informasi dulu, Bu.",
+          "next": null,
+          "consequences": { "questFlags": ["flag_board_search_started"] }
+        }
+      ]
+    },
+    "dorong_cek": {
+      "speaker": "Bu Sri",
+      "lines": [
+        "Nak, kamu sempat menyebar kabar itu tadi? Sayang sekali kalau begitu.",
+        "Sekarang kita perbaiki: baca dulu Papan Informasi di tengah pasar, lalu kembali padaku. Yang penting kabarnya kita pastikan bersama."
+      ],
+      "choices": [
+        {
+          "label": "Aku cek sekarang, Bu.",
+          "next": null,
+          "consequences": { "questFlags": ["flag_board_search_started"] }
+        }
+      ]
+    },
+    "sudah_baca": {
+      "speaker": "Bu Sri",
+      "lines": [
+        "Nak, kamu sudah membaca Papan Informasi tadi? Kabar yang tadi ramai itu ternyata tidak benar — jadwal pemilu tidak dipindah dan TPS tidak bisa dipilih sembarangan.",
+        "Untung kita tidak langsung menyebar. Dari sekarang, kabar apa pun kita cek dulu ke papan informasi atau tanyakan ke petugas.",
+        "Terima kasih sudah ikut menjaga pasar ini tetap waras."
+      ],
+      "choices": [
+        {
+          "label": "Sama-sama, Bu. Nanti aku bantu kabarkan informasi resmi.",
+          "next": null,
+          "consequences": {
+            "flags": ["story_verified"],
+            "relationship": { "npc": "npc_warga_pasar", "delta": 2 },
+            "xp": 8,
+            "decision": "dec_rumor_verified",
+            "journalEntries": [
+              {
+                "category": "Informasi",
+                "title": "Kabar di Pasar Sudah Terverifikasi",
+                "source": "Papan Informasi Pasar Rakyat & percakapan dengan Bu Sri",
+                "text": "Jadwal pemilu dan lokasi TPS sesuai aturan penyelenggara. Informasi resmi selalu tersedia di papan informasi; setelah diverifikasi, kabar boleh dibagikan agar warga tidak tersesat.",
+                "lastUpdated": "2026-09-24"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

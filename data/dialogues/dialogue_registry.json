@@ -32,6 +32,12 @@
       "npc": "npc_perangkat",
       "title": "Percakapan dengan Pak Dedi",
       "file": "perangkat_dedi.json"
+    },
+    {
+      "id": "dialogue_warga_pasar",
+      "npc": "npc_warga_pasar",
+      "title": "Kabar yang Beredar di Pasar (Bu Sri)",
+      "file": "warga_pasar.json"
     }
   ]
 }

@@ -9,6 +9,7 @@ export const OBJECTIVE_TYPES = Object.freeze({
   INTERACT: "interact",
   VISIT: "visit",
   FLAG: "flag",
+  DECISION: "decision",
 });
 
 export class Objective {
@@ -43,6 +44,8 @@ export class Objective {
         return evt.mapId === this.target;
       case OBJECTIVE_TYPES.FLAG:
         return evt.flag === this.target;
+      case OBJECTIVE_TYPES.DECISION:
+        return evt.id === this.target;
       default:
         return false;
     }

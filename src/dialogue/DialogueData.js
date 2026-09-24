@@ -10,6 +10,7 @@ export class DialogueData {
   constructor() {
     this.registry = null;
     this.byNpc = new Map();
+    this.byId = new Map();
     this._promise = null;
   }
 
@@ -18,6 +19,11 @@ export class DialogueData {
       this._promise = this._load();
     }
     return this._promise;
+  }
+
+  /** @returns {boolean} — true bila registry sudah dimuat. */
+  get loaded() {
+    return !!this.registry;
   }
 
   async _load() {
@@ -31,7 +37,8 @@ export class DialogueData {
   async _loadFile(entry) {
     const data = await this._json(entry.file || `${entry.id}.json`);
     this._validate(data, entry);
-    this.byNpc.set(data.npcId, data);
+    if (data.npcId) this.byNpc.set(data.npcId, data);
+    if (data.id) this.byId.set(data.id, data);
   }
 
   _validate(d, entry) {
@@ -60,6 +67,11 @@ export class DialogueData {
 
   has(npcId) {
     return this.byNpc.has(npcId);
+  }
+
+  /** Cari by dialogue id (mis. "dialogue_warga_pasar"). */
+  byId(id) {
+    return this.byId.get(id) || null;
   }
 }
 

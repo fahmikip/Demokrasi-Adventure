@@ -25,6 +25,7 @@ const NPCS = [
   ["npc_pedagang", "pedagang"],
   ["npc_pemuda", "pemuda"],
   ["npc_perangkat", "perangkat"],
+  ["npc_warga_pasar", "pedagang"],
 ];
 
 function body(scene, id, role) {

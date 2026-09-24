@@ -95,11 +95,11 @@ NPC & Dialogue:
 - [x] Test update konten tanpa ubah engine (smoke param `journal` + validasi data)
 - [x] Test journal flow (smoke.js param `journal`)
 
-## PHASE 7 — Decision System
-- [ ] Choices branching real
-- [ ] Consequence: NPC relationship, quest, story
-- [ ] Skenario verifikasi informasi (Pasar Rakyat)
-- [ ] Test branching & konsekuensi
+## PHASE 7 — Decision System ✅
+- [x] Pilihan dialog bercabang sungguhan (branching real, lintas sesi) — `conditions` (flags/anyFlags/notFlags/relationship) & `startSelector`
+- [x] Konsekuensi: NPC relationship, quest, story — `consequences` (flags/questFlags/relationship/xp/coins/decision/journal) via DecisionManager
+- [x] Skenario verifikasi informasi (Pasar Rakyat) — Misi 02 "Kabar di Pasar", NPC Bu Sri, POI Papan Informasi
+- [x] Test branching & konsekuensi (smoke.js param `decision` + validasi data)
 
 ## PHASE 8 — TPS Simulation
 - [ ] Mini-game TPS lengkap (alur 8 langkah)
@@ -154,7 +154,7 @@ Fase selesai jika:
 | Phase 4 | ✅ selesai (quest) — dieksekusi & diverifikasi bareng Phase 5 |
 | Phase 5 | ✅ selesai (progression) |
 | Phase 6 | ✅ selesai (journal & education) — sisa: akses journal via tombol sentuh/mobile |
-| Phase 7–11 | ⏳ menunggu |
+| Phase 7 | ✅ selesai (decision system & skenario verifikasi pasar) |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.

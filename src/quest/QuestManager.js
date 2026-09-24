@@ -131,6 +131,9 @@ class QuestManagerClass {
       EventBus.on("QUEST_FLAG", ({ flag } = {}) => {
         if (flag) this.setFlag(flag);
       }),
+      EventBus.on("DECISION_MADE", ({ id } = {}) => {
+        if (id) this.handleEvent({ type: "decision", id });
+      }),
     ];
   }
 

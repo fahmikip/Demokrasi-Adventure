@@ -7600,6 +7600,37 @@
       "type": "commerce",
       "x": 30,
       "y": 20
+    },
+    {
+      "id": "poi_papan_informasi_pasar",
+      "name": "Papan Informasi Pasar",
+      "type": "information",
+      "x": 34,
+      "y": 18,
+      "info": [
+        "PENGUMUMAN RESMI — Jadwal pemungutan suara TIDAK dipindah-pindah.",
+        "Hari pemungutan suara dan lokasi TPS mengikuti surat undangan resmi yang dibagikan petugas.",
+        "Warga mencoblos di TPS sesuai alamat yang terdaftar, bukan di TPS mana pun secara bebas.",
+        "Bila menemukan kabar yang sumbernya tidak jelas, periksa di sini atau tanyakan ke petugas pemilu."
+      ],
+      "infoConsequences": {
+        "flags": [
+          "flag_board_read"
+        ],
+        "questFlags": [
+          "flag_board_read"
+        ],
+        "decision": "dec_board_read",
+        "journalEntries": [
+          {
+            "category": "Informasi",
+            "title": "Papan Informasi Pasar Rakyat",
+            "source": "Papan Informasi Pasar Rakyat",
+            "text": "Jadwal pemungutan suara dan lokasi TPS sesuai ketentuan resmi penyelenggara. Kabar yang tidak cocok dengan papan informasi resmi perlu diragukan.",
+            "lastUpdated": "2026-09-24"
+          }
+        ]
+      }
     }
   ],
   "transitions": [

@@ -6,6 +6,9 @@ import { AchievementManager } from "../progression/AchievementManager.js";
 import { CollectibleManager } from "../collectibles/CollectibleManager.js";
 import { JournalData } from "../journal/JournalData.js";
 import { JournalManager } from "../journal/JournalManager.js";
+import { DecisionManager } from "../decisions/DecisionManager.js";
+import { DialogueDataLoader } from "../dialogue/DialogueData.js";
+import { DialogueManager } from "../dialogue/DialogueManager.js";
 
 const ALLOWED_TARGETS = ["MenuScene", "WorldScene"];
 
@@ -54,6 +57,7 @@ export function runSmoke(game) {
   const testQuest = params.get("quest") === "1";
   const testProgression = params.get("progression") === "1";
   const testJournal = params.get("journal") === "1";
+  const testDecision = params.get("decision") === "1";
   if (target) {
     window.__DEMOKRASI_TEST_TARGET = target;
     console.info(`[Smoke] target scene: ${target}`);
@@ -104,6 +108,7 @@ export function runSmoke(game) {
   let questTestDone = false;
   let progressionTestDone = false;
   let journalTestDone = false;
+  let decisionTestDone = false;
 
   function finish(data, attempts) {
     if (finished) return;
@@ -167,6 +172,15 @@ export function runSmoke(game) {
                 attempts = 0;
               }
             }
+          } else if (testDecision) {
+            if (!decisionTestDone) {
+              if (data.questLoaded && data.dialogueLoaded) {
+                decisionTestDone = true;
+                driveDecision(game);
+                phase = "decision";
+                attempts = 0;
+              }
+            }
           } else {
             if (testInteract) {
               const ws = game.scene.getScene("WorldScene");
@@ -212,6 +226,17 @@ export function runSmoke(game) {
           data.journalCollectible >= 3 &&
           data.journalQuest >= 1 &&
           data.journalCategories >= 3
+        ) {
+          finish(data, attempts);
+          return;
+        }
+      } else if (live && phase === "decision") {
+        if (
+          data.decisionCount >= 3 &&
+          data.decisionFlags >= 3 &&
+          data.decisionRelationships >= 1 &&
+          data.decisionJournal >= 2 &&
+          data.decisionQuestDone
         ) {
           finish(data, attempts);
           return;
@@ -293,6 +318,75 @@ function driveProgression(game) {
     }, ts);
     delay += 200;
   }
+}
+
+function driveDecision(game) {
+  // Skenario Misi 02 (branching sungguhan lewat DialogueManager):
+  // 1) Bicara Bu Sri -> pilih "periksa papan" (jalur verifikasi)
+  // 2) Baca Papan Informasi (startInfo) -> flag/decision/jurnal
+  // 3) Bicara lagi -> startSelector memilih node "sudah_baca" ->
+  //    pilih konfirmasi (dec_rumor_verified) -> quest misi_02 selesai
+  const onComplete = ({ quest }) => {
+    window.__SMOKE_DECISION_QUEST = true;
+    window.__SMOKE_DECISION_QUEST_ID = quest ? quest.id : null;
+    console.info(`[Smoke] decision: quest selesai ${quest ? quest.id : "?"}`);
+  };
+  EventBus.on("QUEST_COMPLETED", onComplete);
+  EventBus.on("DECISION_MADE", ({ id }) => {
+    console.info(`[Smoke] decision tercatat: ${id}`);
+  });
+
+  const driveToEnd = (pickOrder, label) => {
+    let guard = 0;
+    while (DialogueManager.isActive && guard++ < 300) {
+      const s = DialogueManager.runner ? DialogueManager.runner.state : null;
+      if (!s) break;
+      if (s.choices.length) {
+        const idx = pickOrder.shift();
+        if (idx == null) break;
+        DialogueManager.select(idx);
+      } else {
+        DialogueManager.advance();
+      }
+    }
+    console.info(`[Smoke] decision: selesai sesi "${label}" (active=${DialogueManager.isActive})`);
+  };
+
+  console.info("[Smoke] decision: bicara Bu Sri (misi 02) — pilih jalur verifikasi");
+  DialogueManager.startFromNpc({ npcId: "npc_warga_pasar" }).then(() => {
+    driveToEnd([0, 0], "sapa->verifikasi");
+    setTimeout(() => {
+      console.info("[Smoke] decision: baca papan informasi pasar (startInfo)");
+      EventBus.emit("POI_INTERACTED", { poi: { id: "poi_papan_informasi_pasar" } });
+      DialogueManager.startInfo(
+        { id: "poi_papan_informasi_pasar", name: "Papan Informasi Pasar" },
+        [
+          "PENGUMUMAN RESMI — Jadwal pemungutan suara TIDAK dipindah-pindah.",
+          "Warga mencoblos di TPS sesuai alamat terdaftar pada surat undangan resmi.",
+        ],
+        {
+          flags: ["flag_board_read"],
+          questFlags: ["flag_board_read"],
+          decision: "dec_board_read",
+          journalEntries: [
+            {
+              category: "Informasi",
+              title: "Papan Informasi Pasar Rakyat",
+              source: "Papan Informasi Pasar Rakyat",
+              text: "Jadwal pemungutan suara dan lokasi TPS sesuai ketentuan resmi penyelenggara.",
+            },
+          ],
+        }
+      );
+      driveToEnd([], "info->papan");
+      setTimeout(() => {
+        console.info("[Smoke] decision: kembali ke Bu Sri (startSelector -> sudah_baca)");
+        DialogueManager.startFromNpc({ npcId: "npc_warga_pasar" }).then(() => {
+          driveToEnd([0], "sudah_baca->verified");
+        });
+      }, 160);
+    }, 160);
+  });
 }
 
 function driveJournal(game) {
@@ -377,6 +471,13 @@ function snapshot(game) {
       journalCollectible: JournalManager.all().filter((e) => e.origin === "collectible").length,
       journalTitles: JournalManager.all().map((e) => e.title).slice(-8),
       journalWithSource: JournalManager.all().filter((e) => e.source && e.source.length > 0).length,
+      dialogueLoaded: DialogueDataLoader.loaded,
+      decisionFlags: DecisionManager.snapshot().flags.length,
+      decisionCount: DecisionManager.snapshot().decisions.length,
+      decisionRelationships: DecisionManager.snapshot().relationships.length,
+      decisionJournal: JournalManager.all().filter((e) => e.origin === "decision").length,
+      decisionQuestDone: window.__SMOKE_DECISION_QUEST || false,
+      decisionQuestId: window.__SMOKE_DECISION_QUEST_ID || null,
       idleDownFrames: idleAnim ? idleAnim.frames.length : -1,
       walkDownFrames: walkAnim ? walkAnim.frames.length : -1,
       logs: (window.__SMOKE_LOGS || []).slice(-8),

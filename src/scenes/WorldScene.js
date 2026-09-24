@@ -17,6 +17,7 @@ import { WorldBuilder } from "../map/WorldBuilder.js";
 import { AreaState } from "../map/AreaState.js";
 import { NPCManager } from "../npc/NPCManager.js";
 import { CollectibleManager } from "../collectibles/CollectibleManager.js";
+import { DialogueManager } from "../dialogue/DialogueManager.js";
 
 const FALLBACK_MAP = "desa_harmoni";
 
@@ -199,14 +200,18 @@ export class WorldScene extends Phaser.Scene {
         this._showInteractMarkerNpc(npc);
       }
       if (interactPressed) {
-        EventBus.emit("DIALOGUE_STARTED", { npc: npc.meta });
+        DialogueManager.startFromNpc(npc.meta).catch((err) => {
+          console.warn("[WorldScene] Gagal memulai dialog:", err);
+        });
       }
       return;
     }
     if (this._focusedNpc) {
       this._focusedNpc = null;
       this._hideInteractMarkerNpc();
-      EventBus.emit("DIALOGUE_COMPLETED", {});
+      if (GameState.current !== GAME_STATES.DIALOGUE) {
+        EventBus.emit("DIALOGUE_COMPLETED", {});
+      }
     }
 
     const nearby = this.poiManager.getNearest(
@@ -221,7 +226,11 @@ export class WorldScene extends Phaser.Scene {
         this._showInteractMarker(nearby);
       }
       if (interactPressed) {
-        EventBus.emit("POI_INTERACTED", { poi: nearby.data });
+        const poiData = nearby.data;
+        EventBus.emit("POI_INTERACTED", { poi: poiData });
+        if (poiData.info && poiData.info.length) {
+          DialogueManager.startInfo(poiData, poiData.info, poiData.infoConsequences || null);
+        }
       }
     } else if (this._focusedPoi) {
       this._focusedPoi = null;

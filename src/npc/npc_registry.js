@@ -69,6 +69,17 @@ export const NPC_REGISTRY = {
       defaultMap: "desa_harmoni",
       fictional: true,
     },
+    {
+      id: "npc_warga_pasar",
+      name: "Bu Sri",
+      role: "pedagang",
+      alias: "Pedagang warung di Pasar Rakyat",
+      file: "warga_pasar.json",
+      sprite: { key: "npc_warga_pasar", frame: 0 },
+      portrait: { key: "portrait_npc_warga_pasar" },
+      defaultMap: "pasar_rakyat",
+      fictional: true,
+    },
   ],
 };
 
@@ -79,6 +90,7 @@ const PLACEMENTS = [
   { map: "desa_harmoni", npcId: "npc_pemuda", x: 26, y: 36, facing: "left" },
   { map: "desa_harmoni", npcId: "npc_pedagang", x: 17, y: 34, facing: "up" },
   { map: "desa_harmoni", npcId: "npc_perangkat", x: 13, y: 11, facing: "down" },
+  { map: "pasar_rakyat", npcId: "npc_warga_pasar", x: 26, y: 20, facing: "down" },
 ];
 
 const _byId = new Map(NPC_REGISTRY.npcs.map((n) => [n.id, n]));

@@ -15,9 +15,12 @@ import { WorldMapUI } from "../ui/WorldMapUI.js";
 import { QuestTracker } from "../ui/QuestTracker.js";
 import { AchievementUI } from "../ui/AchievementUI.js";
 import { JournalUI } from "../ui/JournalUI.js";
+import { DialogueUI } from "../ui/DialogueUI.js";
 import { QuestManager } from "../quest/QuestManager.js";
 import { JournalData } from "../journal/JournalData.js";
 import { JournalManager } from "../journal/JournalManager.js";
+import { DialogueDataLoader } from "../dialogue/DialogueData.js";
+import { DialogueManager } from "../dialogue/DialogueManager.js";
 import { XPManager } from "../progression/XPManager.js";
 import { AchievementManager } from "../progression/AchievementManager.js";
 import { ProgressState } from "../core/ProgressState.js";
@@ -40,6 +43,13 @@ export class UIScene extends Phaser.Scene {
     this.worldMapUI = new WorldMapUI(this);
     this.achievementUI = new AchievementUI(this);
     this.journalUI = new JournalUI(this);
+    this.dialogueUI = new DialogueUI(this);
+    DialogueManager.bind();
+    this._setupDialogueKeys();
+
+    DialogueDataLoader.load().catch((err) => {
+      console.warn("[UIScene] DialogueData.load gagal:", err);
+    });
 
     if (!this.questsLoaded) {
       this.questsLoaded = true;
@@ -92,6 +102,17 @@ export class UIScene extends Phaser.Scene {
     this.inputManager.update();
     DebugState.fps = this.game.loop.actualFps;
 
+    DialogueManager.update(time, 16.7);
+
+    if (DialogueManager.isActive) {
+      this._handleDialogueKeys();
+      if (this.inputManager.consumeInteract()) {
+        DialogueManager.advance();
+      }
+      this.debugOverlay.update(time);
+      return;
+    }
+
     if (this.inputManager.consumeDebug()) {
       this.debugOverlay.toggle();
     }
@@ -135,6 +156,24 @@ export class UIScene extends Phaser.Scene {
 
   getInputManager() {
     return this.inputManager;
+  }
+
+  _setupDialogueKeys() {
+    const kb = this.input.keyboard;
+    if (!kb) return;
+    this.dialogueKeys = kb.addKeys("ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE");
+    this.dialogueKeyNames = ["ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"];
+  }
+
+  _handleDialogueKeys() {
+    if (!this.dialogueKeys) return;
+    for (let i = 0; i < this.dialogueKeyNames.length; i++) {
+      const k = this.dialogueKeys[this.dialogueKeyNames[i]];
+      if (k && Phaser.Input.Keyboard.JustDown(k)) {
+        EventBus.emit("DIALOGUE_CHOICE_SELECTED", { index: i });
+        return;
+      }
+    }
   }
 
   togglePause() {

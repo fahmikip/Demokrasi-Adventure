@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "npc_warga_pasar",
+  "name": "Bu Sri",
+  "role": "pedagang",
+  "bio": "Pemilik warung makan di Pasar Rakyat. Ramah, gemar mengobrol, dan mengerti pentingnya menyaring kabar.",
+  "personality": "ramah, teliti, waspada akan kabar yang belum jelas",
+  "dialogue": { "id": "dialogue_warga_pasar", "start": "sapa" },
+  "sprite": { "frame": 0 },
+  "portrait": { "key": "portrait_npc_warga_pasar" },
+  "fictional": true
+}
