@@ -2,6 +2,12 @@
 
 Format: `Versi — tl;dr perubahan`. Detail per fase di `docs/ROADMAP.md`.
 
+## 1.7.1 — Fix: NPC berkedip tertutup objek dunia (2026-09-25)
+- **UI/UX** — NPC kini ikut y-sorting seperti pemain/objek: karakter tidak lagi tersembunyi &
+  "berkedip" di balik pohon/bangunan (mis. Mbah Karto yang berdiri di tile pohon di Desa Harmoni),
+  dan okusi depan-belakang (walk behind/in-front) menjadi natural.
+- Smoke `&debug=1` (plain/journal/quest/decision/tps) terverifikasi ✅.
+
 ## 1.7.0 — Phase 11: Production & Deployment (2026-09-25)
 - **Production gate** — `Config.DEBUG` default nonaktif; diaktifkan via `?debug=1` (atau `window.__DEMOKRASI_DEBUG__=true`). Mode production boot bersih tanpa smoke/debug overlay/physics debug.
 - **Service Worker** — aturan registrasi production-clean: di origin non-localhost selalu ter-register; localhost perlu `?sw=1` (dev bebas cache).

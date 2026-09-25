@@ -95,6 +95,7 @@ export class WorldScene extends Phaser.Scene {
     this.transitionManager = built.transitions;
     this.npcManager = new NPCManager(this, mapData.id);
     this.npcManager.spawnForMap();
+    if (this.npcManager.npcs.length) this.sorted.push(...this.npcManager.npcs);
 
     const { worldW, worldH } = built;
     this.physics.world.setBounds(0, 0, worldW, worldH, true, true, true, true);

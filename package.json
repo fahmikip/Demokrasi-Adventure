@@ -1,6 +1,6 @@
 {
   "name": "demokrasi-adventure",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Game petualangan edukasi literasi demokrasi & pemilu (Phaser 3).",
   "private": true,
   "type": "module",
