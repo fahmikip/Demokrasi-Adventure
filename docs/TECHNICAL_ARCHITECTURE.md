@@ -274,11 +274,19 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 
 - `SaveMigration.js` untuk migrasi versi lama → baru saat `saveVersion` naik.
 
-## 13. Audio
+## 13. Audio & Aksesibilitas (Phase 9)
 
-- `AudioManager` mengelola Music/SFX/Ambient/UI/Footsteps.
-- Volume master, music, sfx, mute — tersimpan di settings/save.
-- Placeholder audio mudah diganti (dokumentasi path di Config).
+- **AudioManager** (`src/audio/AudioManager.js`, singleton) — sintesis **WebAudio** (tanpa file audio): bank 13 suara (click, hover, blip, correct, wrong, collect, quest, achievement, levelup, footstep, transition, ambient, music) digenerate on-demand (`_tone`/`_arp`/`_noise`/`_pad`) dan di-cache per buffer.
+- **Channel:** master + 5 kategori (music/sfx/ambient/ui/footsteps). Alur gain: source → (channelVol × playVol) → `masterGain` (mute = 0). `AudioContext` dibuat lazily + di-resume saat gesture pertama; semua `play()` di-guard try/catch dan mengambilkan `null` bila WebAudio absen (headless) — **tidak pernah crash**.
+- **Pemicu gameplay:** footsteps via timer di `PlayerController` (`Config.AUDIO.FOOTSTEPS_INTERVAL_MS`); `AudioHooks` (`src/audio/AudioHooks.js`, dipasang di `Game`) menghubungkan event → sfx (`ITEM_COLLECTED`→collect, `QUEST_COMPLETED`→quest, `ACHIEVEMENT_UNLOCKED`→achievement, `LEVEL_UP`→levelup); makeButton/panel/DialogueUI (hover+click+blip), TPSScene (correct/wrong/selesai), transisi area.
+- **Persistensi:** volume/mute tersimpan via `SettingsManager` ke localStorage (`Config.SAVE.SETTINGS_KEY`) → `AUDIO_VOLUME_CHANGED`/`AUDIO_MUTE_CHANGED`.
+- **Settings UI terpusat** (`src/ui/SettingsPanels.js`): panel PENGATURAN (Master/Musik/Efek SFX steppers, Suara Mati, Layar Penuh) + sub-panel AKSESIBILITAS (Kurangi Gerakan, Subtitle, Teks Instan) — dipakai MenuScene & PauseMenu.
+- **Accessibility:**
+  - `SettingsManager.reducedMotion` dihormati di: tweens UI (button/press-scale, panel fade/scale, toast/areaChip fade, toggle), camera lerp (`snapCam=1`), fade scene (WorldScene fadeIn/fadeOut, MenuScene, PreloadScene), partikel (emitter berhenti), subtitles tetap akurat (mode akses menampilkan wizard dinamis). Hidup/mati via toggle & langsung tersimpan.
+  - `subtitles` → caption strip di bawah layar (`DialogueUI.caption`) saat dialog aktif.
+  - `instantText` → `DialogueManager.update` langsung reveal penuh (tanpa ketik).
+  - Skip dialog tetap `E`/klik (buka penuh + lanjut).
+- **Particle (Phase 9):** `particle_dust` (debu kaki — `WorldScene._emitAmbientParticles` saat player bergerak) & `particle_leaf` (daun gugur, emitter `scrollFactor 0` di layar). Dimatikan otomatis saat `reducedMotion`.
 
 ## 14. Debug Mode
 

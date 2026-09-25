@@ -4,10 +4,8 @@
  */
 
 import { Config } from "../core/Config.js";
-import { Panel } from "./Panel.js";
 import { makeButton } from "./widgets.js";
-import { AudioManager } from "../audio/AudioManager.js";
-import { ProgressState } from "../core/ProgressState.js";
+import { openSettingsPanel } from "./SettingsPanels.js";
 
 export class PauseMenu {
   constructor(scene, { onResume, onQuit, onAchievements }) {
@@ -103,24 +101,16 @@ export class PauseMenu {
   _openSettings() {
     if (this.settingsPanel) return;
     const scene = this.scene;
-    const panel = new Panel(scene, { title: "PENGATURAN", width: 400, height: 350 });
-
-    panel.addStepper("Musik", () => AudioManager.music, (v) => AudioManager.setMusic(v));
-    panel.addStepper("Efek SFX", () => AudioManager.sfx, (v) => AudioManager.setSfx(v));
-
-    panel.addToggle("Layar Penuh", () => scene.scale.isFullscreen, (on) => {
-      if (on) scene.scale.startFullscreen();
-      else scene.scale.exitFullscreen();
+    this.settingsPanel = openSettingsPanel(scene, {
+      extra: (panel) => {
+        const saved = localStorage.getItem(Config.SAVE.KEY);
+        if (saved) {
+          panel.addLabel("Data save ditemukan. Reset lewat tombol RESET di menu utama.", { color: "#7f8c8d" });
+        } else {
+          panel.addLabel("Belum ada data save.", { color: "#7f8c8d" });
+        }
+      },
     });
-
-    const saved = localStorage.getItem(Config.SAVE.KEY);
-    if (saved) {
-      panel.addLabel("Data save ditemukan. Reset lewat tombol RESET di menu utama.", { color: "#7f8c8d" });
-    } else {
-      panel.addLabel("Belum ada data save.", { color: "#7f8c8d" });
-    }
-
-    this.settingsPanel = panel;
   }
 
   _removeSettings() {

@@ -9,6 +9,7 @@ import { MenuScene } from "../scenes/MenuScene.js";
 import { WorldScene } from "../scenes/WorldScene.js";
 import { UIScene } from "../scenes/UIScene.js";
 import { TPSScene } from "../scenes/TPSScene.js";
+import { installAudioHooks } from "../audio/AudioHooks.js";
 
 export class Game {
   constructor(containerId = "game-root") {
@@ -43,5 +44,7 @@ export class Game {
 
     window.__DEMOKRASI = window.__DEMOKRASI || {};
     window.__DEMOKRASI.phaser = this.phaser;
+
+    installAudioHooks();
   }
 }

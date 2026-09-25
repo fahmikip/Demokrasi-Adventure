@@ -9,6 +9,7 @@ import { GameState, GAME_STATES } from "../core/GameState.js";
 import { Config } from "../core/Config.js";
 import { DebugState } from "../core/DebugState.js";
 import { EventBus } from "../core/EventBus.js";
+import { SettingsManager } from "../core/SettingsManager.js";
 import { Player } from "../player/Player.js";
 import { PlayerController } from "../player/PlayerController.js";
 import { AudioManager } from "../audio/AudioManager.js";
@@ -41,7 +42,8 @@ export class WorldScene extends Phaser.Scene {
 
     this._buildLoadingPanel();
 
-    AudioManager.play(Config.WORLD.AMBIENT);
+    AudioManager.play(Config.WORLD.AMBIENT, { channel: "ambient", loop: true, volume: 0.6 });
+    AudioManager.play(Config.WORLD.MUSIC, { channel: "music", loop: true });
 
     this._loadMap(this._requestedMap, this._requestedSpawn);
   }
@@ -111,11 +113,12 @@ export class WorldScene extends Phaser.Scene {
     // transisi
     this.transitionManager.bindPlayer(this.player, (zone) => this._handleTransition(zone));
 
-    // kamera
+    // kamera (reduced-motion: tanpa lerp halus agar gerak minimal)
+    const snapCam = SettingsManager.prefersLessMotion() ? 1 : Config.CAMERA.LERP;
     this.cameras.main
       .setBounds(0, 0, worldW, worldH)
       .setZoom(Config.CAMERA.ZOOM)
-      .startFollow(this.player, true, Config.CAMERA.LERP, Config.CAMERA.LERP);
+      .startFollow(this.player, true, snapCam, snapCam);
     this.cameras.main.roundPixels = Config.CAMERA.ROUND_PIXELS;
 
     // grid debug (F8)
@@ -138,7 +141,11 @@ export class WorldScene extends Phaser.Scene {
 
     this._hideLoading();
     this._cooldownUntil = this.time.now + Config.WORLD.POST_TRANSITION_COOLDOWN_MS;
-    this.cameras.main.fadeIn(Config.WORLD.FADE_IN_MS, 0, 0, 0);
+    if (!SettingsManager.prefersLessMotion()) {
+      this.cameras.main.fadeIn(Config.WORLD.FADE_IN_MS, 0, 0, 0);
+    }
+
+    this._initParticles();
 
     GameState.set(GAME_STATES.PLAYING);
     console.info(`[WorldScene] build done -> PLAYING: ${mapData.id}`);
@@ -158,6 +165,7 @@ export class WorldScene extends Phaser.Scene {
     this._updateInteraction(interactPressed);
     this._applyDebugFlags();
     if (this.player) CollectibleManager.update(this.player.x, this.player.y);
+    this._emitAmbientParticles(delta);
 
     // DebugState
     if (this.player) {
@@ -247,6 +255,58 @@ export class WorldScene extends Phaser.Scene {
     this.scene.launch("TPSScene", { mapId: this.mapData ? this.mapData.id : "tps" });
   }
 
+  _initParticles() {
+    const reduced = SettingsManager.prefersLessMotion();
+    if (reduced || !this.textures.exists("particle_dust") || !this.textures.exists("particle_leaf")) {
+      this._dustP = null;
+      this._leafP = null;
+      return;
+    }
+    if (!this._dustP) {
+      this._dustP = this.add.particles(0, 0, "particle_dust", {
+        speed: { x: [-22, 22], y: [-10, 4] },
+        gravityY: -14,
+        lifespan: 460,
+        scale: { start: 0.55, end: 0 },
+        alpha: { start: 0.3, end: 0 },
+        emitting: false,
+      }).setDepth(3950);
+    }
+    if (!this._leafP) {
+      this._leafP = this.add.particles(0, 0, "particle_leaf", {
+        speed: { x: [-30, 60], y: [6, 30] },
+        gravityY: 14,
+        lifespan: 5200,
+        rotate: { start: 0, end: 360 },
+        scale: { start: 0.7, end: 0.9 },
+        alpha: { start: 0.7, end: 0 },
+        emitting: false,
+      }).setDepth(3000).setScrollFactor(0);
+    }
+    this._dustAcc = 0;
+    this._leafAcc = 0;
+  }
+
+  _emitAmbientParticles(delta) {
+    if (SettingsManager.prefersLessMotion()) return;
+    const cfg = Config.PARTICLES;
+    if (this.player && this.player.isMoving && this._dustP && cfg.DUST_ENABLED) {
+      this._dustAcc += delta;
+      if (this._dustAcc >= cfg.DUST_EVERY_MS) {
+        this._dustAcc = 0;
+        this._dustP.explode(1, this.player.x, this.player.y + 8);
+      }
+    }
+    if (this._leafP && cfg.LEAF_ENABLED) {
+      this._leafAcc += delta;
+      if (this._leafAcc >= cfg.LEAF_EVERY_MS) {
+        this._leafAcc = 0;
+        const cx = this.scale.width / 2;
+        this._leafP.explode(1, cx + Phaser.Math.Between(-240, 240), Phaser.Math.Between(-12, 4));
+      }
+    }
+  }
+
   _showInteractMarkerNpc(npc) {
     if (!this._interactMarker) {
       this._interactMarker = this.add
@@ -317,12 +377,17 @@ export class WorldScene extends Phaser.Scene {
 
     this._transitioning = true;
     GameState.set(GAME_STATES.CUTSCENE);
+    AudioManager.play("transition");
 
     if (this.player) this.player.disable();
     if (this.controller) this.controller = null;
     this._hideInteractMarker();
 
     this._showLoading(zone.label || zone.target, "Pindah area...");
+    if (SettingsManager.prefersLessMotion()) {
+      this.scene.restart({ map: zone.target, spawn: zone.targetSpawn });
+      return true;
+    }
     this.cameras.main.fadeOut(Config.WORLD.TRANSITION_MS, 0, 0, 0);
     this.cameras.main.once("camerafadeoutcomplete", () => {
       this.scene.restart({ map: zone.target, spawn: zone.targetSpawn });

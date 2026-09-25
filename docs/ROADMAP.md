@@ -108,13 +108,12 @@ NPC & Dialogue:
 - [x] Completion reward — XP/Koin + jurnal (kategori TPS) + flag/decision via DecisionManager; Misi 03 "TPS untuk Semua Warga" (`autoStart` AREA_ENTERED); achievement `tps_selesai`
 - [x] Test simulasi — smoke `?tps=1` (8 langkah, skor, quest, jurnal)
 
-## PHASE 9 — Polish
-- [ ] Animasi & animasi transisi
-- [ ] Audio lengkap (music/sfx/ambient/ui/footsteps)
-- [ ] Particle (daun, debu)
-- [ ] UI polish & micro-animation
-- [ ] Accessibility (reduced motion, subtitle, skip dialog, volume)
-- [ ] Test polish & accessibility
+## PHASE 9 — Polish ✅
+- [x] Audio lengkap — AudioManager sintesis WebAudio: master/music/sfx/ambient/ui/footsteps (6 channel), SFX terpicu gameplay (footstep, UI, collect, quest, achievement, level-up, TPS), volume+mute tersimpan via SettingsManager (localStorage)
+- [x] Particle — debu kaki saat berjalan (`particle_dust`) & daun jatuh (`particle_leaf`), bisa dimatikan via reduced motion
+- [x] UI polish & micro-animation — button press-scale + hover/click sfx, panel buka (fade+scale), toggle animasi, dialogue choice feedback + blip ketikan
+- [x] Accessibility — panel AKSESIBILITAS: Kurangi Gerakan (guard semua tween/fade/partikel & camera lerp), Subtitle (caption dialog bawah layar), Teks Instan (reveal penuh); volume master & mute di panel PENGATURAN
+- [x] Test polish & accessibility — smoke `?audio=1` & `?access=1` + regresi (plain/quest/journal/decision/tps)
 
 ## PHASE 10 — PWA + Mobile
 - [ ] Installable PWA
@@ -156,6 +155,7 @@ Fase selesai jika:
 | Phase 6 | ✅ selesai (journal & education) — sisa: akses journal via tombol sentuh/mobile |
 | Phase 7 | ✅ selesai (decision system & skenario verifikasi pasar) |
 | Phase 8 | ✅ selesai (TPS simulation: 8 langkah, kandidat fiktif, review, reward, misi 03) |
+| Phase 9 | ✅ selesai (polish: audio WebAudio 6 channel, particle, UI micro-animation, aksesibilitas reduced-motion/subtitle/teks-instan) |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.

@@ -4,13 +4,14 @@
 
 import { GameState } from "../core/GameState.js";
 import { Config } from "../core/Config.js";
-import { AudioManager } from "../audio/AudioManager.js";
+import { SettingsManager } from "../core/SettingsManager.js";
 import { ProgressState } from "../core/ProgressState.js";
 import { AchievementManager } from "../progression/AchievementManager.js";
 import { CollectibleManager } from "../collectibles/CollectibleManager.js";
 import { QuestManager } from "../quest/QuestManager.js";
 import { AreaState } from "../map/AreaState.js";
 import { Panel } from "../ui/Panel.js";
+import { openSettingsPanel } from "../ui/SettingsPanels.js";
 import { makeButton } from "../ui/widgets.js";
 
 export class MenuScene extends Phaser.Scene {
@@ -75,7 +76,7 @@ export class MenuScene extends Phaser.Scene {
     });
 
     this.add
-      .text(this.scale.width - 12, this.scale.height - 8, "v1.4.0", {
+      .text(this.scale.width - 12, this.scale.height - 8, "v1.5.0", {
         fontFamily: Config.UI.FONT_FAMILY,
         fontSize: "12px",
         color: "#95a5a6",
@@ -86,6 +87,10 @@ export class MenuScene extends Phaser.Scene {
   _startGame() {
     GameState.set("PLAYING");
     this.scene.launch("UIScene");
+    if (SettingsManager.prefersLessMotion()) {
+      this.scene.start("WorldScene");
+      return;
+    }
     this.cameras.main.fadeOut(200, 26, 26, 26);
     this.cameras.main.once("camerafadeoutcomplete", () => {
       this.scene.start("WorldScene");
@@ -93,15 +98,7 @@ export class MenuScene extends Phaser.Scene {
   }
 
   _openSettings() {
-    const panel = new Panel(this, { title: "PENGATURAN", width: 420, height: 420 });
-
-    panel.addStepper("Musik", () => AudioManager.music, (v) => AudioManager.setMusic(v));
-    panel.addStepper("Efek SFX", () => AudioManager.sfx, (v) => AudioManager.setSfx(v));
-
-    panel.addToggle("Layar Penuh", () => this.scale.isFullscreen, (on) => {
-      if (on) this.scale.startFullscreen();
-      else this.scale.exitFullscreen();
-    });
+    const panel = openSettingsPanel(this);
 
     panel.addButton("Reset Simpan", () => {
       ProgressState.reset();
@@ -123,7 +120,7 @@ export class MenuScene extends Phaser.Scene {
     panel.addLabel("Jelajahi Kotanya. Temukan Informasinya. Pahami Prosesnya.", { fontSize: 14, color: "#7f8c8d" });
     panel.addLabel("Game petualangan 2D edukasi tentang", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("literasi demokrasi & pemilu untuk pemilih pemula.", { fontSize: 14, color: "#2c2c2c" });
-    panel.addLabel("Versi 1.4.0 — Phase 8: TPS Simulation", { fontSize: 14, color: "#2c2c2c" });
+    panel.addLabel("Versi 1.5.0 — Phase 9: Polish", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("Kredit: Tim Pengembang Demokrasi Adventure", { fontSize: 14, color: "#2c2c2c" });
     panel.addLabel("Phaser 3 • HTML5 • JavaScript ES Modules • PWA", { fontSize: 12, color: "#95a5a6" });
 

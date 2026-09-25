@@ -1164,6 +1164,22 @@ function _generateCollectibles(scene) {
     g.generateTexture("icon_tps", 40, 40);
     g.destroy();
   }
+
+  // Partikel (Phase 9)
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0xc9a66b, 1);
+    g.fillCircle(3, 3, 3);
+    g.generateTexture("particle_dust", 6, 6);
+    g.destroy();
+  }
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0x3e7d32, 1);
+    g.fillEllipse(4, 2, 7, 4);
+    g.generateTexture("particle_leaf", 9, 5);
+    g.destroy();
+  }
 }
 
 function _starPoints(cx, cy, outer, inner, points) {

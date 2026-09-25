@@ -8,6 +8,7 @@
 import { GameState } from "../core/GameState.js";
 import { EventBus } from "../core/EventBus.js";
 import { Config } from "../core/Config.js";
+import { SettingsManager } from "../core/SettingsManager.js";
 import { generatePlaceholderTextures } from "../core/PlaceholderAssets.js";
 import { generateNPCPlaceholderTextures } from "../core/PlaceholderAssetsNPC.js";
 
@@ -68,6 +69,10 @@ export class PreloadScene extends Phaser.Scene {
     }
 
     this.time.delayedCall(250, () => {
+      if (SettingsManager.prefersLessMotion()) {
+        this.scene.start("MenuScene");
+        return;
+      }
       this.cameras.main.fadeOut(300, 26, 26, 26);
       this.cameras.main.once("camerafadeoutcomplete", () => {
         this.scene.start("MenuScene");

@@ -20,6 +20,7 @@ import { Config } from "../core/Config.js";
 import { EventBus } from "../core/EventBus.js";
 import { GameState, GAME_STATES } from "../core/GameState.js";
 import { DecisionManager } from "../decisions/DecisionManager.js";
+import { AudioManager } from "../audio/AudioManager.js";
 import { makeButton, makeLabel } from "../ui/widgets.js";
 
 const COLORS = {
@@ -279,7 +280,12 @@ export class TPSScene extends Phaser.Scene {
     this._answered = true;
     this._answers = this._answers || [];
     this._answers.push({ label: opt.label, correct: !!opt.correct });
-    if (opt.correct) this._score += 1;
+    if (opt.correct) {
+      this._score += 1;
+      AudioManager.play("correct");
+    } else {
+      AudioManager.play("wrong");
+    }
     this._feedbackLabel.setText(opt.feedback);
     this._feedbackLabel.setColor(opt.correct ? COLORS.GOOD : COLORS.BAD);
     this._show(this._feedbackLabel, true);
@@ -316,6 +322,7 @@ export class TPSScene extends Phaser.Scene {
   _finish() {
     if (this._done) return;
     this._done = true;
+    AudioManager.play("achievement");
 
     DecisionManager.applyActions({
       flags: [Config.TPS.FLAG],

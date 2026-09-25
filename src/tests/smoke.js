@@ -11,6 +11,9 @@ import { DialogueDataLoader } from "../dialogue/DialogueData.js";
 import { DialogueManager } from "../dialogue/DialogueManager.js";
 import { QuestManager } from "../quest/QuestManager.js";
 import { GAME_STATES } from "../core/GameState.js";
+import { AudioManager } from "../audio/AudioManager.js";
+import { SettingsManager } from "../core/SettingsManager.js";
+import { Config } from "../core/Config.js";
 
 const ALLOWED_TARGETS = ["MenuScene", "WorldScene"];
 
@@ -61,6 +64,8 @@ export function runSmoke(game) {
   const testJournal = params.get("journal") === "1";
   const testDecision = params.get("decision") === "1";
   const testTps = params.get("tps") === "1";
+  const testAudio = params.get("audio") === "1";
+  const testAccess = params.get("access") === "1";
   if (target) {
     window.__DEMOKRASI_TEST_TARGET = target;
     console.info(`[Smoke] target scene: ${target}`);
@@ -113,6 +118,8 @@ export function runSmoke(game) {
   let journalTestDone = false;
   let decisionTestDone = false;
   let tpsTestDone = false;
+  let audioTestDone = false;
+  let accessTestDone = false;
 
   function finish(data, attempts) {
     if (finished) return;
@@ -194,6 +201,24 @@ export function runSmoke(game) {
                 attempts = 0;
               }
             }
+          } else if (testAudio) {
+            if (!audioTestDone) {
+              if (data.worldBuilt) {
+                audioTestDone = true;
+                driveAudio(game);
+                phase = "audio";
+                attempts = 0;
+              }
+            }
+          } else if (testAccess) {
+            if (!accessTestDone) {
+              if (data.worldBuilt && data.dialogueLoaded) {
+                accessTestDone = true;
+                driveAccess(game);
+                phase = "access";
+                attempts = 0;
+              }
+            }
           } else {
             if (testInteract) {
               const ws = game.scene.getScene("WorldScene");
@@ -261,6 +286,22 @@ export function runSmoke(game) {
           data.tpsScore >= 1 &&
           data.tpsFlag &&
           data.tpsQuestDone
+        ) {
+          finish(data, attempts);
+          return;
+        }
+      } else if (live && phase === "audio") {
+        if (data.audioBank >= 9 && data.audioPlayed >= 11 && data.audioPersisted) {
+          finish(data, attempts);
+          return;
+        }
+      } else if (live && phase === "access") {
+        if (
+          data.accessReducedMotion &&
+          data.accessSubtitles &&
+          data.accessInstantText &&
+          data.accessRevealed &&
+          data.accessCaption
         ) {
           finish(data, attempts);
           return;
@@ -467,6 +508,72 @@ function driveTPS(game) {
   setTimeout(drive, 80);
 }
 
+function driveAudio(game) {
+  console.info("[Smoke] audio: bank + play + persisten volume");
+  const am = AudioManager;
+  am.setMaster(0.5);
+  am.setMusic(0.4);
+  am.setSfx(0.6);
+  am.setAmbient(0.3);
+  am.setUi(0.7);
+  am.setFootsteps(0.5);
+  const names = ["click", "hover", "blip", "correct", "wrong", "collect", "quest", "achievement", "levelup", "footstep", "transition"];
+  let ok = true;
+  try {
+    for (const k of names) am.play(k);
+  } catch {
+    ok = false;
+  }
+  window.__SMOKE_AUDIO_PLAYED = ok ? names.length : 0;
+  window.__SMOKE_AUDIO_BANK = Object.keys(am._bank || {}).length;
+  try {
+    const parsed = JSON.parse(localStorage.getItem(Config.SAVE.SETTINGS_KEY) || "{}");
+    window.__SMOKE_AUDIO_PERSISTED = parsed.music === 0.4 && parsed.sfx === 0.6 && parsed.footsteps === 0.5;
+  } catch {
+    window.__SMOKE_AUDIO_PERSISTED = false;
+  }
+  // kembalikan default agar tidak bocor ke sesi smoke lain
+  am.setMaster(Config.AUDIO.MASTER_DEFAULT);
+  am.setMusic(Config.AUDIO.MUSIC_DEFAULT);
+  am.setSfx(Config.AUDIO.SFX_DEFAULT);
+  am.setAmbient(Config.AUDIO.AMBIENT_DEFAULT);
+  am.setUi(Config.AUDIO.UI_DEFAULT);
+  am.setFootsteps(Config.AUDIO.FOOTSTEPS_DEFAULT);
+  console.info(`[Smoke] audio: bank=${window.__SMOKE_AUDIO_BANK} played=${window.__SMOKE_AUDIO_PLAYED} persisted=${window.__SMOKE_AUDIO_PERSISTED}`);
+}
+
+function driveAccess(game) {
+  console.info("[Smoke] access: reduced motion + subtitle + teks instan");
+  const sf = SettingsManager;
+  sf.set("reducedMotion", true);
+  sf.set("subtitles", true);
+  sf.set("instantText", true);
+  window.__SMOKE_ACCESS_FLAGS = {
+    reducedMotion: sf.prefersLessMotion(),
+    subtitles: sf.subtitles,
+    instantText: sf.instantText,
+  };
+  const ui = game.scene.getScene("UIScene");
+  DialogueManager.startInfo(
+    { id: "poi_access_test", name: "Uji Aksesibilitas" },
+    ["Baris panjang untuk menguji teks instan dan subtitle terbuka otomatis."]
+  );
+  const s0 = DialogueManager.runner ? DialogueManager.runner.state : null;
+  if (s0 && s0.line.length > 12) DialogueManager.update(0, 250);
+  const s = DialogueManager.runner ? DialogueManager.runner.state : null;
+  window.__SMOKE_ACCESS_REVEALED = !!s && s.visible === s.line.length;
+  const dui = ui && ui.dialogueUI ? ui.dialogueUI : null;
+  window.__SMOKE_ACCESS_CAPTION =
+    !!(dui && dui.caption && dui.caption.visible && dui.caption.text && dui.caption.text.length > 0);
+  let guard = 0;
+  while (DialogueManager.isActive && guard++ < 25) DialogueManager.advance();
+  // kembalikan default agar tidak bocor ke sesi lain
+  sf.set("reducedMotion", Config.SETTINGS.REDUCED_MOTION);
+  sf.set("subtitles", Config.SETTINGS.SUBTITLES);
+  sf.set("instantText", Config.SETTINGS.INSTANT_TEXT);
+  console.info(`[Smoke] access: flags=${JSON.stringify(window.__SMOKE_ACCESS_FLAGS)} revealed=${window.__SMOKE_ACCESS_REVEALED} caption=${window.__SMOKE_ACCESS_CAPTION}`);
+}
+
 function snapshot(game) {
   try {
     const active = game.scene.getScenes(true).map((s) => s.scene.key);
@@ -536,6 +643,15 @@ function snapshot(game) {
       tpsFlag: DecisionManager.hasFlag("story_tps_selesai"),
       tpsQuestDone: QuestManager.completed.includes("misi_03_tps_rakyat"),
       tpsUnlocked: AchievementManager.unlockedCount,
+      audioBank: window.__SMOKE_AUDIO_BANK || 0,
+      audioPlayed: window.__SMOKE_AUDIO_PLAYED || 0,
+      audioPersisted: !!window.__SMOKE_AUDIO_PERSISTED,
+      audioMuted: !!AudioManager.muted,
+      accessReducedMotion: (window.__SMOKE_ACCESS_FLAGS && window.__SMOKE_ACCESS_FLAGS.reducedMotion) || false,
+      accessSubtitles: (window.__SMOKE_ACCESS_FLAGS && window.__SMOKE_ACCESS_FLAGS.subtitles) || false,
+      accessInstantText: (window.__SMOKE_ACCESS_FLAGS && window.__SMOKE_ACCESS_FLAGS.instantText) || false,
+      accessRevealed: !!window.__SMOKE_ACCESS_REVEALED,
+      accessCaption: !!window.__SMOKE_ACCESS_CAPTION,
       idleDownFrames: idleAnim ? idleAnim.frames.length : -1,
       walkDownFrames: walkAnim ? walkAnim.frames.length : -1,
       logs: (window.__SMOKE_LOGS || []).slice(-8),

@@ -1,9 +1,12 @@
 /**
  * Panel — modal panel generik (digunakan untuk SETTINGS & ABOUT).
- * Menyediakan: title, tombol, stepper volume, toggle fullscreen.
+ * Menyediakan: title, tombol, stepper volume, toggle.
+ * Phase 9: micro-animation buka/tutup (reduced-motion aware).
  */
 
 import { Config } from "../core/Config.js";
+import { SettingsManager } from "../core/SettingsManager.js";
+import { AudioManager } from "../audio/AudioManager.js";
 import { makeButton } from "./widgets.js";
 
 export class Panel {
@@ -56,6 +59,24 @@ export class Panel {
     this.content = scene.add.container(0, 0).setDepth(9501);
     this.root.add(this.content);
     scene.add.existing(this.root);
+
+    AudioManager.play("click", { volume: 0.4 });
+    if (!SettingsManager.prefersLessMotion()) {
+      this.root.setAlpha(0);
+      scene.tweens.add({
+        targets: this.root,
+        alpha: 1,
+        duration: 160,
+        ease: "Quad.easeOut",
+      });
+      this.content.setScale(0.97);
+      scene.tweens.add({
+        targets: this.content,
+        scale: 1,
+        duration: 180,
+        ease: "Back.easeOut",
+      });
+    }
   }
 
   addButton(label, onClick, opts = {}) {
@@ -163,8 +184,18 @@ export class Panel {
 
     valueText.setInteractive({ useHandCursor: true });
     valueText.on("pointerup", () => {
+      AudioManager.play("click", { volume: 0.5 });
       onToggle(!getState());
       refresh();
+      if (!SettingsManager.prefersLessMotion()) {
+        this.scene.tweens.add({
+          targets: valueText,
+          scale: 1.1,
+          duration: 70,
+          yoyo: true,
+          ease: "Quad.easeOut",
+        });
+      }
     });
 
     this.content.add([name, valueText]);

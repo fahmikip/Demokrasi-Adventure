@@ -11,6 +11,8 @@
 
 import { Config } from "../core/Config.js";
 import { EventBus } from "../core/EventBus.js";
+import { SettingsManager } from "../core/SettingsManager.js";
+import { AudioManager } from "../audio/AudioManager.js";
 
 const DEPTH = 9500;
 
@@ -96,6 +98,21 @@ export class DialogueUI {
       .setOrigin(1, 1)
       .setVisible(false)
       .setDepth(DEPTH + 1);
+
+    // caption subtitle (aksesibilitas) di bawah panel
+    this.caption = this.scene.add
+      .text(this.scene.scale.width / 2, this.scene.scale.height - 6, "", {
+        fontFamily: Config.UI.FONT_FAMILY,
+        fontSize: "13px",
+        fontStyle: "bold",
+        color: "#ffffff",
+        backgroundColor: "#1a1a1aBB",
+        padding: { x: 12, y: 4 },
+        wordWrap: { width: this.scene.scale.width * 0.7, useAdvancedWrap: true },
+      })
+      .setOrigin(0.5, 1)
+      .setVisible(false)
+      .setDepth(DEPTH + 3);
   }
 
   _open(e) {
@@ -103,6 +120,7 @@ export class DialogueUI {
     this.panel.setVisible(true);
     this.speaker.setVisible(true).setText(e && e.npc && e.npc.name ? e.npc.name : "Warga");
     this.body.setVisible(true).setText("");
+    this.caption.setText("").setVisible(SettingsManager.subtitles);
     const pc = e && e.npc && e.npc.portrait;
     if (pc && this.scene.textures.exists(pc)) {
       this.portrait.setTexture(pc);
@@ -121,13 +139,16 @@ export class DialogueUI {
       this.speaker.setText(s.speaker);
     }
     this.body.setText((s.line || "").slice(0, s.visible));
+    this._updateCaption((s.line || "").slice(0, s.visible));
     if (!s.choices || s.choices.length === 0) this.hint.setVisible(false);
     this._drawPanel();
+    AudioManager.play("blip", { volume: 0.45 });
   }
 
   _onRow(s) {
     if (!s || !this.visible) return;
     this.body.setText((s.line || "").slice(0, s.visible));
+    this._updateCaption((s.line || "").slice(0, s.visible));
     this._clearChoices();
     if (s.choices && s.choices.length) {
       this.hint.setVisible(false);
@@ -136,6 +157,14 @@ export class DialogueUI {
       this.hint.setText("⟶ lanjut (E)").setVisible(true);
     }
     this._drawPanel();
+  }
+
+  _updateCaption(text) {
+    if (SettingsManager.subtitles && text && this.visible) {
+      this.caption.setText(text).setVisible(true);
+    } else {
+      this.caption.setVisible(false);
+    }
   }
 
   _addChoice(ch) {
@@ -154,7 +183,20 @@ export class DialogueUI {
       .text(px, baseY + this._choiceOffset, `  ${ch.index + 1}. ${label}`, st)
       .setDepth(DEPTH + 2)
       .setInteractive({ useHandCursor: true });
-    t.on("pointerup", () => EventBus.emit("DIALOGUE_CHOICE_SELECTED", { index: ch.index }));
+    const restore = () => {
+      t.setBackgroundColor("#eaf2f8");
+      t.setColor("#1a1a1a");
+    };
+    t.on("pointerover", () => {
+      AudioManager.play("hover", { volume: 0.5 });
+      t.setBackgroundColor("#d5e8d6");
+      t.setColor("#14532d");
+    });
+    t.on("pointerout", restore);
+    t.on("pointerup", () => {
+      AudioManager.play("click", { volume: 0.6 });
+      EventBus.emit("DIALOGUE_CHOICE_SELECTED", { index: ch.index });
+    });
     this.choices.push(t);
 
     const h = t.height + 4;
@@ -177,6 +219,7 @@ export class DialogueUI {
     this.speaker.setVisible(false);
     this.body.setVisible(false);
     this.hint.setVisible(false);
+    this.caption.setVisible(false);
     this._clearChoices();
   }
 

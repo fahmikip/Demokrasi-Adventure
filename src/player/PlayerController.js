@@ -6,11 +6,13 @@
 import { Config } from "../core/Config.js";
 import { GameState } from "../core/GameState.js";
 import { PlayerState } from "./PlayerState.js";
+import { AudioManager } from "../audio/AudioManager.js";
 
 export class PlayerController {
   constructor(player, inputResolver) {
     this.player = player;
     this._resolveInput = inputResolver;
+    this._stepAcc = 0;
   }
 
   update(_time, _delta) {
@@ -18,6 +20,7 @@ export class PlayerController {
 
     if (!GameState.canMove || player.state.value === PlayerState.DISABLED) {
       player.setVelocity(0, 0);
+      this._stepAcc = 0;
       return false;
     }
 
@@ -33,8 +36,15 @@ export class PlayerController {
       player.setVelocity(vector.x * speed, vector.y * speed);
       player.faceFromVector(vector);
       player.state.set(PlayerState.WALK);
+
+      this._stepAcc += _delta;
+      if (this._stepAcc >= Config.AUDIO.FOOTSTEPS_INTERVAL_MS) {
+        this._stepAcc = 0;
+        AudioManager.play("footstep", { channel: "footsteps" });
+      }
     } else {
       player.setVelocity(0, 0);
+      this._stepAcc = 0;
       if (player.state.value === PlayerState.WALK) {
         player.state.set(PlayerState.IDLE);
       }

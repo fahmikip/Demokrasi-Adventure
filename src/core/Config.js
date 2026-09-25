@@ -36,7 +36,8 @@ export const Config = {
     TRANSITION_MS: 400,
     FADE_IN_MS: 250,
     POST_TRANSITION_COOLDOWN_MS: 900,
-    AMBIENT: "ambient_placeholder",
+    AMBIENT: "ambient",
+    MUSIC: "music",
   },
 
   PLAYER: {
@@ -126,6 +127,7 @@ export const Config = {
 
   SAVE: {
     KEY: "demokrasi-adventure-save",
+    SETTINGS_KEY: "demokrasi-adventure-settings-v1",
     VERSION: 1,
   },
 
@@ -133,6 +135,36 @@ export const Config = {
     MASTER_DEFAULT: 1,
     MUSIC_DEFAULT: 0.7,
     SFX_DEFAULT: 1,
+    AMBIENT_DEFAULT: 0.45,
+    UI_DEFAULT: 0.8,
+    FOOTSTEPS_DEFAULT: 0.8,
+    FOOTSTEPS_INTERVAL_MS: 320,
+    BANK: {
+      click: { channel: "ui" },
+      hover: { channel: "ui" },
+      blip: { channel: "ui" },
+      correct: { channel: "sfx" },
+      wrong: { channel: "sfx" },
+      collect: { channel: "sfx" },
+      quest: { channel: "sfx" },
+      achievement: { channel: "sfx" },
+      levelup: { channel: "sfx" },
+      footstep: { channel: "footsteps" },
+      transition: { channel: "sfx" },
+    },
+  },
+
+  SETTINGS: {
+    REDUCED_MOTION: false,
+    SUBTITLES: false,
+    INSTANT_TEXT: false,
+  },
+
+  PARTICLES: {
+    DUST_ENABLED: true,
+    DUST_EVERY_MS: 120,
+    LEAF_ENABLED: true,
+    LEAF_EVERY_MS: 1500,
   },
 
   PROGRESSION: {

@@ -26,9 +26,9 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T11 | Achievement | Capai pencapaian | Unlock event & UI (Phase 5) |
 | T12 | Journal | Kumpulkan collectible | Journal bertambah dengan source (Phase 6) |
 | T13 | TPS Simulation | Jalankan mini-game | Alur 8 langkah berjalan, kandidat fiktif/abstrak, review literasi tampil, reward diterima (Phase 8) |
-| T14 | Audio | Ubah volume master/music/sfx | Volume berubah, mute berfungsi (Phase 10+) |
+| T14 | Audio | Ubah volume master/music/sfx + mute | Volume berubah per channel (master/music/sfx/ambient/ui/footsteps), mute bekerja, tersimpan lintas sesi; SFX sintesis terpicu gameplay (langkah, collect, quest, achievement, TPS) (Phase 9) |
 | T15 | Responsive | Resize & rotating device | Canvas FIT, UI tidak terpotong |
-| T16 | Accessibility | Reduced motion, subtitle, skip | Opsi diterapkan |
+| T16 | Accessibility | Reduced motion, subtitle, teks instan, volume | Opsi diterapkan & tersimpan: gerak minimal (tanpa tween/fade/partikel), caption dialog di bawah layar, teks langsung utuh, mute/volume (Phase 9) |
 | T17 | PWA | Install & offline | App terinstall, offline cache berfungsi (Phase 11+) |
 | T18 | Mobile touch | Joystick & tombol aksi | Semua tombol touch-friendly |
 | T19 | Save corrupt | Beri data save rusak | Fallback reset friendly tanpa crash |
@@ -85,6 +85,18 @@ chrome --headless=new --no-sandbox --use-angle=swiftshader \
 # Verifikasi: tpsDone, steps >= 8, score >= 1, flag set, quest misi_03 selesai.
 ... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&tps=1"
 
+# audio flow (Phase 9) → AudioManager sintesis WebAudio (bank 13 suara):
+# set volume 6 channel + mute, play lintas channel tanpa throw, nilai tersimpan
+# ke localStorage via SettingsManager.
+# Verifikasi: audioBank >= 9, audioPlayed >= 11, audioPersisted.
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&audio=1"
+
+# accessibility flow (Phase 9) → reduced motion + subtitle + teks instan:
+# dialog teks langsung ter-reveal utuh (instantText), caption tampil di bawah
+# layar saat sub judul aktif, pengaturan tersimpan otomatis.
+# Verifikasi: accessReducedMotion/Subtitles/InstantText + Revealed + Caption.
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&access=1"
+
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
@@ -105,3 +117,4 @@ Parameter debug headless:
 | 6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T12 ✅, T09 ✅, T21 ✅ | Journal & education: quest → 1 entri (Pemilu) + collectible → 3 entri (Pemilu/Informasi/Tahapan) via `journalId`; `JOURNAL_UPDATED` + HUD counter `📖 Jurnal N`; UI 7 kategori (`J` buka/tutup, ESC, scroll wheel); sumber tampil per entri (`journalWithSource`=4); smoke `?journal=1`. Validasi `data/education/`: 18 kartu, 7 kategori, semua collectible resolve, per-kategori tercakup. Transition smoke masih flaky di headless (crash renderer saat restart) — catatan: tidak berhubungan dgn perubahan journal (WorldScene tak disentuh fase ini). |
 | 7 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T22 ✅ | Decision system: DialogueManager/UI aktif (buka/tutup, ketik, pilihan via klik/E/angka), branching nyata lewat `conditions` + `startSelector`, konsekuensi via DecisionManager (flags/decisions/relationship/jurnal) + auto-start sidebar Misi 02; Skenario verifikasi pasar melewati jalur sapa→verifikasi→info POI→sudah_baca→`dec_rumor_verified`, quest selesai, relationship `npc_warga_pasar` naik, 3 decision+jurnal tercatat; smoke `?decision=1`. |
 | 8 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T13 ✅, T09 ✅ | TPS Simulation: TPSScene (scene overlay, `TPS_SIMULATION` state) — alur 8 langkah data-driven (`data/tps/sim_tps.json`): Datang→Interaksi→Verifikasi→Perlengkapan→Bilik→Simulasi (kandidat fiktif/abstrak: Mentari/Roda/Bintang)→Selesai→Review; feedback literasi per pilihan + review skor; reward XP/Koin via DecisionManager (`dec_tps_selesai`, flag `story_tps_selesai`, jurnal kategori TPS); Misi 03 "TPS untuk Semua Warga" auto-start via `AREA_ENTERED` (fitur `autoStart`), selesai setelah simulasi; achievement `first_simulation` + `tps_selesai`; ikon placeholder `icon_tps`; smoke `?tps=1` (8 langkah, skor 5/5, quest selesai, 2 entri jurnal). |
+| 9 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T14 ✅, T16 ✅ | Polish: Audio lengkap — AudioManager sintesis WebAudio (13 suara, 6 channel: master/music/sfx/ambient/ui/footsteps), SFX terpicu gameplay (langkah `FOOTSTEPS_INTERVAL_MS`, collect, quest, achievement, level-up, TPS benar/salah/selesai, transisi), volume+mute tersimpan via SettingsManager (localStorage); icon particle `particle_dust`/`particle_leaf` + emitter debu saat berjalan & daun jatuh; UI polish — makeButton press-scale + hover/click sfx, Panel open micro-animation, toggle animasi, DialogueUI choice feedback + blip; Aksesibilitas — toggle Kurangi Gerakan/Subtitle/Teks Instan di panel AKSESIBILITAS (guard semua tween/fade/partikel & camera lerp, caption dialog bawah layar, teks instan), settings terpusat bersama panel PENGATURAN (master/musik/sfx/mute/fullscreen); smoke `?audio=1` & `?access=1`. |

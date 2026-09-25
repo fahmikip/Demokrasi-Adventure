@@ -15,6 +15,7 @@
 import { EventBus } from "../core/EventBus.js";
 import { GameState, GAME_STATES } from "../core/GameState.js";
 import { Config } from "../core/Config.js";
+import { SettingsManager } from "../core/SettingsManager.js";
 import { DialogueRunner } from "./DialogueRunner.js";
 import { DialogueDataLoader } from "./DialogueData.js";
 import { DecisionManager } from "../decisions/DecisionManager.js";
@@ -131,10 +132,12 @@ class DialogueManagerClass {
     const cfg = Config.DIALOGUE;
     const s = this.runner.state;
     this._time += delta;
-    const want = Math.min(
-      s.line.length,
-      Math.floor(Math.max(0, this._time) / cfg.TYPING_MS_PER_CHAR)
-    );
+    const want = SettingsManager.instantText
+      ? s.line.length
+      : Math.min(
+          s.line.length,
+          Math.floor(Math.max(0, this._time) / cfg.TYPING_MS_PER_CHAR)
+        );
     const cur = s.visible;
     this.runner.tick(want);
     if (s.visible !== cur) {

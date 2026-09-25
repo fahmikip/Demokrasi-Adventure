@@ -7,6 +7,7 @@ import { GameState, GAME_STATES } from "../core/GameState.js";
 import { EventBus } from "../core/EventBus.js";
 import { Config } from "../core/Config.js";
 import { DebugState } from "../core/DebugState.js";
+import { SettingsManager } from "../core/SettingsManager.js";
 import { InputManager } from "../input/InputManager.js";
 import { HUD } from "../ui/HUD.js";
 import { PauseMenu } from "../ui/PauseMenu.js";
@@ -252,6 +253,13 @@ export class UIScene extends Phaser.Scene {
 
   _announceArea(name) {
     this.areaChip.setText(String(name || "").toUpperCase());
+    if (SettingsManager.prefersLessMotion()) {
+      this.tweens.killTweensOf(this.areaChip);
+      if (this.areaChip._hideTween) this.time.removeEvent(this.areaChip._hideTween);
+      this.areaChip.setAlpha(1);
+      this.areaChip._hideTween = this.time.delayedCall(900, () => this.areaChip.setAlpha(0));
+      return;
+    }
     this.tweens.killTweensOf(this.areaChip);
     this.areaChip.setAlpha(1);
     this.areaChip._hideTween = this.time.delayedCall(2600, () => {
@@ -276,6 +284,11 @@ export class UIScene extends Phaser.Scene {
 
   _showToast(msg) {
     this.toast.setText(msg).setAlpha(1);
+    if (SettingsManager.prefersLessMotion()) {
+      this.tweens.killTweensOf(this.toast);
+      this.time.delayedCall(1400, () => this.toast.setAlpha(0));
+      return;
+    }
     this.tweens.killTweensOf(this.toast);
     this.time.delayedCall(2200, () => {
       this.tweens.add({ targets: this.toast, alpha: 0, duration: 500 });
@@ -298,6 +311,11 @@ export class UIScene extends Phaser.Scene {
       .setDepth(9561)
       .setAlpha(0));
     t.setText(msg).setAlpha(1);
+    if (SettingsManager.prefersLessMotion()) {
+      this.tweens.killTweensOf(t);
+      this.time.delayedCall(1600, () => t.setAlpha(0));
+      return;
+    }
     this.tweens.killTweensOf(t);
     this.time.delayedCall(3400, () => {
       this.tweens.add({ targets: t, alpha: 0, duration: 700 });
