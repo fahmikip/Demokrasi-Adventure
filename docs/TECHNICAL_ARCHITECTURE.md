@@ -290,7 +290,8 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 
 ## 14. Debug Mode
 
-- Aktif via `Config.DEBUG = true` (development only).
+- **Nonaktif default di production** (Phase 11). Diaktifkan via `?debug=1` atau `window.__DEMOKRASI_DEBUG__ === true` (didefinisikan sebelum `src/main.js`).
+- `Config.DEBUG` menggerakkan: smoke test (`?selftest=1`), F1 debug overlay, physics debug (`arcade.debug`), paksa renderer Canvas (`?renderer=canvas`), beberapa `console.info`.
 - Hotkeys (Phase 1): `F1` debug overlay ✅
   - `F2` teleport (rencana)
   - `F3` complete quest (rencana)
@@ -306,6 +307,8 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 - Tilemap Phaser (batch-friendly).
 - Object pooling untuk objek berulang.
 - Lazy loading area saat transisi (bukan load semua map).
+- **Tab hidden (Phase 11):** `Game._bindVisibility()` — saat `document.hidden` game loop di-`sleep()` dan `AudioContext` di-`suspend()`; lanjutkan (`wake()`/`resume()`) saat tab kembali terlihat (hemat CPU & baterai).
+- **`roundPixels: true`** (`Config.GAME.ROUND_PIXELS`) — sampling piksel tajam untuk render pixel-art.
 - Hindari DOM manipulation dalam game loop.
 - Hindari duplicate event listeners (hapus saat destroy).
 
@@ -328,7 +331,7 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
   - Navigasi: **network-first → fallback `./index.html`** (shell selalu segar saat online).
   - Aset lain (modul/data/gambar/CDN): **cache-first** → miss di-fetch & di-cache (termasuk opaque CDN). JSON yang gagal saat offline → `Response 504` (aman untuk `res.json()` loader — bukan HTML).
   - `activate`: prune semua cache ≠ versi sekarang; `skipWaiting` + `clients.claim`. Versi naik manual via konstanta.
-  - Registrasi (`src/main.js`): `updateViaCache: "none"`, log scope, `controllerchange` → reload sekali (di-guard `?selftest`). Di localhost/DEBUG dilewati kecuali `?sw=1` (paksa, untuk testing offline).
+  - Registrasi (`src/main.js`): `updateViaCache: "none"`, log scope, `controllerchange` → reload sekali (di-guard `?selftest`). Aturan production-clean (Phase 11): di origin **non-localhost selalu ter-register**; di localhost dilewati agar dev bebas cache, paksa via `?sw=1` (untuk testing offline).
 - **CSS mobile** (`src/styles/main.css`): `env(safe-area-inset-*)` (notch/gesture bar), `user-select`/`-webkit-touch-callout` none, `touch-action: none`, `:fullscreen` + `::backdrop`, `@media (display-mode: standalone)`, landscape query pendek.
 - **Offline proof:** stategi diverifikasi headless — online sekali → matikan server → reload: game boot penuh dari cache (SW menangani Phaser CDN + seluruh modul + data, tanpa kebutuhan vendor lokal).
 - **Catatan:** progress non-settings (XP/quest/achievement) tetap session-only (in-memory); persistensi permanen bukan scope Phase 10.

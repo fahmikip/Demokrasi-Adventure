@@ -122,12 +122,12 @@ NPC & Dialogue:
 - [ ] iPad/Android/iOS test — QA perangkat nyata (manual, instalasi + offline) via `assets:audit` & smoke
 - [x] Test offline & install — smoke `?pwa=1` (SW register+active, cache 140 entri: shell/module/data/icon/Phaser) + smoke offline boot `pwa=1` (server dimatikan, `worldBuilt` penuh)
 
-## PHASE 11 — Production & Deployment
-- [ ] Optimization & performance
-- [ ] Bug fixing
-- [ ] Dokumentasi lengkap (README)
-- [ ] GitHub Pages deployment
-- [ ] Release & user documentation
+## PHASE 11 — Production & Deployment ✅
+- [x] Optimization & performance — tab hidden: game loop `sleep()` + `AudioContext.suspend()` (lanjut saat kembali), `roundPixels` untuk pixel-art tajam
+- [x] Bug fixing — production gate `Config.DEBUG` nonaktif default (`?debug=1` / `__DEMOKRASI_DEBUG__`), registrasi SW production-clean (non-localhost selalu, localhost perlu `?sw=1`); akses jurnal via badge HUD bisa diketuk/diklik (mobile) — menyelesaikan sisa Phase 6
+- [x] Dokumentasi lengkap — README (fitur, dev, test, deploy), `CHANGELOG.md`, `docs/DEPLOYMENT.md`
+- [x] GitHub Pages deployment — workflow Actions `deploy.yml` (root repo → Pages), `.nojekyll`
+- [x] Release & user documentation — mode production boot bersih (0 error console), versi `1.7.0`; smoke `&debug=1` hijau seluruhnya
 
 ---
 
@@ -157,6 +157,7 @@ Fase selesai jika:
 | Phase 8 | ✅ selesai (TPS simulation: 8 langkah, kandidat fiktif, review, reward, misi 03) |
 | Phase 9 | ✅ selesai (polish: audio WebAudio 6 channel, particle, UI micro-animation, aksesibilitas reduced-motion/subtitle/teks-instan) |
 | Phase 10 | ✅ selesai (PWA & mobile: installable manifest+iOS meta+apple-touch-icon, offline cache SW v2 140 URL, safe-area/standalone CSS, smoke `?pwa=1` + offline boot) — sisa: QA perangkat nyata (iPad/Android/iOS) |
+| Phase 11 | ✅ selesai (production & deployment: DEBUG gate `?debug=1`, SW registrasi production-clean, perf tab-hidden + roundPixels, bugfix jurnal mobile, CI Pages deploy + `.nojekyll`, README/CHANGELOG/DEPLOYMENT) — sisa: deploy live + QA device manual |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.

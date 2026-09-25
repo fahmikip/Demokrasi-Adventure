@@ -66,6 +66,20 @@ class AudioManagerClass {
     EventBus.emit("AUDIO_MUTE_CHANGED", this.muted);
   }
 
+  /** Suspend AudioContext saat tab hidden (perf & baterai). */
+  suspend() {
+    if (this._ctx && this._ctx.state === "running") {
+      this._ctx.suspend().catch(() => {});
+    }
+  }
+
+  /** Resume AudioContext saat tab kembali terlihat. */
+  resume() {
+    if (this._ctx && this._ctx.state === "suspended") {
+      this._ctx.resume().catch(() => {});
+    }
+  }
+
   setMaster(v) {
     this.master = clamp01(v);
     this._persist("master");

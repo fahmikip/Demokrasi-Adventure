@@ -10,6 +10,7 @@ import { WorldScene } from "../scenes/WorldScene.js";
 import { UIScene } from "../scenes/UIScene.js";
 import { TPSScene } from "../scenes/TPSScene.js";
 import { installAudioHooks } from "../audio/AudioHooks.js";
+import { AudioManager } from "../audio/AudioManager.js";
 
 export class Game {
   constructor(containerId = "game-root") {
@@ -28,6 +29,7 @@ export class Game {
       height: Config.GAME.HEIGHT,
       backgroundColor: Config.GAME.BACKGROUND,
       pixelArt: Config.GAME.PIXEL_ART,
+      roundPixels: Config.GAME.ROUND_PIXELS,
       scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -46,5 +48,23 @@ export class Game {
     window.__DEMOKRASI.phaser = this.phaser;
 
     installAudioHooks();
+    this._bindVisibility();
+  }
+
+  /**
+   * Perf/baterai (Phase 11): saat tab tersembunyi, tidurkan game loop
+   * dan suspend AudioContext; lanjutkan saat tab kembali terlihat.
+   */
+  _bindVisibility() {
+    document.addEventListener("visibilitychange", () => {
+      const loop = this.phaser && this.phaser.loop;
+      if (document.hidden) {
+        if (loop) loop.sleep();
+        AudioManager.suspend();
+      } else {
+        if (loop) loop.wake();
+        AudioManager.resume();
+      }
+    });
   }
 }

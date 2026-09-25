@@ -17,8 +17,22 @@ function resolveBasePath() {
   return origin + "/" + (segments.length ? segments.join("/") + "/" : "");
 }
 
+/**
+ * DEBUG default NONAKTIF di production.
+ * Diaktifkan saat `?debug=1` atau bila `window.__DEMOKRASI_DEBUG__ === true`
+ * (didefinisikan sebelum `src/main.js` — mis. untuk QA di staging).
+ */
+function resolveDebug() {
+  try {
+    if (new URLSearchParams(window.location.search).get("debug") === "1") return true;
+  } catch {
+    /* ignore */
+  }
+  return window.__DEMOKRASI_DEBUG__ === true;
+}
+
 export const Config = {
-  DEBUG: true,
+  DEBUG: resolveDebug(),
 
   BASE_PATH: resolveBasePath(),
 
@@ -27,6 +41,7 @@ export const Config = {
     HEIGHT: 540,
     RENDER_MODE: "auto",
     PIXEL_ART: true,
+    ROUND_PIXELS: true,
     BACKGROUND: 0x1a1a1a,
   },
 

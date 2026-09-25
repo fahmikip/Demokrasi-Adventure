@@ -5,8 +5,10 @@ import { runSmoke } from "./tests/smoke.js";
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   const params = new URLSearchParams(window.location.search);
+  // Regresikan SW selalu di origin non-localhost (production/GH Pages).
+  // Di localhost dilewati (iterasi dev bebas cache); paksa via `?sw=1`.
   const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-  if (isLocalhost && Config.DEBUG && params.get("sw") !== "1") return;
+  if (isLocalhost && params.get("sw") !== "1") return;
 
   const reloadOnce = () => {
     if (params.has("selftest")) return;

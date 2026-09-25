@@ -44,7 +44,8 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 
 ## Automated Smoke Test (Dev / CI)
 
-Smoke test otomatis berjalan hanya dalam mode `DEBUG + ?selftest=1` (tidak aktif di production).
+Smoke test otomatis berjalan hanya saat `Config.DEBUG` aktif — gunakan `?debug=1&selftest=1`
+(di production `Config.DEBUG` default nonaktif sejak Phase 11).
 Game loop di-drive manual (`game.loop.manualStep`) agar deterministik di headless.
 
 ```bash
@@ -54,66 +55,67 @@ python -m http.server 8000
 # boot → WorldScene + UIScene (WebGL & Canvas), verifikasi player/obstacle/state/anim
 chrome --headless=new --no-sandbox --use-angle=swiftshader \
   --virtual-time-budget=20000 --enable-logging=stderr --v=0 --dump-dom \
-  "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1"
+  "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1"
 # (output divalidasi via <title>SMOKE:{...}</title>)
 
 # boot → MenuScene
-... "http://127.0.0.1:8000/index.html?scene=MenuScene&selftest=1"
+... "http://127.0.0.1:8000/index.html?scene=MenuScene&selftest=1&debug=1"
 
 # quest flow (misi 01) → boot WorldScene, drive quest, verifikasi QUEST_COMPLETED + reward
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&quest=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&quest=1"
 
 # progression flow (Phase 5) → quest misi 01 + passive XP + collectible (player walk-in),
 # verifikasi level up + achievement unlock + koin
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&progression=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&progression=1"
 
 # journal flow (Phase 6) → quest misi 01 (journalEntries) + 3 collectible desa (journalId),
 # verifikasi entri jurnal dengan source, kategori terbuka, total >= 4
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&journal=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&journal=1"
 
 # decision flow (Phase 7) → dunia WorldScene + DialogueManager sungguhan:
 # bicara Bu Sri (startNode via startSelector) → pilih jalur verifikasi → baca Papan
 # Informasi (startInfo) → kembali ber-Bu Sri (node "sudah_baca") → dec_rumor_verified.
 # Verifikasi: decisions >= 3, flags >= 3, relationship > 0, jurnal decision >= 2,
 # quest misi_02 selesai.
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&decision=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&decision=1"
 
 # tps flow (Phase 8) → dunia WorldScene + TPSScene (8 langkah) via POI tps:
 # AREA_ENTERED tps (auto-start misi_03 + achievement first_simulation) →
 # simulasi 8 langkah (info/choice) → review → dec_tps_selesai + flag +
 # jurnal TPS + reward (XP/Koin) + TPS_COMPLETED (achievement tps_selesai).
 # Verifikasi: tpsDone, steps >= 8, score >= 1, flag set, quest misi_03 selesai.
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&tps=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&tps=1"
 
 # audio flow (Phase 9) → AudioManager sintesis WebAudio (bank 13 suara):
 # set volume 6 channel + mute, play lintas channel tanpa throw, nilai tersimpan
 # ke localStorage via SettingsManager.
 # Verifikasi: audioBank >= 9, audioPlayed >= 11, audioPersisted.
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&audio=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&audio=1"
 
 # accessibility flow (Phase 9) → reduced motion + subtitle + teks instan:
 # dialog teks langsung ter-reveal utuh (instantText), caption tampil di bawah
 # layar saat sub judul aktif, pengaturan tersimpan otomatis.
 # Verifikasi: accessReducedMotion/Subtitles/InstantText + Revealed + Caption.
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&access=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&access=1"
 
 # pwa flow (Phase 10) → Service Worker v2 ter-register & active, precache 140
 # URL (shell/modul/data/ikon/Phaser CDN) diverifikasi via CacheStorage page.
 # WAJIB `sw=1` agar SW dipaksa daftar di localhost DEBUG.
 # Verifikasi: pwaActive + shell/module/data/icon/phaser cached + cacheSize.
-... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&sw=1&pwa=1"
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&debug=1&sw=1&pwa=1"
 
 # offline boot (Phase 10) → bukti offline cache: (1) kunjungan online sekali
 # (daftar SW + cache v2, bisa via port terpisah dgn --user-data-dir sama),
 # (2) MATIKAN server, (3) muat ulang URL yang sama tanpa &sw=1.
 # Verifikasi: SMOKE boot penuh (worldBuilt:true, quest/dialog/achievement loaded).
-... "http://127.0.0.1:8010/index.html?scene=WorldScene&selftest=1&pwa=1"   # server mati
+... "http://127.0.0.1:8010/index.html?scene=WorldScene&selftest=1&debug=1&pwa=1"   # server mati
 
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
 
 Parameter debug headless:
+- `?debug=1` — aktifkan `Config.DEBUG` (smoke test, F1 overlay, physics debug). Default nonaktif di production.
 - `?selftest=1` — aktifkan smoke test.
 - `?scene=WorldScene|MenuScene` — langsung membuka scene target setelah preload.
 - `?renderer=canvas` — paksa Canvas (opsional, untuk isolasi).
@@ -133,3 +135,4 @@ Parameter debug headless:
 | 8 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T13 ✅, T09 ✅ | TPS Simulation: TPSScene (scene overlay, `TPS_SIMULATION` state) — alur 8 langkah data-driven (`data/tps/sim_tps.json`): Datang→Interaksi→Verifikasi→Perlengkapan→Bilik→Simulasi (kandidat fiktif/abstrak: Mentari/Roda/Bintang)→Selesai→Review; feedback literasi per pilihan + review skor; reward XP/Koin via DecisionManager (`dec_tps_selesai`, flag `story_tps_selesai`, jurnal kategori TPS); Misi 03 "TPS untuk Semua Warga" auto-start via `AREA_ENTERED` (fitur `autoStart`), selesai setelah simulasi; achievement `first_simulation` + `tps_selesai`; ikon placeholder `icon_tps`; smoke `?tps=1` (8 langkah, skor 5/5, quest selesai, 2 entri jurnal). |
 | 9 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T14 ✅, T16 ✅ | Polish: Audio lengkap — AudioManager sintesis WebAudio (13 suara, 6 channel: master/music/sfx/ambient/ui/footsteps), SFX terpicu gameplay (langkah `FOOTSTEPS_INTERVAL_MS`, collect, quest, achievement, level-up, TPS benar/salah/selesai, transisi), volume+mute tersimpan via SettingsManager (localStorage); icon particle `particle_dust`/`particle_leaf` + emitter debu saat berjalan & daun jatuh; UI polish — makeButton press-scale + hover/click sfx, Panel open micro-animation, toggle animasi, DialogueUI choice feedback + blip; Aksesibilitas — toggle Kurangi Gerakan/Subtitle/Teks Instan di panel AKSESIBILITAS (guard semua tween/fade/partikel & camera lerp, caption dialog bawah layar, teks instan), settings terpusat bersama panel PENGATURAN (master/musik/sfx/mute/fullscreen); smoke `?audio=1` & `?access=1`. |
 | 10 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T17 ✅ (offline boot, instal manual ⏳), T15 ⏳ manual | PWA & Mobile: manifest lengkap (`id`, standalone, categories) + iOS meta (`apple-mobile-web-app-*`) + `apple-touch-icon` 180 fisik; SW `sw.js` v2 — precache 140 URL (app shell + 65 modul + 65 data JSON + ikon + Phaser CDN via `--user-data-dir` test), navigate network-first → fallback `index.html`, aset cache-first, JSON offline → 504 aman; `DialogueData` kini pakai `BASE_PATH`; registrasi `updateViaCache:none` + controllerchange reload-once (guarded selftest); CSS mobile (safe-area `env()`, user-select/touch-callout none, display-mode standalone, :fullscreen); smoke `?sw=1&pwa=1` (active, cache v2, 140 entries: shell/module/data/icon/phaser) + offline boot terverifikasi — server port 8010 dimatikan, game boot penuh dari cache (`worldBuilt` true, quest/achievement/journal loaded); regresi plain/quest/journal/decision/tps/audio/access ✅. |
+| 11 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T17 ✅, T12/T21 ✅ (journal mobile), T10 ⏳ save, T15/T18 ⏳ device | Production & Deployment: production gate — `Config.DEBUG` default nonaktif (`?debug=1`/`__DEMOKRASI_DEBUG__`), boot production bersih (canvas, 0 error console); SW registrasi production-clean (non-localhost selalu, localhost perlu `?sw=1`); perf — tab hidden tidurkan game loop + suspend AudioContext, `roundPixels`; bug fix mobile — badge jurnal HUD bisa diketuk/diklik (selesaikan sisa Phase 6); CI — `.github/workflows/deploy.yml` (GH Pages via Actions) + `.nojekyll`; docs — README lengkap, `CHANGELOG.md`, `docs/DEPLOYMENT.md`; smoke `&debug=1` seluruhnya green (plain/quest/journal/decision/tps/audio/access/pwa, quest stabil 3x ulang). |

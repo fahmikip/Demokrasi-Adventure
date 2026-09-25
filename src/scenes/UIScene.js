@@ -229,8 +229,16 @@ export class UIScene extends Phaser.Scene {
   // ==================== UI building ====================
 
   _buildHUD() {
-    this.hud = new HUD(this);
+    this.hud = new HUD(this, () => this._toggleJournal());
     this.hud.setStats({ level: 1, xp: 0, coins: 0 });
+  }
+
+  _toggleJournal() {
+    if (this.journalUI.isOpen) {
+      this.journalUI.close();
+    } else if (GameState.current === "PLAYING" && !this._isUiBlocked()) {
+      this.journalUI.open();
+    }
   }
 
   _buildAreaChip() {

@@ -11,8 +11,10 @@ const W = 340;
 const H = 76;
 
 export class HUD {
-  constructor(scene) {
+  constructor(scene, onJournalTap) {
     this.scene = scene;
+    this._onJournalTap = onJournalTap || null;
+    this._journalVisible = false;
     this._build();
     this.setStats({ level: 1, xp: 0, coins: 0, levelName: "", xpToNext: 0, progress: 0 });
   }
@@ -28,7 +30,8 @@ export class HUD {
 
   setJournal(count) {
     const has = (count || 0) > 0;
-    this.journalText.setText(has ? `📖 Jurnal ${count} — tekan J` : "");
+    this._journalVisible = has;
+    this.journalText.setText(has ? `📖 Jurnal ${count}` : "");
     this.journalText.setAlpha(has ? 1 : 0);
   }
 
@@ -102,6 +105,19 @@ export class HUD {
       .setScrollFactor(0)
       .setDepth(8500)
       .setAlpha(0);
+
+    // Phase 11 — jurnal bisa diketuk (mobile) atau diklik, bukan hanya tombol `J`.
+    this.journalText
+      .setInteractive({ useHandCursor: true })
+      .on("pointerover", () => {
+        if (this._journalVisible) this.journalText.setAlpha(0.7);
+      })
+      .on("pointerout", () => {
+        this.journalText.setAlpha(this._journalVisible ? 1 : 0);
+      })
+      .on("pointerup", () => {
+        if (this._onJournalTap) this._onJournalTap();
+      });
   }
 
   _stat(x, y, color, size) {
