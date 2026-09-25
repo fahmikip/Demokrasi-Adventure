@@ -8,6 +8,7 @@ import { PreloadScene } from "../scenes/PreloadScene.js";
 import { MenuScene } from "../scenes/MenuScene.js";
 import { WorldScene } from "../scenes/WorldScene.js";
 import { UIScene } from "../scenes/UIScene.js";
+import { TPSScene } from "../scenes/TPSScene.js";
 
 export class Game {
   constructor(containerId = "game-root") {
@@ -37,7 +38,7 @@ export class Game {
           debug: Config.DEBUG,
         },
       },
-      scene: [BootScene, PreloadScene, MenuScene, WorldScene, UIScene],
+      scene: [BootScene, PreloadScene, MenuScene, WorldScene, UIScene, TPSScene],
     });
 
     window.__DEMOKRASI = window.__DEMOKRASI || {};

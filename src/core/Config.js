@@ -157,7 +157,18 @@ export const Config = {
   },
 
   ACHIEVEMENTS: {
-    MAX: 18,
+    MAX: 19,
+  },
+
+  TPS: {
+    // Simulasi pemungutan suara (Phase 8)
+    SIM_FILE: "sim_tps.json",
+    PANEL: { WIDTH: 740, HEIGHT: 380 },
+    REWARD: { xp: 30, coins: 10 },
+    FLAG: "story_tps_selesai",
+    DECISION: "dec_tps_selesai",
+    JOURNAL_CATEGORY: "TPS",
+    STEP_LABEL: "Langkah",
   },
 
   PATHS: {
@@ -169,6 +180,7 @@ export const Config = {
     ACHIEVEMENTS: "data/achievements/",
     COLLECTIBLES: "data/collectibles/",
     EDUCATION: "data/education/",
+    TPS: "data/tps/",
     ASSETS_CHARACTERS: "assets/characters/",
     ASSETS_MAPS: "assets/maps/",
     ASSETS_UI: "assets/ui/",

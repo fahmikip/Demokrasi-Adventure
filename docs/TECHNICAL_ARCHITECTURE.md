@@ -223,7 +223,7 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 - `XPManager`: sumber kebenaran XP. `addXP` → `XP_GAINED` + `LEVEL_UP`; **passive XP** (event di `Config.PROGRESSION.EVENTS`: `dialogue_xp=10, poi_xp=8, area_xp=15, collectible_xp=10`) dengan dedup: dialog sekali per `npc.npcId`, POI sekali per `poi.id`, area hanya `firstVisit`. Reward quest TIDAK diduplikasi — QuestManager memanggil `ProgressState.addXP` langsung, XPManager tidak meng-hook `QUEST_COMPLETED`.
 - `CoinManager`: koin (`coins`, `totalEarned`) → `COIN_CHANGED`.
 - `ProgressState` = facade (API lama `level/xp/coins/addXP/addCoins/reset` + `snapshot`), memancarkan `PROGRESS_CHANGED {level, xp, coins, levelName, xpToNext, progress}` untuk HUD.
-- `AchievementManager` (data di `data/achievements/*.json` + `achievement_registry.json`): evaluator kondisi `{event, mode: count|distinct|match|value, field, value, count, op}`; saat terpenuhi → `unlock()` (reward XP/Koin via ProgressState) + `ACHIEVEMENT_UNLOCKED`. 17 achievement dipasang.
+- `AchievementManager` (data di `data/achievements/*.json` + `achievement_registry.json`): evaluator kondisi `{event, mode: count|distinct|match|value, field, value, count, op}`; saat terpenuhi → `unlock()` (reward XP/Koin via ProgressState) + `ACHIEVEMENT_UNLOCKED`. Registry kini 18 achievement + `Config.ACHIEVEMENTS.MAX = 19` (Phase 5-8; `first_simulation` memakai ikon `icon_tps`).
 - `CollectibleManager` (singleton, registry `data/collectibles/collectible_registry.json`, penempatan lewat key `collectibles` di `data/maps/*.json` yang digenerate `tools/build-maps.js`): klaim saat player dalam radius (`Config.PROGRESSION.COLLECTIBLES.RADIUS`), sekali per `mapId:itemId`, reward XP/Koin dari item, `ITEM_COLLECTED`.
 - `AchievementUI`: overlay scrollable (mask + wheel); tombol trophy di HUD & menu PRESTASI di pause sambil tetap menyimpan state `ACHIEVEMENTS`.
 - Debug shortcut: `F4` tambah XP (25), `F5` buka achievement acak (lihat §14).
@@ -236,6 +236,19 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 - `JournalUI` (`src/ui/JournalUI.js`): overlay scrollable (mask + wheel) dengan tab **Semua + 7 kategori** (masing-masing menampilkan count). Dibuka via tombol `J` (InputManager `consumeJournal`) atau state `JOURNAL`; `ESC`/TUTUP kembali ke `PLAYING`.
 - HUD menampilkan counter `📖 Jurnal N — tekan J` (via `HUD.setJournal`).
 - Debug shortcut: `J` toggle journal (F key di §14).
+
+## 11c. TPS Simulation (Phase 8)
+
+- **Data:** `data/tps/sim_tps.json` — `steps[]` (8 langkah, tiap `{step, kind: info|choice|review, prompt, options[] (label/correct/feedback), info}`, supports 1-3 pilihan) + `literacyReward[]` (bullets review). Satu-satunya sumber alur; tanpa sentuh engine.
+- **Scene:** `TPSScene` (`src/scenes/TPSScene.js`, key `"TPSScene"`) — overlay minimal (rectangle semi-transparan + panel) di atas WorldScene; ukuran `Config.TPS.PANEL`. Masuk via POI `poi_tps_area` (`type:"tps"`): `WorldScene._updateInteraction` → `_launchTpsSimulation()` (GameState `TPS_SIMULATION` + `this.scene.launch("TPSScene", {mapId})`). UIScene mem-block input saat `TPS_SIMULATION` (`_isUiBlocked`).
+- **Kandidat fiktif/abstrak & netral:** langkah simulasi memakai "Simbol Mentari / Roda / Bintang" (tanpa pihak atau nama nyata); semua pilihan sah — pemain bebas memilih:
+  - `step_coblos`: 3 kandidat fiktif, semua `correct` (alur sah), `feedback` literasi.
+  - Langkah lain (`interaksi`, `verifikasi`, `perlengkapan`, `selesai`): 1 benar + 1 salah → skor di review.
+- **Deteksi pilihan & umpan balik:** `pick(i)` menandai jawaban, menampilkan `feedback` per opsi (hijau/merah), meredupkan pilihan lain; `advance()` (tombol "Lanjut"/`E`) ke langkah berikutnya. `ESC`/tombol tutup: keluar tanpa reward kecuali sudah di langkah review (finish).
+- **Konsekuensi hanya saat selesai** (`_finish` di langkah review): `DecisionManager.applyActions` dengan flag `story_tps_selesai`, decision `dec_tps_selesai` (+meta skor), reward `Config.TPS.REWARD` (XP 30/Koin 10), journal `tps_simulasi` kategori `TPS`; mengirim `TPS_COMPLETED {completed, score, steps, mapId}`; mengembalikan GameState `PLAYING` + `scene.stop()`.
+- **Sidebar:** Misi 03 "TPS untuk Semua Warga" (`data/quests/misi_03_tps_rakyat.json`) — objective `visit tps` + `decision dec_tps_selesai`; auto-start via tujuan generik `autoStart:[{event:"AREA_ENTERED", mapId:"tps"}]` pada `QuestManager._tryAutoStartByEvent`.
+- **Achievement:** `first_simulation` (AREA_ENTERED tps) + `tps_selesai` "Pemilih Cerdas" (TPS_COMPLETED) → reward XP/Koin.
+- **Renderer headless:** objek UI dibentuk sekali lalu dipakai ulang (`setText`/`setVisible`) — menghindari destroy/create objek WebGL berturut yang menyebabkan `CanvasTexture.refresh` null `source` crash pada Smoke (Chrome headless swiftshader).
 
 ## 12. Save System
 

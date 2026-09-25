@@ -228,6 +228,10 @@ export class WorldScene extends Phaser.Scene {
       if (interactPressed) {
         const poiData = nearby.data;
         EventBus.emit("POI_INTERACTED", { poi: poiData });
+        if (poiData.type === "tps") {
+          this._launchTpsSimulation();
+          return;
+        }
         if (poiData.info && poiData.info.length) {
           DialogueManager.startInfo(poiData, poiData.info, poiData.infoConsequences || null);
         }
@@ -236,6 +240,11 @@ export class WorldScene extends Phaser.Scene {
       this._focusedPoi = null;
       this._hideInteractMarker();
     }
+  }
+
+  _launchTpsSimulation() {
+    GameState.set(GAME_STATES.TPS_SIMULATION);
+    this.scene.launch("TPSScene", { mapId: this.mapData ? this.mapData.id : "tps" });
   }
 
   _showInteractMarkerNpc(npc) {

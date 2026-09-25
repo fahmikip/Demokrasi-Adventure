@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "id": "misi_03_tps_rakyat",
+  "title": "TPS untuk Semua Warga",
+  "type": "main",
+  "giver": "",
+  "description": "Kunjungi TPS di Desa dan ikuti simulasi pemungutan suara sampai tuntas.",
+  "autoStart": [
+    { "event": "AREA_ENTERED", "mapId": "tps" }
+  ],
+  "objectives": [
+    {
+      "id": "visit_tps",
+      "type": "visit",
+      "target": "tps",
+      "label": "Datang ke area TPS",
+      "hint": "Pergi ke TPS melalui transisi di Desa Harmoni."
+    },
+    {
+      "id": "sim_tps",
+      "type": "decision",
+      "target": "dec_tps_selesai",
+      "label": "Selesaikan simulasi pemungutan suara",
+      "hint": "Bicara/interaksi dengan area TPS lalu ikuti 8 langkah simulasi."
+    }
+  ],
+  "conditions": {},
+  "reward": {
+    "xp": 25,
+    "coins": 10
+  },
+  "journalEntries": [
+    {
+      "category": "TPS",
+      "title": "TPS untuk Semua Warga",
+      "source": "Misi 03",
+      "text": "Simulasi TPS mengajarkan alur pemungutan suara yang tertib: verifikasi, menerima surat suara, mencoblos di bilik, memasukkan ke kotak, dan tinta sebagai tanda. Semua warga yang memenuhi syarat berhak menggunakan suaranya."
+    }
+  ]
+}

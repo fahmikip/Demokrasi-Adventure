@@ -394,7 +394,7 @@ export class UIScene extends Phaser.Scene {
   }
 
   _isUiBlocked() {
-    const blocked = [GAME_STATES.DIALOGUE, GAME_STATES.CUTSCENE].includes(GameState.current);
+    const blocked = [GAME_STATES.DIALOGUE, GAME_STATES.CUTSCENE, GAME_STATES.TPS_SIMULATION].includes(GameState.current);
     return blocked;
   }
 

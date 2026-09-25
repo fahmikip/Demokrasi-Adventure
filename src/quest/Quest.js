@@ -23,6 +23,7 @@ export class Quest {
     this.giver = def.giver || "";
     this.description = def.description || "";
     this.conditions = def.conditions || {};
+    this.autoStart = def.autoStart || []; // [{ event, <field>: value }] — mulai otomatis saat event cocok
     this.reward = def.reward || { xp: 0, coins: 0 };
     this.journalEntries = def.journalEntries || [];
     this.objectives = (def.objectives || []).map((o) => new Objective(o));

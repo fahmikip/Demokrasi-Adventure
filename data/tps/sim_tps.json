@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "id": "sim_tps",
+  "title": "Simulasi Pemungutan Suara di TPS",
+  "candidates": {
+    "note": "Kandidat fiktif/abstrak — tidak terkait pihak atau nama nyata.",
+    "options": [
+      { "id": "simbol_mentari", "label": "Simbol Mentari" },
+      { "id": "simbol_roda", "label": "Simbol Roda" },
+      { "id": "simbol_bintang", "label": "Simbol Bintang" }
+    ]
+  },
+  "steps": [
+    {
+      "id": "step_datang",
+      "step": 1,
+      "title": "Datang",
+      "kind": "info",
+      "prompt": "Kamu tiba di area TPS. Seorang petugas menyapa dan mengarahkanmu ke meja pendaftaran.",
+      "info": "Pemilih datang membawa dokumen (KTP/undangan). Petugas memastikan kamu berada di Daftar Pemilih yang benar sesuai wilayah."
+    },
+    {
+      "id": "step_interaksi",
+      "step": 2,
+      "title": "Interaksi",
+      "kind": "choice",
+      "prompt": "Ada antrean di meja pendaftaran. Apa yang kamu lakukan?",
+      "options": [
+        {
+          "label": "Menunggu giliran sesuai urutan antrean",
+          "correct": true,
+          "feedback": "Tepat. Mengantre dengan tertib menjaga proses tetap adil dan nyaman bagi semua."
+        },
+        {
+          "label": "Berjalan ke depan menyerobot antrean",
+          "correct": false,
+          "feedback": "Kurang tepat. Menyerobot antrean mengganggu ketertiban. Upayakan menunggu giliran."
+        }
+      ]
+    },
+    {
+      "id": "step_verifikasi",
+      "step": 3,
+      "title": "Verifikasi Proses",
+      "kind": "choice",
+      "prompt": "Petugas meminta dokumen untuk verifikasi. Bagaimana responsmu?",
+      "options": [
+        {
+          "label": "Menunjukkan KTP/undangan agar namanya dicocokkan dengan Daftar Pemilih",
+          "correct": true,
+          "feedback": "Tepat. Verifikasi identitas memastikan hanya pemilih yang berhak dapat menyalurkan suara."
+        },
+        {
+          "label": "Langsung meminta surat suara tanpa menunjukkan dokumen",
+          "correct": false,
+          "feedback": "Kurang tepat. Verifikasi dokumen adalah langkah wajib sebelum menerima surat suara."
+        }
+      ]
+    },
+    {
+      "id": "step_perlengkapan",
+      "step": 4,
+      "title": "Menerima Perlengkapan",
+      "kind": "choice",
+      "prompt": "Setelah terverifikasi, kamu menerima surat suara. Apa yang benar kamu lakukan?",
+      "options": [
+        {
+          "label": "Menerima surat suara lalu langsung menuju bilik suara",
+          "correct": true,
+          "feedback": "Tepat. Surat suara dicoblos sendiri di bilik suara demi kerahasiaan pilihan."
+        },
+        {
+          "label": "Membuka dan memperlihatkan surat suara di depan petugas",
+          "correct": false,
+          "feedback": "Kurang tepat. Surat suara hanya boleh diperiksa di bilik suara untuk menjaga kerahasiaan."
+        }
+      ]
+    },
+    {
+      "id": "step_bilik",
+      "step": 5,
+      "title": "Masuk Area Pemungutan",
+      "kind": "info",
+      "prompt": "Kamu masuk ke bilik suara. Di dalam bilik ada surat suara dengan tiga kolom kandidat fiktif.",
+      "info": "Di bilik, pemilih mencoblos dengan bebas dan rahasia, tanpa tekanan atau pengaruh pihak lain."
+    },
+    {
+      "id": "step_coblos",
+      "step": 6,
+      "title": "Simulasi Sesuai Aturan",
+      "kind": "choice",
+      "prompt": "Pilih satu kandidat fiktif pada surat suara. Semua pilihan sah — ini simulasi, pilih bebas sesuai hati nurani.",
+      "options": [
+        {
+          "label": "Simbol Mentari",
+          "correct": true,
+          "feedback": "Pilihan tercatat. Dalam simulasi ini setiap pilihan sah; di dunia nyata pemilih memilih sesuai hati nurani."
+        },
+        {
+          "label": "Simbol Roda",
+          "correct": true,
+          "feedback": "Pilihan tercatat. Dalam simulasi ini setiap pilihan sah; di dunia nyata pemilih memilih sesuai hati nurani."
+        },
+        {
+          "label": "Simbol Bintang",
+          "correct": true,
+          "feedback": "Pilihan tercatat. Dalam simulasi ini setiap pilihan sah; di dunia nyata pemilih memilih sesuai hati nurani."
+        }
+      ]
+    },
+    {
+      "id": "step_selesai",
+      "step": 7,
+      "title": "Selesai",
+      "kind": "choice",
+      "prompt": "Surat suara sudah dicoblos. Apa langkah akhir yang benar?",
+      "options": [
+        {
+          "label": "Melipat surat suara, memasukkannya ke kotak suara",
+          "correct": true,
+          "feedback": "Tepat. Surat suara dilipat rapi dan dimasukkan ke kotak suara, lalu jari dicelupkan ke tinta sebagai tanda sudah memilih."
+        },
+        {
+          "label": "Membawa pulang surat suara untuk disimpan",
+          "correct": false,
+          "feedback": "Kurang tepat. Surat suara harus dimasukkan ke kotak suara agar suaramu terhitung."
+        }
+      ]
+    },
+    {
+      "id": "step_review",
+      "step": 8,
+      "title": "Review & Feedback",
+      "kind": "review",
+      "prompt": "Simulasi selesai. Periksa kembali langkah-langkahnya sebagai bekal literasi pemilu yang sehat.",
+      "info": "Pemungutan suara yang tertib menjaga suara adil: datang → verifikasi → terima surat suara → coblos di bilik → masukkan ke kotak → tanda tinta. Jaga kerahasiaan dan hormati proses."
+    }
+  ],
+  "literacyReward": [
+    "Mengantre tertib dan menunjukkan dokumen untuk verifikasi.",
+    "Mencoblos sendiri di bilik suara secara bebas dan rahasia.",
+    "Memasukkan surat suara ke kotak dan mencelupkan jari ke tinta sebagai penanda."
+  ],
+  "reviewTitle": "Review Literasi"
+}

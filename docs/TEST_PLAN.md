@@ -25,7 +25,7 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T10 | Save/Load | Simpan lalu reload halaman | Posisi & progress pulih (Phase 5+) |
 | T11 | Achievement | Capai pencapaian | Unlock event & UI (Phase 5) |
 | T12 | Journal | Kumpulkan collectible | Journal bertambah dengan source (Phase 6) |
-| T13 | TPS Simulation | Jalankan mini-game | Alur 8 langkah berjalan, review tampil (Phase 9+) |
+| T13 | TPS Simulation | Jalankan mini-game | Alur 8 langkah berjalan, kandidat fiktif/abstrak, review literasi tampil, reward diterima (Phase 8) |
 | T14 | Audio | Ubah volume master/music/sfx | Volume berubah, mute berfungsi (Phase 10+) |
 | T15 | Responsive | Resize & rotating device | Canvas FIT, UI tidak terpotong |
 | T16 | Accessibility | Reduced motion, subtitle, skip | Opsi diterapkan |
@@ -78,6 +78,13 @@ chrome --headless=new --no-sandbox --use-angle=swiftshader \
 # quest misi_02 selesai.
 ... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&decision=1"
 
+# tps flow (Phase 8) → dunia WorldScene + TPSScene (8 langkah) via POI tps:
+# AREA_ENTERED tps (auto-start misi_03 + achievement first_simulation) →
+# simulasi 8 langkah (info/choice) → review → dec_tps_selesai + flag +
+# jurnal TPS + reward (XP/Koin) + TPS_COMPLETED (achievement tps_selesai).
+# Verifikasi: tpsDone, steps >= 8, score >= 1, flag set, quest misi_03 selesai.
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&tps=1"
+
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
@@ -97,3 +104,4 @@ Parameter debug headless:
 | 5 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T11 ✅, T09 ✅ | Progression: XP pasif + quest → level 2–3, level-up; Achievement unlock (first_step, first_collectible, village_helper, perfect_mission) + reward XP/Koin; coin economy (`totalEarned`); collectible klaim nyata via player walk-in (2/20); transition fix restart (`?progression=1` + `?transition=1` smoke). HUD progress bar & Achievement UI tampil. |
 | 6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T12 ✅, T09 ✅, T21 ✅ | Journal & education: quest → 1 entri (Pemilu) + collectible → 3 entri (Pemilu/Informasi/Tahapan) via `journalId`; `JOURNAL_UPDATED` + HUD counter `📖 Jurnal N`; UI 7 kategori (`J` buka/tutup, ESC, scroll wheel); sumber tampil per entri (`journalWithSource`=4); smoke `?journal=1`. Validasi `data/education/`: 18 kartu, 7 kategori, semua collectible resolve, per-kategori tercakup. Transition smoke masih flaky di headless (crash renderer saat restart) — catatan: tidak berhubungan dgn perubahan journal (WorldScene tak disentuh fase ini). |
 | 7 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T22 ✅ | Decision system: DialogueManager/UI aktif (buka/tutup, ketik, pilihan via klik/E/angka), branching nyata lewat `conditions` + `startSelector`, konsekuensi via DecisionManager (flags/decisions/relationship/jurnal) + auto-start sidebar Misi 02; Skenario verifikasi pasar melewati jalur sapa→verifikasi→info POI→sudah_baca→`dec_rumor_verified`, quest selesai, relationship `npc_warga_pasar` naik, 3 decision+jurnal tercatat; smoke `?decision=1`. |
+| 8 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T13 ✅, T09 ✅ | TPS Simulation: TPSScene (scene overlay, `TPS_SIMULATION` state) — alur 8 langkah data-driven (`data/tps/sim_tps.json`): Datang→Interaksi→Verifikasi→Perlengkapan→Bilik→Simulasi (kandidat fiktif/abstrak: Mentari/Roda/Bintang)→Selesai→Review; feedback literasi per pilihan + review skor; reward XP/Koin via DecisionManager (`dec_tps_selesai`, flag `story_tps_selesai`, jurnal kategori TPS); Misi 03 "TPS untuk Semua Warga" auto-start via `AREA_ENTERED` (fitur `autoStart`), selesai setelah simulasi; achievement `first_simulation` + `tps_selesai`; ikon placeholder `icon_tps`; smoke `?tps=1` (8 langkah, skor 5/5, quest selesai, 2 entri jurnal). |

@@ -19,6 +19,7 @@
     { "id": "collectible_gatherer", "file": "collectible_gatherer.json" },
     { "id": "hidden_discovery", "file": "hidden_discovery.json" },
     { "id": "coin_collector", "file": "coin_collector.json" },
-    { "id": "adventure_complete", "file": "adventure_complete.json" }
+    { "id": "adventure_complete", "file": "adventure_complete.json" },
+    { "id": "tps_selesai", "file": "tps_selesai.json" }
   ]
 }

@@ -10,6 +10,10 @@
     {
       "id": "misi_02_kabar_di_pasar",
       "file": "misi_02_kabar_di_pasar.json"
+    },
+    {
+      "id": "misi_03_tps_rakyat",
+      "file": "misi_03_tps_rakyat.json"
     }
   ]
 }

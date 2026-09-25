@@ -9,6 +9,8 @@ import { JournalManager } from "../journal/JournalManager.js";
 import { DecisionManager } from "../decisions/DecisionManager.js";
 import { DialogueDataLoader } from "../dialogue/DialogueData.js";
 import { DialogueManager } from "../dialogue/DialogueManager.js";
+import { QuestManager } from "../quest/QuestManager.js";
+import { GAME_STATES } from "../core/GameState.js";
 
 const ALLOWED_TARGETS = ["MenuScene", "WorldScene"];
 
@@ -58,6 +60,7 @@ export function runSmoke(game) {
   const testProgression = params.get("progression") === "1";
   const testJournal = params.get("journal") === "1";
   const testDecision = params.get("decision") === "1";
+  const testTps = params.get("tps") === "1";
   if (target) {
     window.__DEMOKRASI_TEST_TARGET = target;
     console.info(`[Smoke] target scene: ${target}`);
@@ -109,6 +112,7 @@ export function runSmoke(game) {
   let progressionTestDone = false;
   let journalTestDone = false;
   let decisionTestDone = false;
+  let tpsTestDone = false;
 
   function finish(data, attempts) {
     if (finished) return;
@@ -181,6 +185,15 @@ export function runSmoke(game) {
                 attempts = 0;
               }
             }
+          } else if (testTps) {
+            if (!tpsTestDone) {
+              if (data.questLoaded && data.dialogueLoaded) {
+                tpsTestDone = true;
+                driveTPS(game);
+                phase = "tps";
+                attempts = 0;
+              }
+            }
           } else {
             if (testInteract) {
               const ws = game.scene.getScene("WorldScene");
@@ -237,6 +250,17 @@ export function runSmoke(game) {
           data.decisionRelationships >= 1 &&
           data.decisionJournal >= 2 &&
           data.decisionQuestDone
+        ) {
+          finish(data, attempts);
+          return;
+        }
+      } else if (live && phase === "tps") {
+        if (
+          data.tpsDone &&
+          data.tpsSteps >= 8 &&
+          data.tpsScore >= 1 &&
+          data.tpsFlag &&
+          data.tpsQuestDone
         ) {
           finish(data, attempts);
           return;
@@ -416,6 +440,33 @@ function driveJournal(game) {
   }
 }
 
+function driveTPS(game) {
+  console.info("[Smoke] tps: jalankan simulasi pemungutan suara (8 langkah)");
+  // Mulai Misi 03 + objective "visit tps" + achievement first_simulation
+  EventBus.emit("AREA_ENTERED", { mapId: "tps", name: "TPS" });
+  GameState.set(GAME_STATES.TPS_SIMULATION);
+  const ws = game.scene.getScene("WorldScene");
+  if (ws && ws.scene && typeof ws.scene.launch === "function") {
+    ws.scene.launch("TPSScene", { mapId: "tps", smoke: true });
+  } else {
+    const sm = game.scene;
+    if (sm && typeof sm.launch === "function") sm.launch("TPSScene", { mapId: "tps", smoke: true });
+  }
+
+  let guard = 0;
+  const drive = () => {
+    if (guard++ > 400) return;
+    const scene = game.scene.getScene("TPSScene");
+    if (scene && scene.scene.isActive() && typeof scene.__smokeDrive === "function") {
+      const progressed = scene.__smokeDrive();
+      setTimeout(drive, progressed ? 30 : 80);
+      return;
+    }
+    setTimeout(drive, 80);
+  };
+  setTimeout(drive, 80);
+}
+
 function snapshot(game) {
   try {
     const active = game.scene.getScenes(true).map((s) => s.scene.key);
@@ -478,6 +529,13 @@ function snapshot(game) {
       decisionJournal: JournalManager.all().filter((e) => e.origin === "decision").length,
       decisionQuestDone: window.__SMOKE_DECISION_QUEST || false,
       decisionQuestId: window.__SMOKE_DECISION_QUEST_ID || null,
+      tpsDone: !!window.__DEMOKRASI_TPS_DONE,
+      tpsScore: window.__DEMOKRASI_TPS_SCORE || 0,
+      tpsSteps: window.__DEMOKRASI_TPS_STEPS || 0,
+      tpsChoices: window.__DEMOKRASI_TPS_CHOICES || 0,
+      tpsFlag: DecisionManager.hasFlag("story_tps_selesai"),
+      tpsQuestDone: QuestManager.completed.includes("misi_03_tps_rakyat"),
+      tpsUnlocked: AchievementManager.unlockedCount,
       idleDownFrames: idleAnim ? idleAnim.frames.length : -1,
       walkDownFrames: walkAnim ? walkAnim.frames.length : -1,
       logs: (window.__SMOKE_LOGS || []).slice(-8),

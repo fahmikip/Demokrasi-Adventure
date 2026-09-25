@@ -101,12 +101,12 @@ NPC & Dialogue:
 - [x] Skenario verifikasi informasi (Pasar Rakyat) — Misi 02 "Kabar di Pasar", NPC Bu Sri, POI Papan Informasi
 - [x] Test branching & konsekuensi (smoke.js param `decision` + validasi data)
 
-## PHASE 8 — TPS Simulation
-- [ ] Mini-game TPS lengkap (alur 8 langkah)
-- [ ] Kandidat fiktif/abstrak
-- [ ] Review & feedback literasi
-- [ ] Completion reward
-- [ ] Test simulasi
+## PHASE 8 — TPS Simulation ✅
+- [x] Mini-game TPS lengkap (alur 8 langkah) — data-driven `data/tps/sim_tps.json`, scene `TPSScene` (GameState `TPS_SIMULATION`), masuk via POI `poi_tps_area`
+- [x] Kandidat fiktif/abstrak — Simbol Mentari/Roda/Bintang (netral, tanpa pihak nyata)
+- [x] Review & feedback literasi — feedback per pilihan + laman review skor & tips alur
+- [x] Completion reward — XP/Koin + jurnal (kategori TPS) + flag/decision via DecisionManager; Misi 03 "TPS untuk Semua Warga" (`autoStart` AREA_ENTERED); achievement `tps_selesai`
+- [x] Test simulasi — smoke `?tps=1` (8 langkah, skor, quest, jurnal)
 
 ## PHASE 9 — Polish
 - [ ] Animasi & animasi transisi
@@ -155,6 +155,7 @@ Fase selesai jika:
 | Phase 5 | ✅ selesai (progression) |
 | Phase 6 | ✅ selesai (journal & education) — sisa: akses journal via tombol sentuh/mobile |
 | Phase 7 | ✅ selesai (decision system & skenario verifikasi pasar) |
+| Phase 8 | ✅ selesai (TPS simulation: 8 langkah, kandidat fiktif, review, reward, misi 03) |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.

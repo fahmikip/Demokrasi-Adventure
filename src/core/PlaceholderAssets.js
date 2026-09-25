@@ -1149,6 +1149,21 @@ function _generateCollectibles(scene) {
     g.generateTexture("icon_trophy", 40, 40);
     g.destroy();
   }
+
+  // ikon TPS (kotak suara placeholder, 40x40)
+  {
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0x000000, 0.5);
+    g.fillCircle(20, 20, 18);
+    g.lineStyle(3, 0xffffff, 0.9);
+    g.strokeRect(9, 12, 22, 13);
+    g.lineStyle(2, 0xffffff, 0.9);
+    g.strokeRect(14, 10, 12, 3);
+    g.fillStyle(0xffffff, 0.9);
+    g.fillRect(16, 18, 8, 3);
+    g.generateTexture("icon_tps", 40, 40);
+    g.destroy();
+  }
 }
 
 function _starPoints(cx, cy, outer, inner, points) {

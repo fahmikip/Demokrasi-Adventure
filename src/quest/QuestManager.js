@@ -59,6 +59,28 @@ class QuestManagerClass {
     return null;
   }
 
+  /** Mulai quest otomatis berdasarkan aturan autoStart pada data quest. */
+  _tryAutoStartByEvent(evtType, payload = {}) {
+    for (const quest of this.quests.values()) {
+      if (quest.status) continue;
+      for (const rule of quest.autoStart || []) {
+        if (rule.event !== evtType) continue;
+        let ok = true;
+        for (const [k, v] of Object.entries(rule)) {
+          if (k === "event") continue;
+          if (String(payload ? payload[k] : undefined) !== String(v)) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) {
+          this.start(quest.id);
+          return;
+        }
+      }
+    }
+  }
+
   /** Proses satu event; status miles diselesaikan objective yang cocok. */
   handleEvent(evt) {
     if (!evt || !evt.type) return;
@@ -126,6 +148,7 @@ class QuestManagerClass {
       }),
       EventBus.on("AREA_ENTERED", ({ mapId } = {}) => {
         if (!mapId) return;
+        this._tryAutoStartByEvent("AREA_ENTERED", { mapId });
         this.handleEvent({ type: "visit", mapId });
       }),
       EventBus.on("QUEST_FLAG", ({ flag } = {}) => {

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "tps_selesai",
+  "category": "Eksplorasi",
+  "title": "Pemilih Cerdas",
+  "description": "Selesaikan simulasi pemungutan suara di TPS (8 langkah) hingga review.",
+  "icon": "tps",
+  "reward": { "xp": 20, "coins": 5 },
+  "condition": { "event": "TPS_COMPLETED", "mode": "match", "field": "completed", "value": "true" }
+}
