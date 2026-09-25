@@ -66,6 +66,7 @@ export function runSmoke(game) {
   const testTps = params.get("tps") === "1";
   const testAudio = params.get("audio") === "1";
   const testAccess = params.get("access") === "1";
+  const testPwa = params.get("pwa") === "1";
   if (target) {
     window.__DEMOKRASI_TEST_TARGET = target;
     console.info(`[Smoke] target scene: ${target}`);
@@ -120,6 +121,7 @@ export function runSmoke(game) {
   let tpsTestDone = false;
   let audioTestDone = false;
   let accessTestDone = false;
+  let pwaTestDone = false;
 
   function finish(data, attempts) {
     if (finished) return;
@@ -219,6 +221,15 @@ export function runSmoke(game) {
                 attempts = 0;
               }
             }
+          } else if (testPwa) {
+            if (!pwaTestDone) {
+              if (data.worldBuilt) {
+                pwaTestDone = true;
+                drivePwa();
+                phase = "pwa";
+                attempts = 0;
+              }
+            }
           } else {
             if (testInteract) {
               const ws = game.scene.getScene("WorldScene");
@@ -302,6 +313,21 @@ export function runSmoke(game) {
           data.accessInstantText &&
           data.accessRevealed &&
           data.accessCaption
+        ) {
+          finish(data, attempts);
+          return;
+        }
+      } else if (live && phase === "pwa") {
+        const p = window.__SMOKE_PWA || {};
+        if (
+          p.supported &&
+          p.active &&
+          p.shell &&
+          p.module &&
+          p.data &&
+          p.icon &&
+          p.phaser &&
+          p.cacheSize > 0
         ) {
           finish(data, attempts);
           return;
@@ -542,6 +568,64 @@ function driveAudio(game) {
   console.info(`[Smoke] audio: bank=${window.__SMOKE_AUDIO_BANK} played=${window.__SMOKE_AUDIO_PLAYED} persisted=${window.__SMOKE_AUDIO_PERSISTED}`);
 }
 
+function drivePwa() {
+  console.info("[Smoke] pwa: service worker + offline cache readiness");
+  window.__SMOKE_PWA = { supported: !!("serviceWorker" in navigator) };
+  const nsw = navigator.serviceWorker;
+  if (!nsw || !window.caches) return;
+
+  const base = Config.BASE_PATH;
+  const urlOf = (u) => (u.startsWith("http") ? u : base + u);
+  const wants = {
+    shell: ["", "index.html"],
+    module: [
+      "src/main.js",
+      "src/core/Game.js",
+      "src/core/SettingsManager.js",
+      "src/scenes/WorldScene.js",
+    ],
+    data: [
+      "data/maps/desa_harmoni.json",
+      "data/quests/quest_registry.json",
+      "data/dialogues/guru_ratna.json",
+      "data/achievements/first_step.json",
+      "data/tps/sim_tps.json",
+    ],
+    icon: ["assets/ui/icon-192.png", "assets/ui/apple-touch-icon.png"],
+    phaser: ["https://cdnjs.cloudflare.com/ajax/libs/phaser/3.80.1/phaser.min.js"],
+  };
+
+  nsw.ready
+    .then(async (reg) => {
+      const CACHE_RE = /^demokrasi-adventure-v\d+$/;
+      const names = (await caches.keys()).filter((k) => CACHE_RE.test(k));
+      window.__SMOKE_PWA.scope = reg.scope;
+      window.__SMOKE_PWA.active = !!reg.active && reg.active.state === "activated";
+      window.__SMOKE_PWA.cacheName = names.join(",");
+      window.__SMOKE_PWA.cacheSize = 0;
+      for (const [key, urls] of Object.entries(wants)) {
+        let ok = false;
+        let size = 0;
+        for (const name of names) {
+          const cache = await caches.open(name);
+          const hits = await Promise.all(urls.map((u) => cache.match(urlOf(u))));
+          size = Math.max(size, (await cache.keys()).length);
+          if (hits.every(Boolean)) {
+            ok = true;
+            break;
+          }
+        }
+        window.__SMOKE_PWA[key] = ok;
+        window.__SMOKE_PWA.cacheSize = Math.max(window.__SMOKE_PWA.cacheSize, size);
+      }
+      console.info("[Smoke] pwa:", JSON.stringify(window.__SMOKE_PWA));
+    })
+    .catch((err) => {
+      window.__SMOKE_PWA.error = String(err);
+      console.warn("[Smoke] pwa: gagal menunggu SW ready:", err);
+    });
+}
+
 function driveAccess(game) {
   console.info("[Smoke] access: reduced motion + subtitle + teks instan");
   const sf = SettingsManager;
@@ -652,6 +736,16 @@ function snapshot(game) {
       accessInstantText: (window.__SMOKE_ACCESS_FLAGS && window.__SMOKE_ACCESS_FLAGS.instantText) || false,
       accessRevealed: !!window.__SMOKE_ACCESS_REVEALED,
       accessCaption: !!window.__SMOKE_ACCESS_CAPTION,
+      pwaSupported: !!(window.__SMOKE_PWA && window.__SMOKE_PWA.supported),
+      pwaScope: (window.__SMOKE_PWA && window.__SMOKE_PWA.scope) || null,
+      pwaActive: !!(window.__SMOKE_PWA && window.__SMOKE_PWA.active),
+      pwaCacheName: (window.__SMOKE_PWA && window.__SMOKE_PWA.cacheName) || null,
+      pwaShellCached: !!(window.__SMOKE_PWA && window.__SMOKE_PWA.shell),
+      pwaModuleCached: !!(window.__SMOKE_PWA && window.__SMOKE_PWA.module),
+      pwaDataCached: !!(window.__SMOKE_PWA && window.__SMOKE_PWA.data),
+      pwaIconCached: !!(window.__SMOKE_PWA && window.__SMOKE_PWA.icon),
+      pwaPhaserCached: !!(window.__SMOKE_PWA && window.__SMOKE_PWA.phaser),
+      pwaCacheSize: (window.__SMOKE_PWA && window.__SMOKE_PWA.cacheSize) || 0,
       idleDownFrames: idleAnim ? idleAnim.frames.length : -1,
       walkDownFrames: walkAnim ? walkAnim.frames.length : -1,
       logs: (window.__SMOKE_LOGS || []).slice(-8),

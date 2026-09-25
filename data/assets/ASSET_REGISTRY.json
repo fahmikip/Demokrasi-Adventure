@@ -54,6 +54,17 @@
       "notes": "Favicon browser."
     },
     {
+      "id": "ui_icon_apple_touch",
+      "category": "ui",
+      "name": "icon_apple_touch",
+      "variant": null,
+      "status": "approved",
+      "origin": "physical",
+      "path": "assets/ui/apple-touch-icon.png",
+      "format": "png",
+      "notes": "Apple touch icon 180x180 (index.html apple-touch-icon, Phase 10)."
+    },
+    {
       "id": "characters_player_sheet",
       "category": "characters",
       "name": "player_sheet",

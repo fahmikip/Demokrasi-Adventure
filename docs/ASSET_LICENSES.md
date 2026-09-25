@@ -11,6 +11,7 @@ sebagai bagian dari Asset Source of Truth (lihat `data/assets/ASSET_REGISTRY.jso
 | `assets/ui/icon-512.png` | Proyek-internal / Hak cipta proyek | Tim Demokrasi Adventure | Ikon PWA buatan sendiri |
 | `assets/ui/icon-maskable-512.png` | Proyek-internal / Hak cipta proyek | Tim Demokrasi Adventure | Ikon PWA maskable |
 | `assets/ui/favicon.png` | Proyek-internal / Hak cipta proyek | Tim Demokrasi Adventure | Favicon browser |
+| `assets/ui/apple-touch-icon.png` | Proyek-internal / Hak cipta proyek | Tim Demokrasi Adventure | Apple touch icon 180x180 (iOS home screen) |
 
 ## Aset procedural (generatedAt runtime)
 

@@ -115,12 +115,12 @@ NPC & Dialogue:
 - [x] Accessibility — panel AKSESIBILITAS: Kurangi Gerakan (guard semua tween/fade/partikel & camera lerp), Subtitle (caption dialog bawah layar), Teks Instan (reveal penuh); volume master & mute di panel PENGATURAN
 - [x] Test polish & accessibility — smoke `?audio=1` & `?access=1` + regresi (plain/quest/journal/decision/tps)
 
-## PHASE 10 — PWA + Mobile
-- [ ] Installable PWA
-- [ ] Offline cache Service Worker
-- [ ] Responsive mobile QA (touch, safe-area, landscape)
-- [ ] iPad/Android/iOS test
-- [ ] Test offline & install
+## PHASE 10 — PWA + Mobile ✅
+- [x] Installable PWA — manifest lengkap (`id`, `display: standalone`, `categories`), iOS meta (apple-mobile-web-app-*), `apple-touch-icon` 180x180 fisik, `start_url`/`scope` subpath-safe
+- [x] Offline cache Service Worker — `sw.js` v2: precache 140 URL (app shell + 65 modul ES + 65 data JSON + ikon + Phaser CDN), navigate network-first → fallback `index.html`, aset cache-first (modul/data/gambar/CDN), JSON gagal offline → 504 aman (bukan HTML), prune cache versi lama; offline boot terverifikasi (server dimatikan, game tetap boot penuh dari cache)
+- [x] Responsive mobile polish — safe-area (`env(safe-area-inset-*)`), `user-select`/`touch-callout` none, `display-mode: standalone` + `:fullscreen` styles, landscape query; `?sw=1` untuk paksa SW di localhost DEBUG
+- [ ] iPad/Android/iOS test — QA perangkat nyata (manual, instalasi + offline) via `assets:audit` & smoke
+- [x] Test offline & install — smoke `?pwa=1` (SW register+active, cache 140 entri: shell/module/data/icon/Phaser) + smoke offline boot `pwa=1` (server dimatikan, `worldBuilt` penuh)
 
 ## PHASE 11 — Production & Deployment
 - [ ] Optimization & performance
@@ -156,6 +156,7 @@ Fase selesai jika:
 | Phase 7 | ✅ selesai (decision system & skenario verifikasi pasar) |
 | Phase 8 | ✅ selesai (TPS simulation: 8 langkah, kandidat fiktif, review, reward, misi 03) |
 | Phase 9 | ✅ selesai (polish: audio WebAudio 6 channel, particle, UI micro-animation, aksesibilitas reduced-motion/subtitle/teks-instan) |
+| Phase 10 | ✅ selesai (PWA & mobile: installable manifest+iOS meta+apple-touch-icon, offline cache SW v2 140 URL, safe-area/standalone CSS, smoke `?pwa=1` + offline boot) — sisa: QA perangkat nyata (iPad/Android/iOS) |
 
 ## Proteksi
 Tidak melompat ke fase berikutnya sebelum fase berjalan & laporan fase dikirim. Tunggu instruksi `LANJUT PHASE <n>`.

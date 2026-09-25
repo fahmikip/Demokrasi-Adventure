@@ -54,7 +54,7 @@ export class DialogueData {
 
   async _json(name) {
     const key = name.replace(/\.json$/, "");
-    const url = Config.PATHS.DIALOGUES + name;
+    const url = Config.BASE_PATH + Config.PATHS.DIALOGUES + name;
     let data = this.scene?.cache?.json?.get(key);
     if (!data) data = await fetch(url).then((r) => r.json());
     return data;

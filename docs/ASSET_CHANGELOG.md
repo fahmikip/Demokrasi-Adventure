@@ -7,6 +7,12 @@ Format: `YYYY-MM-DD — [ID] Deskripsi`.
 
 ---
 
+## 2026-09-25
+
+- `ui_icon_apple_touch` — MENAMBAH: apple touch icon 180x180 fisik
+  `assets/ui/apple-touch-icon.png` (regenerable via `tools/../temp` encoder;
+  dipakai `<link rel="apple-touch-icon">` di `index.html`, Phase 10).
+
 ## 2026-09-18
 
 - `maps_tileset_village` — MENAMBAH: atlas tileset village 32 tile (8 kolom),

@@ -320,6 +320,19 @@ Data (JSON) terpisah di `data/`, asset di `assets/`.
 - Dukungan GitHub Pages subpath via `Config.BASE_PATH` (dideteksi dari `location`).
 - Semua asset path relatif terhadap `Config.BASE_PATH`.
 
+## 17b. PWA & Offline (Phase 10)
+
+- **Manifest** (`manifest.json`): `id`, `name/short_name`, `lang: id`, `start_url: "./?source=pwa"`, `scope: "./"` (relatif → subpath-safe), `display: standalone`, `theme_color`/`background_color`, 3 ikon (`icon-192` any, `icon-512` any, `icon-maskable-512`); iOS via meta `index.html` (`apple-mobile-web-app-capable`, status-bar `black-translucent`, `apple-mobile-web-app-title`) + `apple-touch-icon.png` 180x180 fisik (`assets/ui/`, terdaftar di Asset Register).
+- **Service Worker** (`sw.js`, cache `demokrasi-adventure-v2`):
+  - `PRECACHE` 140 URL — app shell (`.`, `index.html`, `manifest.json`, CSS, 5 ikon) + **seluruh modul ES `src/**`** (65) + **seluruh data JSON `data/`** (65, tanpa `data/assets/`) + **Phaser CDN**. Install memakai `Promise.allSettled(fetch+put)` — satu URL gagal tidak menggagalkan instal.
+  - Navigasi: **network-first → fallback `./index.html`** (shell selalu segar saat online).
+  - Aset lain (modul/data/gambar/CDN): **cache-first** → miss di-fetch & di-cache (termasuk opaque CDN). JSON yang gagal saat offline → `Response 504` (aman untuk `res.json()` loader — bukan HTML).
+  - `activate`: prune semua cache ≠ versi sekarang; `skipWaiting` + `clients.claim`. Versi naik manual via konstanta.
+  - Registrasi (`src/main.js`): `updateViaCache: "none"`, log scope, `controllerchange` → reload sekali (di-guard `?selftest`). Di localhost/DEBUG dilewati kecuali `?sw=1` (paksa, untuk testing offline).
+- **CSS mobile** (`src/styles/main.css`): `env(safe-area-inset-*)` (notch/gesture bar), `user-select`/`-webkit-touch-callout` none, `touch-action: none`, `:fullscreen` + `::backdrop`, `@media (display-mode: standalone)`, landscape query pendek.
+- **Offline proof:** stategi diverifikasi headless — online sekali → matikan server → reload: game boot penuh dari cache (SW menangani Phaser CDN + seluruh modul + data, tanpa kebutuhan vendor lokal).
+- **Catatan:** progress non-settings (XP/quest/achievement) tetap session-only (in-memory); persistensi permanen bukan scope Phase 10.
+
 ## 18. Dependency
 
 - **Phaser 3** (satu-satunya library runtime wajib).

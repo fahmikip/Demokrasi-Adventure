@@ -1,14 +1,17 @@
 {
+  "id": "./",
   "name": "Demokrasi Adventure",
   "short_name": "Demokrasi",
   "description": "Game petualangan edukasi literasi demokrasi & pemilu.",
   "lang": "id",
+  "dir": "ltr",
   "start_url": "./?source=pwa",
   "scope": "./",
-  "display": "fullscreen",
+  "display": "standalone",
   "orientation": "any",
   "background_color": "#1a1a1a",
   "theme_color": "#c0392b",
+  "categories": ["games", "education"],
   "icons": [
     {
       "src": "assets/ui/icon-192.png",

@@ -29,7 +29,7 @@ Menjamin setiap fase tidak merusak fitur sebelumnya, sesuai **Definition of Done
 | T14 | Audio | Ubah volume master/music/sfx + mute | Volume berubah per channel (master/music/sfx/ambient/ui/footsteps), mute bekerja, tersimpan lintas sesi; SFX sintesis terpicu gameplay (langkah, collect, quest, achievement, TPS) (Phase 9) |
 | T15 | Responsive | Resize & rotating device | Canvas FIT, UI tidak terpotong |
 | T16 | Accessibility | Reduced motion, subtitle, teks instan, volume | Opsi diterapkan & tersimpan: gerak minimal (tanpa tween/fade/partikel), caption dialog di bawah layar, teks langsung utuh, mute/volume (Phase 9) |
-| T17 | PWA | Install & offline | App terinstall, offline cache berfungsi (Phase 11+) |
+| T17 | PWA | Install & offline | App ter-install (manifest standalone + iOS meta), Service Worker `v2` precache 140 URL (shell/modul/data/ikon/Phaser CDN) & cache-first; navigasi offline network-first → fallback `index.html`; game tetap boot penuh saat server mati (Phase 10) |
 | T18 | Mobile touch | Joystick & tombol aksi | Semua tombol touch-friendly |
 | T19 | Save corrupt | Beri data save rusak | Fallback reset friendly tanpa crash |
 | T20 | Asset missing | Hapus satu asset | Fallback placeholder + warning jelas |
@@ -97,6 +97,18 @@ chrome --headless=new --no-sandbox --use-angle=swiftshader \
 # Verifikasi: accessReducedMotion/Subtitles/InstantText + Revealed + Caption.
 ... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&access=1"
 
+# pwa flow (Phase 10) → Service Worker v2 ter-register & active, precache 140
+# URL (shell/modul/data/ikon/Phaser CDN) diverifikasi via CacheStorage page.
+# WAJIB `sw=1` agar SW dipaksa daftar di localhost DEBUG.
+# Verifikasi: pwaActive + shell/module/data/icon/phaser cached + cacheSize.
+... "http://127.0.0.1:8000/index.html?scene=WorldScene&selftest=1&sw=1&pwa=1"
+
+# offline boot (Phase 10) → bukti offline cache: (1) kunjungan online sekali
+# (daftar SW + cache v2, bisa via port terpisah dgn --user-data-dir sama),
+# (2) MATIKAN server, (3) muat ulang URL yang sama tanpa &sw=1.
+# Verifikasi: SMOKE boot penuh (worldBuilt:true, quest/dialog/achievement loaded).
+... "http://127.0.0.1:8010/index.html?scene=WorldScene&selftest=1&pwa=1"   # server mati
+
 # E2E input (movement / interact / pause toggle) dilakukan via CDP
 # (Input.dispatchKeyEvent + manualStep) — lihat catatan hasil Phase 1.
 ```
@@ -105,6 +117,8 @@ Parameter debug headless:
 - `?selftest=1` — aktifkan smoke test.
 - `?scene=WorldScene|MenuScene` — langsung membuka scene target setelah preload.
 - `?renderer=canvas` — paksa Canvas (opsional, untuk isolasi).
+- `?sw=1` — paksa registrasi Service Worker di localhost/DEBUG (Phase 10).
+- `?pwa=1` — smoke PWA: SW aktif + cache precache (jalankan dengan `&sw=1`).
 
 ## Catatan Hasil
 
@@ -118,3 +132,4 @@ Parameter debug headless:
 | 7 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T08 ✅, T22 ✅ | Decision system: DialogueManager/UI aktif (buka/tutup, ketik, pilihan via klik/E/angka), branching nyata lewat `conditions` + `startSelector`, konsekuensi via DecisionManager (flags/decisions/relationship/jurnal) + auto-start sidebar Misi 02; Skenario verifikasi pasar melewati jalur sapa→verifikasi→info POI→sudah_baca→`dec_rumor_verified`, quest selesai, relationship `npc_warga_pasar` naik, 3 decision+jurnal tercatat; smoke `?decision=1`. |
 | 8 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T13 ✅, T09 ✅ | TPS Simulation: TPSScene (scene overlay, `TPS_SIMULATION` state) — alur 8 langkah data-driven (`data/tps/sim_tps.json`): Datang→Interaksi→Verifikasi→Perlengkapan→Bilik→Simulasi (kandidat fiktif/abstrak: Mentari/Roda/Bintang)→Selesai→Review; feedback literasi per pilihan + review skor; reward XP/Koin via DecisionManager (`dec_tps_selesai`, flag `story_tps_selesai`, jurnal kategori TPS); Misi 03 "TPS untuk Semua Warga" auto-start via `AREA_ENTERED` (fitur `autoStart`), selesai setelah simulasi; achievement `first_simulation` + `tps_selesai`; ikon placeholder `icon_tps`; smoke `?tps=1` (8 langkah, skor 5/5, quest selesai, 2 entri jurnal). |
 | 9 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T14 ✅, T16 ✅ | Polish: Audio lengkap — AudioManager sintesis WebAudio (13 suara, 6 channel: master/music/sfx/ambient/ui/footsteps), SFX terpicu gameplay (langkah `FOOTSTEPS_INTERVAL_MS`, collect, quest, achievement, level-up, TPS benar/salah/selesai, transisi), volume+mute tersimpan via SettingsManager (localStorage); icon particle `particle_dust`/`particle_leaf` + emitter debu saat berjalan & daun jatuh; UI polish — makeButton press-scale + hover/click sfx, Panel open micro-animation, toggle animasi, DialogueUI choice feedback + blip; Aksesibilitas — toggle Kurangi Gerakan/Subtitle/Teks Instan di panel AKSESIBILITAS (guard semua tween/fade/partikel & camera lerp, caption dialog bawah layar, teks instan), settings terpusat bersama panel PENGATURAN (master/musik/sfx/mute/fullscreen); smoke `?audio=1` & `?access=1`. |
+| 10 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | T17 ✅ (offline boot, instal manual ⏳), T15 ⏳ manual | PWA & Mobile: manifest lengkap (`id`, standalone, categories) + iOS meta (`apple-mobile-web-app-*`) + `apple-touch-icon` 180 fisik; SW `sw.js` v2 — precache 140 URL (app shell + 65 modul + 65 data JSON + ikon + Phaser CDN via `--user-data-dir` test), navigate network-first → fallback `index.html`, aset cache-first, JSON offline → 504 aman; `DialogueData` kini pakai `BASE_PATH`; registrasi `updateViaCache:none` + controllerchange reload-once (guarded selftest); CSS mobile (safe-area `env()`, user-select/touch-callout none, display-mode standalone, :fullscreen); smoke `?sw=1&pwa=1` (active, cache v2, 140 entries: shell/module/data/icon/phaser) + offline boot terverifikasi — server port 8010 dimatikan, game boot penuh dari cache (`worldBuilt` true, quest/achievement/journal loaded); regresi plain/quest/journal/decision/tps/audio/access ✅. |

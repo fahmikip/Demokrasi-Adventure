@@ -25,7 +25,9 @@ python -m http.server 8080
 
 Lalu buka `http://localhost:8080`.
 
-> Phaser dimuat dari CDN. Untuk mode offline total, unduh `phaser.min.js` ke `vendor/` dan sesuaikan `index.html`.
+> Phaser dimuat dari CDN, namun Service Worker (Phase 10) otomatis meng-cache-nya
+> (`https://cdnjs.cloudflare.com/.../phaser.min.js`) — game tetap jalan penuh offline
+> setelah kunjungan online pertama. Opsional: unduh ke `vendor/` bila ingin tanpa CDN sama sekali.
 
 ## Struktur
 
